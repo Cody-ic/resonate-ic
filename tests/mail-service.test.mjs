@@ -31,8 +31,18 @@ test('test mode only sends to exact allowed recipients, including onlyId request
 test('configured sender alias is included and invalid sender pauses delivery',()=>scenario(async({api,env,queue,calls})=>{
  env.MAIL_FROM='sender-alias@outlook.com';await queue('alias');assert.equal((await api.dispatchMail()).accepted,1);
  assert.equal(JSON.parse(calls.find(c=>c.url.includes('/sendMail')).options.body).message.from.emailAddress.address,'sender-alias@outlook.com');
+ assert.equal(JSON.parse(calls.find(c=>c.url.includes('/sendMail')).options.body).message.from.emailAddress.name,'共振');
  env.MAIL_FROM='sender@outlook.com\r\nInjected: value';await queue('invalid-alias');assert.equal(api.mailConfigured(),false);await api.dispatchMail();assert.equal(calls.filter(c=>c.url.includes('/sendMail')).length,1);
 }));
+
+test('Microsoft account suspension pauses the provider until an explicit recovery',()=>scenario(async({api,db,queue,calls,env})=>{
+ await queue('suspended');await api.dispatchMail();
+ assert.equal((await api.mailHealth()).authState,'account_verification_required');
+ assert.equal(await api.nextMailWake(),null);
+ await queue('later');await api.dispatchMail();assert.equal(calls.filter(c=>c.url.includes('/sendMail')).length,1);
+ assert.equal(db.prepare("SELECT state FROM email_outbox WHERE event_key='later'").get().state,'queued');
+ env.MAIL_FROM_NAME='共振通知';assert.equal(api.mailSenderName(),'共振通知');env.MAIL_FROM_NAME='bad\r\nheader';assert.equal(api.mailConfigured(),false);
+},{outbound:async(call)=>call.url.includes('/token')?Response.json({access_token:'access'}):Response.json({error:{code:'ErrorAccountSuspend',message:'sensitive-provider-text'}},{status:403})}));
 test('old creation time cannot mark a fresh sending attempt as uncertain; concurrent dispatch is serialized',()=>scenario(async({api,db,queue,now})=>{
  const id=await queue('old');db.prepare('UPDATE email_outbox SET created_at=? WHERE id=?').run(now()-86400000,id);await api.dispatchMail();assert.equal(db.prepare('SELECT state FROM email_outbox WHERE id=?').get(id).state,'accepted');
 },{outbound:async(call,{api,db})=>{if(call.url.includes('/token'))return Response.json({access_token:'access'});const row=db.prepare("SELECT * FROM email_outbox WHERE state='sending'").get();assert.equal(row.started_at,Date.now());assert.notEqual(row.created_at,row.started_at);assert.equal((await api.dispatchMail()).busy,true);assert.equal(db.prepare('SELECT state FROM email_outbox WHERE id=?').get(row.id).state,'sending');return new Response(null,{status:202});}}));

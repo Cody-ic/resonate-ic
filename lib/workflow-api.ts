@@ -140,6 +140,12 @@ export async function workflowApi(request:Request,path:string[],user:Actor|null)
     await moderateContent(path[2],path[3],user.id,input.reason,action==="unlock");return json({message:action==="unlock"?"已解除管理员下架限制":"已下架并记录理由"});
   }
   if(key==="mail"&&method==="POST"){
+    if(id==='resume'){
+      z.object({confirmedAccountVerified:z.literal(true)}).parse(await body(request));
+      const changed=await sql.prepare("UPDATE mail_credentials SET auth_state='unknown',error=NULL,retry_after_at=0 WHERE id=? AND auth_state='account_verification_required' RETURNING id").bind('graph:'+mailSettings().MAIL_GRAPH_CLIENT_ID).first();
+      if(!changed)throw new HTTPError(409,'邮箱当前不处于等待微软账号验证的状态');
+      await kickMailQueue();return json({message:'已按管理员确认解除暂停；后续投递仍由微软检查，失败邮件不会自动重发'});
+    }
     if(id==='test'){
       const input=z.object({target:z.enum(['sender','administrator']).default('sender')}).parse(await body(request));
       const toList=[...new Set((input.target==='administrator'?mailSettings().ADMIN_EMAILS??'':mailSettings().MAIL_FROM??'').split(',').map(x=>x.trim()).filter(Boolean))];

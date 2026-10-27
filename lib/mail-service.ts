@@ -1,9 +1,10 @@
 import {env} from 'cloudflare:workers';
 import {timeouts} from './timeouts';
-type MailSettings={MAIL_PROVIDER?:string;MAIL_FROM?:string;MAIL_GRAPH_CLIENT_ID?:string;MAIL_GRAPH_CLIENT_SECRET?:string;MAIL_GRAPH_REFRESH_TOKEN?:string;MAIL_DELIVERY_MODE?:string;MAIL_TEST_RECIPIENTS?:string;MAIL_REQUIRE_EMAIL_VERIFICATION?:string;ADMIN_USER_IDS?:string;ADMIN_EMAILS?:string;BETTER_AUTH_SECRET?:string};
+type MailSettings={MAIL_PROVIDER?:string;MAIL_FROM?:string;MAIL_FROM_NAME?:string;MAIL_GRAPH_CLIENT_ID?:string;MAIL_GRAPH_CLIENT_SECRET?:string;MAIL_GRAPH_REFRESH_TOKEN?:string;MAIL_DELIVERY_MODE?:string;MAIL_TEST_RECIPIENTS?:string;MAIL_REQUIRE_EMAIL_VERIFICATION?:string;ADMIN_USER_IDS?:string;ADMIN_EMAILS?:string;BETTER_AUTH_SECRET?:string};
 export const mailSettings=()=>env as typeof env & MailSettings;
 export const mailMode=()=>['test','live'].includes(mailSettings().MAIL_DELIVERY_MODE??'')?mailSettings().MAIL_DELIVERY_MODE as 'test'|'live':'off';
-export function mailConfigured(){const c=mailSettings();return c.MAIL_PROVIDER==='graph'&&!!c.MAIL_GRAPH_CLIENT_ID&&!!c.MAIL_GRAPH_REFRESH_TOKEN&&!!c.BETTER_AUTH_SECRET&&c.BETTER_AUTH_SECRET.length>=32&&(!c.MAIL_FROM||/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(c.MAIL_FROM));}
+export const mailSenderName=()=>mailSettings().MAIL_FROM_NAME?.trim()||'共振';
+export function mailConfigured(){const c=mailSettings();return c.MAIL_PROVIDER==='graph'&&!!c.MAIL_GRAPH_CLIENT_ID&&!!c.MAIL_GRAPH_REFRESH_TOKEN&&!!c.BETTER_AUTH_SECRET&&c.BETTER_AUTH_SECRET.length>=32&&(!c.MAIL_FROM||/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(c.MAIL_FROM))&&mailSenderName().length<=80&&!/[\r\n\0]/.test(mailSenderName());}
 const recipients=()=>[...new Set((mailSettings().MAIL_TEST_RECIPIENTS??'').split(',').map(s=>s.trim().toLowerCase()).filter(s=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s)))];
 export const mailDeliveryEnabled=()=>mailConfigured()&&(mailMode()==='live'||mailMode()==='test'&&recipients().length>0);
 export const canSendMailTo=(to:string)=>mailDeliveryEnabled()&&(mailMode()==='live'||recipients().includes(to.trim().toLowerCase()));
@@ -20,7 +21,7 @@ export async function nextMailWake(){
   const row=await env.DB!.prepare(`SELECT MIN(next_attempt_at) next FROM email_outbox WHERE state='queued' AND attempts<5${mailMode()==='test'?` AND lower(recipient) IN (${allowed.map(()=>'?').join(',')})`:''}`).bind(...allowed).first<any>();
   if(row?.next===null||row?.next===undefined)return null;
   const auth=await env.DB!.prepare('SELECT auth_state,retry_after_at FROM mail_credentials WHERE id=?').bind('graph:'+c.MAIL_GRAPH_CLIENT_ID).first<any>();
-  if(auth?.auth_state==='auth_required')return null;
+  if(['auth_required','account_verification_required'].includes(auth?.auth_state))return null;
   return Math.max(Date.now()+250,row.next,auth?.retry_after_at??0);
 }
 async function hash(text:string){return Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(text))),b=>b.toString(16).padStart(2,'0')).join('');}
@@ -37,7 +38,7 @@ export async function queueEmail(key:string,to:string,title:string,body:string,o
 }
 export async function mailHealth(){
   const c=mailSettings(),row=c.MAIL_GRAPH_CLIENT_ID?await env.DB!.prepare('SELECT auth_state,error,retry_after_at FROM mail_credentials WHERE id=?').bind('graph:'+c.MAIL_GRAPH_CLIENT_ID).first<any>():null;
-  return {configured:mailConfigured(),mode:mailMode(),enabled:mailDeliveryEnabled(),sender:c.MAIL_FROM??null,testRecipientCount:recipients().length,verificationRequired:mailVerificationRequired(),authState:row?.auth_state??'not_checked',error:row?.error??null,retryAfterAt:row?.retry_after_at??0};
+  return {configured:mailConfigured(),mode:mailMode(),enabled:mailDeliveryEnabled(),sender:c.MAIL_FROM??null,senderName:mailSenderName(),testRecipientCount:recipients().length,verificationRequired:mailVerificationRequired(),authState:row?.auth_state??'not_checked',error:row?.error??null,retryAfterAt:row?.retry_after_at??0};
 }
 async function authAlert(key:string,reason:string){
   for(const uid of (mailSettings().ADMIN_USER_IDS??'').split(',').map(s=>s.trim()).filter(Boolean)){
@@ -72,7 +73,7 @@ export async function dispatchMail(limit=5,options:{onlyId?:string}={}){
       await db.prepare("INSERT INTO mail_credentials(id,seed_digest,refresh_cipher,updated_at) VALUES(?,?,?,?) ON CONFLICT(id) DO UPDATE SET seed_digest=excluded.seed_digest,refresh_cipher=excluded.refresh_cipher,access_cipher=NULL,access_expires_at=0,auth_state='unknown',error=NULL,retry_after_at=0,updated_at=excluded.updated_at").bind(id,seed,await encryptMailValue(c.MAIL_GRAPH_REFRESH_TOKEN!),Date.now()).run();
       credential=await db.prepare('SELECT * FROM mail_credentials WHERE id=?').bind(id).first<any>();
     }
-    if(credential.auth_state==='auth_required')return {...report,error:credential.error};
+    if(['auth_required','account_verification_required'].includes(credential.auth_state))return {...report,error:credential.error};
     if(credential.retry_after_at>Date.now())return {...report,retryAfterAt:credential.retry_after_at};
     let access:string;
     if(credential.access_cipher&&credential.access_expires_at>Date.now()+60000)access=await decryptMailValue(credential.access_cipher);
@@ -107,7 +108,7 @@ export async function dispatchMail(limit=5,options:{onlyId?:string}={}){
         .bind(state,error,next,state==='accepted'?Date.now():null,state,row.id,executionOwner).run();
       let body:string;try{body=await decryptMailValue(row.body);}catch{await finish('failed','邮件内容无法解密，需要管理员检查配置');continue;}
       let response:Response;
-      try{response=await fetch('https://graph.microsoft.com/v1.0/me/sendMail',{method:'POST',headers:{Authorization:`Bearer ${access}`,'Content-Type':'application/json'},body:JSON.stringify({message:{subject:row.subject,...(c.MAIL_FROM?{from:{emailAddress:{address:c.MAIL_FROM}}}:{}),body:{contentType:'Text',content:body},toRecipients:[{emailAddress:{address:row.recipient}}]},saveToSentItems:true}),signal:AbortSignal.timeout(timeouts.mailRequest)});}catch{await finish('uncertain','发送结果不确定，需核对发件箱后再决定重试');continue;}
+      try{response=await fetch('https://graph.microsoft.com/v1.0/me/sendMail',{method:'POST',headers:{Authorization:`Bearer ${access}`,'Content-Type':'application/json'},body:JSON.stringify({message:{subject:row.subject,...(c.MAIL_FROM?{from:{emailAddress:{address:c.MAIL_FROM,name:mailSenderName()}}}:{}),body:{contentType:'Text',content:body},toRecipients:[{emailAddress:{address:row.recipient}}]},saveToSentItems:true}),signal:AbortSignal.timeout(timeouts.mailRequest)});}catch{await finish('uncertain','发送结果不确定，需核对发件箱后再决定重试');continue;}
       if(response.status===202){await finish('accepted',null);report.accepted++;}
       else if(response.status===429){
         const next=Date.now()+retryDelay(response.headers.get('Retry-After'),claim.attempts);
@@ -117,6 +118,13 @@ export async function dispatchMail(limit=5,options:{onlyId?:string}={}){
         await finish(claim.attempts<5?'queued':'failed','访问授权被拒绝，等待刷新授权',Date.now()+60000);
         await db.prepare("UPDATE mail_credentials SET access_cipher=NULL,access_expires_at=0,retry_after_at=? WHERE id=?").bind(Date.now()+60000,id).run();break;
       }else if(response.status===403){
+        const providerError=await response.json().catch(()=>null) as {error?:{code?:string}}|null;
+        if(providerError?.error?.code==='ErrorAccountSuspend'){
+          const reason='微软已暂停此邮箱发信，需要邮箱持有人完成账号验证；请查看 Outlook 收件箱中的微软通知';
+          await finish('failed',reason);
+          await db.prepare("UPDATE mail_credentials SET auth_state='account_verification_required',error=? WHERE id=?").bind(reason,id).run();
+          await authAlert(id+':account-verification:'+seed,reason);break;
+        }
         await finish('failed','发信权限被拒绝，需要管理员处理授权');
         await db.prepare("UPDATE mail_credentials SET auth_state='auth_required',error='发信权限被拒绝，需要重新授权' WHERE id=?").bind(id).run();await authAlert(id+':'+seed,'发信权限被拒绝，需要重新授权');break;
       }else if(response.status>=500||response.status>=200&&response.status<300){await finish('uncertain',`邮件服务响应 ${response.status}，投递结果需核对，未自动重发`);}

@@ -9,7 +9,7 @@ import { getDb } from "../db";
 import * as s from "../db/schema";
 import { getChatGPTUser } from "../app/chatgpt-auth";
 import { HTTPError,json } from "./domain";
-import {mailMode,mailDeliveryEnabled,mailVerificationAvailable,mailVerificationRequired,canSendMailTo,mailSettings,queueEmail} from "./notifications";
+import {mailMode,mailDeliveryEnabled,mailVerificationAvailable,mailVerificationRequired,canSendMailTo,mailSettings,queueEmail,mailHealth} from "./notifications";
 import {loginWindowSeconds,loginAccountMax,loginIpMax,trustedCampusLogin,loginAccountLimitKey} from "./login-policy";
 
 type Settings={BETTER_AUTH_SECRET?:string;BETTER_AUTH_URL?:string;PLATFORM_AUTH_ENABLED?:string;SEU_LOGIN_TRUSTED_CIDRS?:string};
@@ -36,6 +36,7 @@ function createSiteAuth(origin:string,cfg:typeof env & Settings){
     emailAndPassword:{enabled:true,minPasswordLength:12,maxPasswordLength:128,requireEmailVerification:mailVerificationRequired()},
     plugins:[emailOTP({otpLength:6,expiresIn:300,allowedAttempts:3,storeOTP:"hashed",sendVerificationOnSignUp:mailVerificationAvailable(),overrideDefaultEmailVerification:true,disableSignUp:true,rateLimit:{window:60,max:2},sendVerificationOTP:async({email,otp,type})=>{
       if(!canSendMailTo(email))throw new APIError('SERVICE_UNAVAILABLE',{message:'邮箱发送服务尚未启用，或当前收件人不在联调范围内'});
+      if((await mailHealth()).authState==='account_verification_required')throw new APIError('SERVICE_UNAVAILABLE',{message:'邮件服务暂时需要维护者完成微软账号验证，请稍后再试'});
       await queueEmail(`verification:${crypto.randomUUID()}`,email,type==="forget-password"?"共振账号密码重置验证码":"共振账号邮箱验证码",`你的验证码是 ${otp}，5分钟内有效。请勿将验证码告知他人。若非本人操作，可忽略此邮件。`,{purpose:"verification",expiresAt:Date.now()+300000});
     }})],
     session:{expiresIn:60*60*24*7,updateAge:60*60*24},
@@ -64,6 +65,7 @@ export async function accountIdentity(request:Request){
 }
 
 export async function registerAccount(request:Request){
+  if(mailVerificationRequired()&&(await mailHealth()).authState==='account_verification_required')throw new HTTPError(503,'邮件服务暂时需要维护者完成微软账号验证，请稍后再注册');
   const text=await request.text();
   if(new TextEncoder().encode(text).length>4096)throw new HTTPError(413,"注册信息过长");
   let input:unknown;try{input=JSON.parse(text);}catch{throw new HTTPError(400,"请求必须是JSON");}
@@ -103,6 +105,7 @@ export async function authHandler(request:Request){
     const {email}=z.object({email:z.string().trim().email().max(254)}).parse(input);
     const sending=['/api/auth/email-otp/send-verification-otp','/api/auth/email-otp/request-password-reset'].includes(pathname);
     if(sending&&!canSendMailTo(email))throw new HTTPError(503,'邮箱服务正在联调，当前收件人不在允许范围内');
+    if(sending&&(await mailHealth()).authState==='account_verification_required')throw new HTTPError(503,'邮件服务暂时需要维护者完成微软账号验证，请稍后再试');
     // Shared campus egress must not combine every student's two requests into
     // one allowance. Keep strict recipient quotas and a larger IP aggregate;
     // the OTP plugin independently limits wrong guesses per issued code.

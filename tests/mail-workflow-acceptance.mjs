@@ -84,6 +84,14 @@ try{
  const beforeSelfTest=mailRequests.length;await admin.ok('POST','admin/mail/test',{});await wait(()=>mailRequests.length===beforeSelfTest+1);
  check('admin connection test targets only the configured sender and carries that alias',mailRequests.at(-1).message.toRecipients[0].emailAddress.address==='allowed@example.test'&&mailRequests.at(-1).message.from.emailAddress.address==='allowed@example.test');
  check('admin connection tests are limited to one per minute',(await admin.call('POST','admin/mail/test',{})).status===429);
+ bindings.MAIL_DELIVERY_MODE='live';bindings.MAIL_REQUIRE_EMAIL_VERIFICATION='true';await reconfigure();
+ await db.prepare("UPDATE mail_credentials SET auth_state='account_verification_required',error='Microsoft verification needed' WHERE id=?").bind('graph:test-client').run();
+ check('blocked provider rejects new registration before creating an account',(await client().call('POST','account/register',{name:'验证暂停验收',email:'paused@example.test',password})).status===503&&!(await db.prepare('SELECT id FROM auth_user WHERE email=?').bind('paused@example.test').first()));
+ check('blocked provider returns a clear failure for OTP requests',(await allowed.call('POST','auth/email-otp/send-verification-otp',{email:'allowed@example.test',type:'email-verification'})).status===503);
+ check('ordinary users cannot resume a suspended provider',(await foreign.call('POST','admin/mail/resume',{confirmedAccountVerified:true})).status===403);
+ check('provider resume requires explicit verification confirmation',(await admin.call('POST','admin/mail/resume',{})).status>=400);
+ await admin.ok('POST','admin/mail/resume',{confirmedAccountVerified:true});
+ check('administrator confirmation releases provider verification pause',(await db.prepare('SELECT auth_state FROM mail_credentials WHERE id=?').bind('graph:test-client').first()).auth_state!=='account_verification_required');
  bindings.MAIL_DELIVERY_MODE='off';await reconfigure();
  writeFileSync(path.join(out,'result.json'),JSON.stringify({passed:checks.length,checks,mockedMailSubmissions:mailRequests.length,realNetworkCalls:0,productionDataModified:false},null,2));console.log(JSON.stringify({passed:checks.length,report:path.join(out,'result.json'),realNetworkCalls:0}));
 }catch(error){writeFileSync(path.join(out,'failure.json'),JSON.stringify({checks,error:String(error),stack:error.stack},null,2));throw error;}finally{await mf.dispose();}
