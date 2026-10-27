@@ -1,9 +1,9 @@
 import {env} from 'cloudflare:workers';
 import {timeouts} from './timeouts';
-type MailSettings={MAIL_PROVIDER?:string;MAIL_GRAPH_CLIENT_ID?:string;MAIL_GRAPH_CLIENT_SECRET?:string;MAIL_GRAPH_REFRESH_TOKEN?:string;MAIL_DELIVERY_MODE?:string;MAIL_TEST_RECIPIENTS?:string;MAIL_REQUIRE_EMAIL_VERIFICATION?:string;ADMIN_USER_IDS?:string;ADMIN_EMAILS?:string;BETTER_AUTH_SECRET?:string};
+type MailSettings={MAIL_PROVIDER?:string;MAIL_FROM?:string;MAIL_GRAPH_CLIENT_ID?:string;MAIL_GRAPH_CLIENT_SECRET?:string;MAIL_GRAPH_REFRESH_TOKEN?:string;MAIL_DELIVERY_MODE?:string;MAIL_TEST_RECIPIENTS?:string;MAIL_REQUIRE_EMAIL_VERIFICATION?:string;ADMIN_USER_IDS?:string;ADMIN_EMAILS?:string;BETTER_AUTH_SECRET?:string};
 export const mailSettings=()=>env as typeof env & MailSettings;
 export const mailMode=()=>['test','live'].includes(mailSettings().MAIL_DELIVERY_MODE??'')?mailSettings().MAIL_DELIVERY_MODE as 'test'|'live':'off';
-export function mailConfigured(){const c=mailSettings();return c.MAIL_PROVIDER==='graph'&&!!c.MAIL_GRAPH_CLIENT_ID&&!!c.MAIL_GRAPH_REFRESH_TOKEN&&!!c.BETTER_AUTH_SECRET&&c.BETTER_AUTH_SECRET.length>=32;}
+export function mailConfigured(){const c=mailSettings();return c.MAIL_PROVIDER==='graph'&&!!c.MAIL_GRAPH_CLIENT_ID&&!!c.MAIL_GRAPH_REFRESH_TOKEN&&!!c.BETTER_AUTH_SECRET&&c.BETTER_AUTH_SECRET.length>=32&&(!c.MAIL_FROM||/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(c.MAIL_FROM));}
 const recipients=()=>[...new Set((mailSettings().MAIL_TEST_RECIPIENTS??'').split(',').map(s=>s.trim().toLowerCase()).filter(s=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s)))];
 export const mailDeliveryEnabled=()=>mailConfigured()&&(mailMode()==='live'||mailMode()==='test'&&recipients().length>0);
 export const canSendMailTo=(to:string)=>mailDeliveryEnabled()&&(mailMode()==='live'||recipients().includes(to.trim().toLowerCase()));
@@ -37,7 +37,7 @@ export async function queueEmail(key:string,to:string,title:string,body:string,o
 }
 export async function mailHealth(){
   const c=mailSettings(),row=c.MAIL_GRAPH_CLIENT_ID?await env.DB!.prepare('SELECT auth_state,error,retry_after_at FROM mail_credentials WHERE id=?').bind('graph:'+c.MAIL_GRAPH_CLIENT_ID).first<any>():null;
-  return {configured:mailConfigured(),mode:mailMode(),enabled:mailDeliveryEnabled(),testRecipientCount:recipients().length,verificationRequired:mailVerificationRequired(),authState:row?.auth_state??'not_checked',error:row?.error??null,retryAfterAt:row?.retry_after_at??0};
+  return {configured:mailConfigured(),mode:mailMode(),enabled:mailDeliveryEnabled(),sender:c.MAIL_FROM??null,testRecipientCount:recipients().length,verificationRequired:mailVerificationRequired(),authState:row?.auth_state??'not_checked',error:row?.error??null,retryAfterAt:row?.retry_after_at??0};
 }
 async function authAlert(key:string,reason:string){
   for(const uid of (mailSettings().ADMIN_USER_IDS??'').split(',').map(s=>s.trim()).filter(Boolean)){
@@ -107,7 +107,7 @@ export async function dispatchMail(limit=5,options:{onlyId?:string}={}){
         .bind(state,error,next,state==='accepted'?Date.now():null,state,row.id,executionOwner).run();
       let body:string;try{body=await decryptMailValue(row.body);}catch{await finish('failed','邮件内容无法解密，需要管理员检查配置');continue;}
       let response:Response;
-      try{response=await fetch('https://graph.microsoft.com/v1.0/me/sendMail',{method:'POST',headers:{Authorization:`Bearer ${access}`,'Content-Type':'application/json'},body:JSON.stringify({message:{subject:row.subject,body:{contentType:'Text',content:body},toRecipients:[{emailAddress:{address:row.recipient}}]},saveToSentItems:true}),signal:AbortSignal.timeout(timeouts.mailRequest)});}catch{await finish('uncertain','发送结果不确定，需核对发件箱后再决定重试');continue;}
+      try{response=await fetch('https://graph.microsoft.com/v1.0/me/sendMail',{method:'POST',headers:{Authorization:`Bearer ${access}`,'Content-Type':'application/json'},body:JSON.stringify({message:{subject:row.subject,...(c.MAIL_FROM?{from:{emailAddress:{address:c.MAIL_FROM}}}:{}),body:{contentType:'Text',content:body},toRecipients:[{emailAddress:{address:row.recipient}}]},saveToSentItems:true}),signal:AbortSignal.timeout(timeouts.mailRequest)});}catch{await finish('uncertain','发送结果不确定，需核对发件箱后再决定重试');continue;}
       if(response.status===202){await finish('accepted',null);report.accepted++;}
       else if(response.status===429){
         const next=Date.now()+retryDelay(response.headers.get('Retry-After'),claim.attempts);

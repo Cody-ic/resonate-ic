@@ -2,7 +2,7 @@ import {env} from "cloudflare:workers";
 import {z} from "zod/v3";
 import {HTTPError,json,digest} from "./domain";
 import {enqueueReview,drainQueue,laneConfig,projectOffPeak,config,reviewBudget} from "./moderation";
-import {notify,approveNotice,mailConfigured,mailDeliveryEnabled,mailMode,mailHealth,kickMailQueue,alertAdmins,notificationLinks} from "./notifications";
+import {notify,approveNotice,mailConfigured,mailDeliveryEnabled,mailMode,mailHealth,kickMailQueue,alertAdmins,notificationLinks,mailSettings,canSendMailTo,queueEmail} from "./notifications";
 import {submitContentAppeal,resolveContentAppeal} from "./appeals";
 import {resolveFeatured} from "./featured";
 import {moderateContent} from "./moderation-controls";
@@ -140,6 +140,16 @@ export async function workflowApi(request:Request,path:string[],user:Actor|null)
     await moderateContent(path[2],path[3],user.id,input.reason,action==="unlock");return json({message:action==="unlock"?"已解除管理员下架限制":"已下架并记录理由"});
   }
   if(key==="mail"&&method==="POST"){
+    if(id==='test'){
+      const input=z.object({target:z.enum(['sender','administrator']).default('sender')}).parse(await body(request));
+      const toList=[...new Set((input.target==='administrator'?mailSettings().ADMIN_EMAILS??'':mailSettings().MAIL_FROM??'').split(',').map(x=>x.trim()).filter(Boolean))];
+      if(!toList.length||toList.length>10||toList.some(to=>!canSendMailTo(to)))throw new HTTPError(503,'请先完成邮箱授权，并允许向配置的测试收件地址发信');
+      const bucket=Math.floor(Date.now()/60000),claim=await sql.prepare("INSERT INTO limits(key,count,expires_at) VALUES(?,1,?) ON CONFLICT(key) DO NOTHING RETURNING key").bind(`mail-test:${bucket}`,(bucket+1)*60000).first();
+      if(!claim)throw new HTTPError(429,'测试邮件每分钟最多发送一封，请稍后查看发件箱和收件箱');
+      const ids=[];
+      for(const to of toList)ids.push(await queueEmail(`mail-connection-test:${crypto.randomUUID()}`,to,input.target==='administrator'?'共振网站 · 管理员邮件连接测试':'共振网站 · 邮箱连接测试',`这是一封由共振网站邮件队列发送的连接测试邮件。\n\n发件地址：${mailSettings().MAIL_FROM}\n发送时间：${new Date().toISOString()}\n\n此邮件用于核对${input.target==='administrator'?'管理员提醒':'发信授权'}与邮件队列是否能正常投递，不是实际审核事项，不包含验证码或用户数据。`,{purpose:'connection-test'}));
+      return json({id:ids[0],ids,message:'测试邮件已进入发送队列，请检查收件箱及垃圾邮件夹'});
+    }
     if(id==='dispatch'){await kickMailQueue();return json({message:mailDeliveryEnabled()?'已唤醒邮件队列，发送状态会在后台更新':'邮件发送尚未启用，队列已保留'});}
     if(id&&operation==="retry"){
       const input=z.object({confirmedNotSent:z.literal(true)}).parse(await body(request));

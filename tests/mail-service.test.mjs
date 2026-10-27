@@ -27,6 +27,12 @@ test('test mode only sends to exact allowed recipients, including onlyId request
  await api.dispatchMail(1,{onlyId:blocked});assert.equal(db.prepare('SELECT state FROM email_outbox WHERE id=?').get(blocked).state,'queued');
  assert.equal((await api.dispatchMail()).accepted,1);assert.equal(db.prepare('SELECT state FROM email_outbox WHERE id=?').get(allowed).state,'accepted');
 },{mode:'test'}));
+
+test('configured sender alias is included and invalid sender pauses delivery',()=>scenario(async({api,env,queue,calls})=>{
+ env.MAIL_FROM='sender-alias@outlook.com';await queue('alias');assert.equal((await api.dispatchMail()).accepted,1);
+ assert.equal(JSON.parse(calls.find(c=>c.url.includes('/sendMail')).options.body).message.from.emailAddress.address,'sender-alias@outlook.com');
+ env.MAIL_FROM='sender@outlook.com\r\nInjected: value';await queue('invalid-alias');assert.equal(api.mailConfigured(),false);await api.dispatchMail();assert.equal(calls.filter(c=>c.url.includes('/sendMail')).length,1);
+}));
 test('old creation time cannot mark a fresh sending attempt as uncertain; concurrent dispatch is serialized',()=>scenario(async({api,db,queue,now})=>{
  const id=await queue('old');db.prepare('UPDATE email_outbox SET created_at=? WHERE id=?').run(now()-86400000,id);await api.dispatchMail();assert.equal(db.prepare('SELECT state FROM email_outbox WHERE id=?').get(id).state,'accepted');
 },{outbound:async(call,{api,db})=>{if(call.url.includes('/token'))return Response.json({access_token:'access'});const row=db.prepare("SELECT * FROM email_outbox WHERE state='sending'").get();assert.equal(row.started_at,Date.now());assert.notEqual(row.created_at,row.started_at);assert.equal((await api.dispatchMail()).busy,true);assert.equal(db.prepare('SELECT state FROM email_outbox WHERE id=?').get(row.id).state,'sending');return new Response(null,{status:202});}}));

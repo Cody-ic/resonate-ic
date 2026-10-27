@@ -78,5 +78,12 @@ try{
  await wait(async()=>{const row=await db.prepare("SELECT COUNT(*) n FROM email_outbox WHERE recipient LIKE 'campus-burst-%' AND state='accepted'").first();return row.n===30;});
  check('durable mail queue refills free slots without waiting for the five-minute cron',burst.every(email=>mailRequests.filter(m=>m.message.toRecipients[0].emailAddress.address===email).length===1));
  bindings.MAIL_DELIVERY_MODE='off';await reconfigure();
+ check('disabled delivery cannot submit a self-test email',(await admin.call('POST','admin/mail/test',{})).status===503);
+ bindings.MAIL_DELIVERY_MODE='test';bindings.MAIL_FROM='allowed@example.test';await reconfigure();
+ check('ordinary users cannot submit admin connection tests',(await foreign.call('POST','admin/mail/test',{})).status===403);
+ const beforeSelfTest=mailRequests.length;await admin.ok('POST','admin/mail/test',{});await wait(()=>mailRequests.length===beforeSelfTest+1);
+ check('admin connection test targets only the configured sender and carries that alias',mailRequests.at(-1).message.toRecipients[0].emailAddress.address==='allowed@example.test'&&mailRequests.at(-1).message.from.emailAddress.address==='allowed@example.test');
+ check('admin connection tests are limited to one per minute',(await admin.call('POST','admin/mail/test',{})).status===429);
+ bindings.MAIL_DELIVERY_MODE='off';await reconfigure();
  writeFileSync(path.join(out,'result.json'),JSON.stringify({passed:checks.length,checks,mockedMailSubmissions:mailRequests.length,realNetworkCalls:0,productionDataModified:false},null,2));console.log(JSON.stringify({passed:checks.length,report:path.join(out,'result.json'),realNetworkCalls:0}));
 }catch(error){writeFileSync(path.join(out,'failure.json'),JSON.stringify({checks,error:String(error),stack:error.stack},null,2));throw error;}finally{await mf.dispose();}
