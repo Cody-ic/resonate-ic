@@ -101,7 +101,11 @@ export async function workflowApi(request:Request,path:string[],user:Actor|null)
       await resolveFeatured(row,{task:"featured",decision:input.decision,criteriaConfirmed:input.decision==='qualify'?context.criteria:[],summary:input.reason,method:"human",actorId:user.id},user.id);
     }else if(row.task==="report"){
       if(!["keep","take_down"].includes(input.decision))throw new HTTPError(422,"请选择保留或下架");
-      if(input.decision==="take_down")await moderateContent(row.entity_type,row.entity_id,user.id,input.reason,false,row.digest);
+      if(input.decision==="take_down"){
+        let type=row.entity_type,targetId=row.entity_id;
+        if(type==='revision'){const p=await sql.prepare("SELECT p.id,p.kind FROM revisions r JOIN projects p ON p.id=r.project_id WHERE r.id=? AND p.published_id=r.id").bind(row.entity_id).first<any>();if(!p)throw new HTTPError(409,'被举报版本已变化，请重新核对当前公开内容');type=p.kind;targetId=p.id;}
+        if(!await moderateContent(type,targetId,user.id,input.reason,false,row.digest))throw new HTTPError(409,'内容状态已变化，请重新核对');
+      }
       const reporters=await sql.prepare("SELECT reporter_id FROM reports WHERE review_id=?").bind(id).all<{reporter_id:string}>();
       for(const r of reporters.results)await notify(r.reporter_id,`manual-report:${id}:${r.reporter_id}`,{title:"举报人工复核结果",body:input.reason},{reviewId:id,email:row.entity_type!=="reply"});
     }else if(row.task==="quality"){

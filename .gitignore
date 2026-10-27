@@ -58,3 +58,7 @@ yarn-error.log*
 
 # OS metadata
 .DS_Store
+
+# Encrypted backups and restored private credential exports
+*.resbackup
+recovery-secrets.original.env

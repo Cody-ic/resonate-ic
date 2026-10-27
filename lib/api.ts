@@ -1,3 +1,4 @@
+import {logApiFailure} from './operation-log';
 import { env } from "cloudflare:workers";
 import { and, desc, eq, or, sql as expression } from "drizzle-orm";
 import { z } from "zod/v3";
@@ -43,8 +44,8 @@ async function throttle(user:string, operation:string, max:number, window=360000
     .bind(key,(bucket+1)*window,max).first();
   must(result,429,"操作太频繁，请稍后再试");
 }
-async function review(entityType:string,entityId:string,ownerId:string,snapshot:string,hash:string,state="queued",result?:unknown) {
-  const entry={id:id(),entityType,entityId,ownerId,snapshot,digest:hash,state,result:result?JSON.stringify(result):null,createdAt:Date.now(),updatedAt:Date.now(),lane:entityType==="revision"?"project":"discussion",task:"publish"};
+async function review(entityType:string,entityId:string,ownerId:string,snapshot:string,hash:string,state="queued",result?:unknown,task="publish",context?:unknown) {
+  const entry={id:id(),entityType,entityId,ownerId,snapshot,digest:hash,state,result:result?JSON.stringify(result):null,createdAt:Date.now(),updatedAt:Date.now(),lane:entityType==="revision"?"project":"discussion",task,context:context?JSON.stringify(context):null};
   await getDb().insert(s.reviews).values(entry);return entry;
 }
 async function ownProject(projectId:string,userId:string) {
@@ -91,7 +92,12 @@ async function entitySnapshot(type:string,entityId:string) {
   }
   const table=type==="topic"?s.topics:s.replies;
   const row=await db.select().from(table).where(eq(table.id,entityId)).get();
-  return row?.status==="published"&&!row.deletedAt&&!row.adminLockAt?{ownerId:row.ownerId,snapshot:JSON.stringify(row),digest:row.digest}:null;
+  if(!row||row.status!=="published"||row.deletedAt||row.adminLockAt)return null;
+  const parent=type==='topic'?row as any:await db.select().from(s.topics).where(eq(s.topics.id,(row as any).topicId)).get();
+  if(!parent||parent.status!=='published'||parent.deletedAt||parent.adminLockAt)return null;
+  const project=parent.projectId?await db.select().from(s.projects).where(eq(s.projects.id,parent.projectId)).get():null;
+  if(!project||!project.publishedId||project.deletedAt||project.adminLockAt)return null;
+  return {ownerId:row.ownerId,snapshot:JSON.stringify(row),digest:row.digest};
 }
 
 export async function api(request:Request) {
@@ -300,6 +306,18 @@ export async function api(request:Request) {
         return json({id:entityId,status:"queued",reviewId:job.id,message:"已提交实时AI审核，通过后公开；结果会通过站内通知反馈"},201);
       }
     }
+    if(root==="reports"&&method==="GET") {
+      must(user,401,"请先登录");
+      const rows=await env.DB!.prepare("SELECT p.id,p.reason,p.created_at,r.state,r.result,r.snapshot,r.entity_type,r.entity_id FROM reports p LEFT JOIN reviews r ON r.id=p.review_id WHERE p.reporter_id=? ORDER BY p.created_at DESC LIMIT 100").bind(user.id).all<any>();
+      return json({items:await Promise.all(rows.results.map(async r=>{
+        const snapshot=JSON.parse(r.snapshot??'{}'),result=JSON.parse(r.result??'{}');
+        let href:string|undefined;
+        if(r.entity_type==='revision'){const p=await env.DB!.prepare("SELECT p.id,p.kind FROM revisions r JOIN projects p ON p.id=r.project_id WHERE r.id=?").bind(r.entity_id).first<any>();if(p)href=`/${p.kind==='course'?'courses':'projects'}/${p.id}`;}
+        else{const t=await env.DB!.prepare(r.entity_type==='topic'?"SELECT id,project_id FROM topics WHERE id=?":"SELECT t.id,t.project_id FROM replies r JOIN topics t ON t.id=r.topic_id WHERE r.id=?").bind(r.entity_id).first<any>();if(t?.project_id)href=`/projects/${t.project_id}#discussion-${t.id}`;}
+        const resolved=['approved','cancelled','superseded'].includes(r.state);
+        return {id:r.id,reason:r.reason,createdAt:r.created_at,title:snapshot.title??snapshot.target?.title??'内容举报',resolved,summary:resolved?result.summary:undefined,href};
+      }))});
+    }
     if(root==="reports"&&method==="POST") {
       must(user,401,"请先登录");await throttle(user.id,"report",10);
       const body=z.object({entityType:z.enum(["revision","topic","reply"]),entityId:z.string().uuid(),reason:z.string().trim().min(2).max(1000)}).parse(await data(request));
@@ -307,15 +325,16 @@ export async function api(request:Request) {
       const existing=await db.select().from(s.reports).where(and(eq(s.reports.reporterId,user.id),eq(s.reports.entityType,body.entityType),eq(s.reports.entityId,body.entityId))).get();
       must(!existing,409,"你已举报过该内容");
       if(body.entityType==="revision"){
-        const job=await review("revision",body.entityId,target.ownerId,target.snapshot,target.digest,"disputed",{summary:"收到工程资料问题反馈，待管理员核对；原公开内容保持可见"});
+        const job=await review("revision",body.entityId,target.ownerId,target.snapshot,target.digest,"disputed",{summary:"收到内容举报，待管理员核对；原公开内容保持可见"},"report",{reportReason:body.reason});
         await db.insert(s.reports).values({id:id(),reporterId:user.id,...body,reviewId:job.id,createdAt:Date.now()});
-        await alertAdmins(`project-report:${job.id}`,"收到项目资料问题反馈",`审核编号：${job.id}。请核对具体举报理由与工程材料。`,job.id);
+        await alertAdmins(`project-report:${job.id}`,"收到项目资料问题反馈",`审核编号：${job.id}。举报说明：${body.reason}。请核对原文及证据。`,job.id);
       }else{
         const prior=await env.DB!.prepare("SELECT id FROM reviews WHERE task='report' AND entity_type=? AND entity_id=? AND digest=? AND state IN ('queued','running','disputed') LIMIT 1").bind(body.entityType,body.entityId,target.digest).first<{id:string}>();
         const job=prior??await enqueueReview(body.entityType,body.entityId,target.ownerId,JSON.stringify({task:"report",target:JSON.parse(target.snapshot),reportReason:body.reason}),target.digest,{task:"report",lane:"discussion"});
         await db.insert(s.reports).values({id:id(),reporterId:user.id,...body,reviewId:job.id,createdAt:Date.now()});
       }
-      return json({message:"举报已提交核验；仅在确认问题且确实需要下架时处理"},201);
+      await notify(user.id,`report-received:${body.entityType}:${body.entityId}:${user.id}`,{title:"举报已受理",body:"你的举报已保存，核验期间内容不会仅因举报而下架。可在“我的举报”查看进度，处理结果会通过站内消息通知。"},{href:"/reports",email:false});
+      return json({message:"举报已受理，可在“我的举报”查看进度；核实后才会处理内容"},201);
     }
     if(root==="reviews"&&method==="POST"&&action==="appeal") {
       must(user,401,"请先登录");await throttle(user.id,"appeal",8);
@@ -371,7 +390,7 @@ export async function api(request:Request) {
   } catch(error) {
     if(error instanceof HTTPError) return json({error:error.message},error.status);
     if(error instanceof z.ZodError) return json({error:"请检查输入",fields:error.flatten()},422);
-    console.error("API failure", error instanceof Error ? error.message : "unknown");
-    return json({error:"服务暂时不可用，请稍后重试"},500);
+    const requestId=logApiFailure(new URL(request.url).pathname.split('/')[2]??'unknown',error);
+    return json({error:"服务暂时不可用，请稍后重试",requestId},500);
   }
 }
