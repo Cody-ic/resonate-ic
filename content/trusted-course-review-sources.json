@@ -1,0 +1,399 @@
+{
+  "c1000000-0000-4000-8000-000000000001:d1000000-0000-4000-8000-000000000001": {
+    "00-start": {
+      "path": "public/course-content/smartwatch/0.2.0/main/00-start.html",
+      "sha256": "df586fcd077ff00ab8965dd85279d2278b8bce60f88afcb208edf00d300f1731",
+      "textSha256": "cb6345a952b3887ce836d9f52a6013a5594285a027ecb0b39729518504bf2862"
+    },
+    "01-gpio": {
+      "path": "public/course-content/smartwatch/0.2.0/main/01-gpio.html",
+      "sha256": "a2b2a4e52445edb8755b4d4bf8d7f472b7bb9db2eda8bf7fed76097dcf0011a5",
+      "textSha256": "2397736fc30f023abbed4ea34105243d465d9ed8154cf92b7d3b3e5dd6f609cf"
+    },
+    "02-uart": {
+      "path": "public/course-content/smartwatch/0.2.0/main/02-uart.html",
+      "sha256": "d58baf1350c87c82bfe49d086eb263a0ae1c99a4ece34b8cc4c40868a6a1d7ba",
+      "textSha256": "06c9f82f23ea94cd9799dd6a5ad9ca1e7f6203c246be5b9bb1a8f96ec4130c3b"
+    },
+    "03-interrupt": {
+      "path": "public/course-content/smartwatch/0.2.0/main/03-interrupt.html",
+      "sha256": "4fb41a21a8ad21d9c3ddd6d67c59cf61252c21d026256b78b2dec490c5009d9e",
+      "textSha256": "ef0abe00d82e4d3447005f520b2b0b8d37c431e046d4b23330c9fd71cdd67aa7"
+    },
+    "05-spi": {
+      "path": "public/course-content/smartwatch/0.2.0/main/05-spi.html",
+      "sha256": "b2577a7108375e9fd0f6e7724bf6903d695f6aecccd82c2cde154b94ae3a457d",
+      "textSha256": "78f78248669c7b3d38d25b053525b3b14971d1d4b14163f556cc41ec755ade06"
+    },
+    "06-i2c": {
+      "path": "public/course-content/smartwatch/0.2.0/main/06-i2c.html",
+      "sha256": "74cdcb490d54cacec07d0bfdf1d0cb74bb73c1b74966dd35c5e689a2278b2ac6",
+      "textSha256": "8642a139fa44f9af2576ff7e465d4365ad091d91811c7acdc286bc6f7aa757f6"
+    },
+    "i2c-lsm6dsox": {
+      "path": "public/course-content/smartwatch/0.2.0/main/i2c/01-lsm6dsox.html",
+      "sha256": "4219040a999014156b216ac90deb0ce3c62e446b1701581fbcacad4ca89dbe70",
+      "textSha256": "10f181955935f85e5533d445b008951fc490cb15408099dee1c071a39955c037"
+    },
+    "i2c-max30102": {
+      "path": "public/course-content/smartwatch/0.2.0/main/i2c/02-max30102.html",
+      "sha256": "5999347626ea87badb9e0c79e0d8783ec97e3f3537cf58130492d9dea5bf6ff1",
+      "textSha256": "9f226bba611ff9eb3bee6cf622833fc37b8db106ae524581dbc8ac1ff3a5bce2"
+    },
+    "i2c-sampling": {
+      "path": "public/course-content/smartwatch/0.2.0/main/i2c/03-sampling.html",
+      "sha256": "7a624575e8499b3f0e9557f779e5798bd0a51445cd0717e6242ae544a39d55d6",
+      "textSha256": "481bd7cb0f5b6e7d769534c1d24ff6421191daaa355780a3ac23bad14f751542"
+    },
+    "i2c-mlc": {
+      "path": "public/course-content/smartwatch/0.2.0/main/i2c/04-mlc.html",
+      "sha256": "d9302f8d210c242134fbda86bb8a5d4e38000f6e025e7ff3497dbc1551ed8a6e",
+      "textSha256": "01f5b07ac35dfa0c66c21b370814dca2092e5907b4cc6f47f3334f5711bc992d"
+    },
+    "09-adc-dac": {
+      "path": "public/course-content/smartwatch/0.2.0/main/09-adc-dac.html",
+      "sha256": "3879da20020a6ebfdc907c215f3b77042c7aca29a96013784589be9ea6f7d631",
+      "textSha256": "bf487c50c54d39e7549a9db019b6f00f7a6ad678cd5294a91f639abb0af3cc7b"
+    },
+    "adc-microphone": {
+      "path": "public/course-content/smartwatch/0.2.0/main/adc/01-microphone.html",
+      "sha256": "b8b170ee2443adcd71eebd0a23e5234f566dcf43d3b7776f7851324378144487",
+      "textSha256": "dedf1ac1a1cb9e4c2479efc21b13d52612301bd8c8cea4c35e8279fe70cc6249"
+    },
+    "13-wireless": {
+      "path": "public/course-content/smartwatch/0.2.0/main/13-wireless.html",
+      "sha256": "67d000ba5943fddb30a36f844a5e08afd28f06fef17cb89dbe69729fb30ef815",
+      "textSha256": "8bd4768040d54c5088c1e053f030a62f95c2d8d677d0d2e26fdb43649250f72e"
+    },
+    "04-protocol": {
+      "path": "public/course-content/smartwatch/0.2.0/main/04-protocol.html",
+      "sha256": "ed0935f860db7aaaed0f9e85fba83f59141c58f1a0b410986b36d2e46a0bfc6b",
+      "textSha256": "b6960817c27e46134f2f26adda3f4bafdf0f4ef4e84c0e72f7d7a62e5f822903"
+    },
+    "wireless-project": {
+      "path": "public/course-content/smartwatch/0.2.0/main/wireless/02-project.html",
+      "sha256": "d8ed7c4811d8df0dd5b17952b2b5d2c998b86304b0bd04d379ed0117eb726f5b",
+      "textSha256": "b2c939faac79a524dd153deb5acb87e4c9966d63a5b68bc34ca0fb8755110ae8"
+    },
+    "10-dma": {
+      "path": "public/course-content/smartwatch/0.2.0/main/10-dma.html",
+      "sha256": "a1b02e92ab82693353ed1d5dd9ffa204fd1d9563540c71de8e7336984446fbaf",
+      "textSha256": "264793ff5976c6c7159928ee1e638efd003fbed152c24c35329c109fc9720976"
+    },
+    "07-clock": {
+      "path": "public/course-content/smartwatch/0.2.0/main/07-clock.html",
+      "sha256": "291adedb46b439693d530a401e137884f876e33445e06b1bb67d3ae793ae6746",
+      "textSha256": "c4d311d48fc98dd9efabbff1d2ee86b3ca4426d78a5d53438a1a9d829fee6590"
+    },
+    "08-timer-pwm": {
+      "path": "public/course-content/smartwatch/0.2.0/main/08-timer-pwm.html",
+      "sha256": "6189ed5165e15cd1ca8e4b0397505df9c8da9801b378ee08b1e4c35eab18ef65",
+      "textSha256": "84aa2fc7450d49cb5d927ec77d500ccc41cf2e6cd35ab2935423218d93fe89db"
+    },
+    "11-system": {
+      "path": "public/course-content/smartwatch/0.2.0/main/11-system.html",
+      "sha256": "113487a7e5f7bcdfa5cc72b72e1fe1058f65fe55514eb30978214e1166b5e9fa",
+      "textSha256": "f4495e64fcc630a741067fd2fe90387989d2c7b189d43880f74e02893082cca4"
+    },
+    "12-baremetal": {
+      "path": "public/course-content/smartwatch/0.2.0/main/12-baremetal.html",
+      "sha256": "0e0b1722131df24dd1621c9382bd670c7ed5303e91915564e9e38a10c244a802",
+      "textSha256": "86218cfab36b3ca7f09b9df581ecc3911b8a2042637e929f70d8cfc2e9a01e22"
+    },
+    "rtos-foundations": {
+      "path": "public/course-content/smartwatch/0.2.0/main/freertos/00-foundations.html",
+      "sha256": "d5953f8a679dcbb10c21c9c531df0f099e8fe94a407f6ffc455eb4be3a833371",
+      "textSha256": "ddd8172d25e2f523d7d979642bfe5a5e278f00bd45a20d65dbce1af72c2991a3"
+    },
+    "14-freertos": {
+      "path": "public/course-content/smartwatch/0.2.0/main/14-freertos.html",
+      "sha256": "5c5b8dd376b69f680ff483fd08f5a2af319fa870e7fbf4bcb536e5ee95db2c48",
+      "textSha256": "718615cdfaf60ea7d01ff9cb23d32a38ce9e5be643d6c97cb3d542b68e66694b"
+    },
+    "rtos-scheduling": {
+      "path": "public/course-content/smartwatch/0.2.0/main/freertos/02-scheduling.html",
+      "sha256": "8b820cf4b41ca99f0b869e7fba99bc54b3edf654fff6ce62797f0a352a5d9eea",
+      "textSha256": "d59e5d7f8d2680a3c09ff2dd51bab6fb9427abf04a9d4c4592b28f475e98bc61"
+    },
+    "rtos-semaphore": {
+      "path": "public/course-content/smartwatch/0.2.0/main/freertos/03-semaphore.html",
+      "sha256": "7a55aea1018da08dd9914524a9223741b9a3de779046fcef046b4699830f66fb",
+      "textSha256": "7415cc0594234e9953ea0796d7029c4d33d0108bb237f70c382c5133a3ec2464"
+    },
+    "15-sync": {
+      "path": "public/course-content/smartwatch/0.2.0/main/15-sync.html",
+      "sha256": "c3a57768917cc9dc33f984ed0fd283290d41096c8df9e6d282378ba67ca7590c",
+      "textSha256": "53d192271810939144ec13e85406863533c76fda13bacc05e256767f09f66c5b"
+    },
+    "rtos-resources": {
+      "path": "public/course-content/smartwatch/0.2.0/main/freertos/05-resources.html",
+      "sha256": "655658a677afc5cdd2cadd9f1a7c7ba13e9494e5d6b539738494dd0227deaa90",
+      "textSha256": "ca52bd9b154787963a2556e8f7afd6c8d01131b1dd648d9b53ef702dafeeb06a"
+    },
+    "rtos-audio": {
+      "path": "public/course-content/smartwatch/0.2.0/main/freertos/06-audio.html",
+      "sha256": "ce57c5580394c221d407acdaba383ec7e3f89a75aec654a5d1396efc537aa276",
+      "textSha256": "b4a44938b7124beac9a024721c1d4371813f547d8fe651d84f150e6fa1bb281f"
+    },
+    "rtos-memory": {
+      "path": "public/course-content/smartwatch/0.2.0/main/freertos/07-memory.html",
+      "sha256": "b1178df075d91469bf2e8e032fa62710f6f08e0b405389de2a211f44d1a638cf",
+      "textSha256": "16d50c41b1ae4bdde096fc21b20f59a072cd8d977cb19f1515c34f67e8e0afca"
+    },
+    "rtos-project": {
+      "path": "public/course-content/smartwatch/0.2.0/main/freertos/08-project.html",
+      "sha256": "0e19a24668485957e1c9c6737c0eea8ede7b2b980cab31937e4efd493142dbb7",
+      "textSha256": "3d689d044fbfe363fefbb7bfe931cde1ff44b99f5d0e3e490c9e13ac46a7978a"
+    },
+    "05-display": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/lvgl/01-display.html",
+      "sha256": "9bec300173712052add22c2ff84e59fe36e9286c028287e98aed6a813508e339",
+      "textSha256": "0043f6eb37a3aba6199a436de2b0eb2d1206968665124c57c7cc3eb721eba834"
+    },
+    "lvgl-port": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/lvgl/02-port.html",
+      "sha256": "d427d7ee4aa0fab7c7fb624a0790a2d2efc2f56b871730efd5395b2c46fa3537",
+      "textSha256": "333a17d944cea04f994892cf742dc277e1109cfa44723460a6ee710b98298ab7"
+    },
+    "lvgl-widgets": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/lvgl/03-widgets.html",
+      "sha256": "3ee679d103dd3f9f755e06d6ff84c6eb49b4196dec0aacad8b7575eccc5e8538",
+      "textSha256": "fbd4169131a266b7b0b49c4ee68c60478f40424fa086314e940091d0db78311d"
+    },
+    "lvgl-layout": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/lvgl/04-layout.html",
+      "sha256": "5dda18bb2cc0f391792bacd507675234d621528a2bad0326c599e8a7c4105b62",
+      "textSha256": "f059272e580d2018371abc2deb8ea262f386dff344b5e68c071f9bb82b079e9e"
+    },
+    "lvgl-events": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/lvgl/05-events.html",
+      "sha256": "c262fa4bdc1092088a6a3ffc2b4d088bf64910e14a6acf557ad35c89f6a7d98a",
+      "textSha256": "a98372b7d79534d74d4f03e426acdd29ad27d3e4a98bc430c2a478a8f8f65645"
+    },
+    "lvgl-data": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/lvgl/06-data.html",
+      "sha256": "ac72684c4b60deda2ae333328bd9f9704f1c25b82517b36bcda4f26b9af76137",
+      "textSha256": "b10c7fd9db5667e47d8530e1f6f07a1500fb8e2196c8334e12accd38a882cb9f"
+    },
+    "lvgl-performance": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/lvgl/07-performance.html",
+      "sha256": "addd175e96166bcd97bf6a222f5abc441b24f6f88b6d80a5e04178c045e9b28c",
+      "textSha256": "5dc0df79d79b1d6667f8aaf9f564eace3ba4d9ec64e2489aad22750c9b658ce2"
+    },
+    "ch582m-00-platform": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/ch582m/00-platform.html",
+      "sha256": "4c068635e6645296b04216d7707dbb4c9e65e134761e07617d43fbfb93a8b2c5",
+      "textSha256": "ebf511a43d0bef731e1f49d466f8adbf1c3ad11de6ea00a22a067e32c87ee093"
+    },
+    "ch582m-01-project": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/ch582m/01-project.html",
+      "sha256": "e53c6501378a1840fd185c77eb12844484c7e66bd7d8b592325fa84ed90a1ab3",
+      "textSha256": "40043f710f67dd1303cc6ef51959cc65a7ffa78831308c2d32585636c4cbda02"
+    },
+    "ch582m-02-uart": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/ch582m/02-uart.html",
+      "sha256": "94619dc480e8aa7367c0a543032350d2ad82d8937e032c62bcfa1837e651f070",
+      "textSha256": "7e3579e160984e53a14d55336a9c74b6233839a454ad3609e02216203cebb78c"
+    },
+    "ch582m-03-events": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/ch582m/03-events.html",
+      "sha256": "a7a061b76fbd87d500ee3348a4adc185949812a2567af8a3eaa366ad91bb704c",
+      "textSha256": "31ddd622ae1a503ad12c534b0dc85ce2d935e7afc9831123cc551b0090a4c6a6"
+    },
+    "ch582m-04-gatt": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/ch582m/04-gatt.html",
+      "sha256": "57565490758bbb6134079dab00e0d9e96613a39ce05de88694808de4b4463327",
+      "textSha256": "dbed5abc179915451abb35977988c51a888093723f1abc493ff568ae91e9bff9"
+    },
+    "ch582m-05-phone-to-watch": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/ch582m/05-phone-to-watch.html",
+      "sha256": "9ea90cc73206908a57d303e92618ab364b41e97c3ae89bab4f7edb4e928b44ef",
+      "textSha256": "499038fe8cd22e89a633dd10c3f0d5fcaf7989b1801660c2b13451de358d51b6"
+    },
+    "ch582m-06-watch-to-phone": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/ch582m/06-watch-to-phone.html",
+      "sha256": "e3a1a81c4eb17707d497b74655129856b6e0c759eab79b46d0457f14ded4b569",
+      "textSha256": "e22da4a85636d6316ac4bf5d73d332422af1ff7973baaa225189c4386866fc06"
+    },
+    "ch582m-07-integration": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/ch582m/07-integration.html",
+      "sha256": "a87362781535ba7fd58331bb6d5773bb64a4c684f904f4b666e938ed960fa9c4",
+      "textSha256": "b772bd36dea435ceef60afd77ef27cb42bae705cacd3aefca134579e637e43b3"
+    },
+    "flutter-00-environment": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/flutter/00-environment.html",
+      "sha256": "2653ac8463787a9c5ec4e798f440cf6afbf0657cab93448207c4ad3ac6a50caa",
+      "textSha256": "baca29ec7558bec8371fd523dd091714ea7db356379a572f9702bf31fc4a611b"
+    },
+    "flutter-01-dart": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/flutter/01-dart.html",
+      "sha256": "296dd8bc7a2c6ad982dfdbc4186383546f6fa5d6d6f36d2862958c5bd988ea8f",
+      "textSha256": "991bc565c9be64d1a6e681b3dff64dea9b100764dc3d2ca4a7540213e497eb5f"
+    },
+    "flutter-02-page": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/flutter/02-page.html",
+      "sha256": "3c4077d4a86965b5d0609e0dc516959a78b3e628ea7c342e7cd8bdb027a18598",
+      "textSha256": "47f5c0cb6985b4e1d089ac96d00611e36bf3d758547c7a146804e3a4bdebf29d"
+    },
+    "flutter-03-state": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/flutter/03-state.html",
+      "sha256": "aee32af333aa2966744e6933623aeae69d6e3fcac6875f1be5874c8972dc4843",
+      "textSha256": "d08840bc9bc2a6f95f21b93a94c7db6e7e7050b853c7aceb68d9530381353731"
+    },
+    "flutter-04-async": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/flutter/04-async.html",
+      "sha256": "0847bef8212e4ef67e22074754039f8388f7791d317cfe57a000d0aac36774d1",
+      "textSha256": "b1b2dca62f3f08a7d6d2e27d93aa43a63c95350c0f53bb5f2a640e33f57f749b"
+    },
+    "flutter-05-protocol": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/flutter/05-protocol.html",
+      "sha256": "178ddda44033ec1d927fe8b98e7f0b1c40cac997deff48adc96177436729c9a1",
+      "textSha256": "60d68027dede365c6d9774ac26d2e9128b16dc7a2706ac4df202f6b271913d95"
+    },
+    "flutter-06-bluetooth": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/flutter/06-bluetooth.html",
+      "sha256": "c796fdb229116cbba2cec440b55f1e339dd29f33d618a1508ba1aa66cee51bca",
+      "textSha256": "3c7af4479f6a6e9db9fd38cf7813bb3f1484f33a323efff7a1b0d4850da96503"
+    },
+    "flutter-07-control": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/flutter/07-control.html",
+      "sha256": "852c38ed6e9082df56432e2fb7c9f7db34759cd55272c38733ab7f3172f5c5fd",
+      "textSha256": "911cb09fdb6bb3db13765ad62fa04c20f0ca5f5e6a8650a2909154fa647a960f"
+    },
+    "flutter-08-project": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/flutter/08-project.html",
+      "sha256": "493fed7e4d99c9f4bb911a90839031f97412f3bc1db741693e49523b0863815d",
+      "textSha256": "62ffb6bccd0c845abf4a09de01ce009e4c342ce0e345b2a00263ed6216f69e7a"
+    },
+    "flutter-09-alert": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/flutter/09-alert.html",
+      "sha256": "52354ae3226c68b675c8ee3c4d10454fcd68c9be084daee2745313a5e1ed4df7",
+      "textSha256": "1c3d77e8cf373f4056a17b7b005c63d7cb5a9d0e8d9e094008204b13d0e10e55"
+    },
+    "ai-00-python": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/ai/00-python.html",
+      "sha256": "74993cb343315b6d458daa29e8e7e8f2628487a861bd43617deba3a4a1a64534",
+      "textSha256": "5c90143ad331a09701f3701dd0f361c4cb79effb83270088c3660fb0677cada3"
+    },
+    "ai-01-problem": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/ai/01-problem.html",
+      "sha256": "3c216991b87796bd37a29bd13743b7368c7f388e181f9f39b9e1888035f61297",
+      "textSha256": "b40d2b6852fa0cec8379fc77a66d0f36b46699f3c57c38f5bc4d3ef38c71a1fe"
+    },
+    "ai-02-data": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/ai/02-data.html",
+      "sha256": "6ffffaf4e7b22242e0b13fea1d0ef08fad48d6851a4851f7c8bf78a220de97d0",
+      "textSha256": "cda0d407b7f1bfb2546d6b00a3a4df8deaef6edb18ff4ff4ea2b0360e22804e6"
+    },
+    "ai-03-windows": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/ai/03-windows.html",
+      "sha256": "eedb078772faefa5415651d4de6b682f0e2daf17e72f310975679fe9c0cf2063",
+      "textSha256": "7a08d67ab7ca277a6052d54246181368c0cca8f643c6af06f483de8b2c9f7dd9"
+    },
+    "ai-04-learning": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/ai/04-learning.html",
+      "sha256": "1b85efb7ddbe76c411d81f22288d77058aa8a99b8c6725266016c896781294eb",
+      "textSha256": "4910a08f92d98405cc181b9e512e8a6398877f2b8bd7f7fe7b5d875769ab8a8e"
+    },
+    "ai-05-training": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/ai/05-training.html",
+      "sha256": "ab4254b868bb8cb04cf7efd2a5ec8fe505530a85ed9c5fdbc4a893a467e730a1",
+      "textSha256": "e7cf137aec7068b11b569e6e63023a0066cd7f2edda69a9d81cf03b24782b546"
+    },
+    "ai-06-convolution": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/ai/06-convolution.html",
+      "sha256": "aa7fcf4ffbda53e4ca9d33de77d0a73051e34887fd0c53811624700f80bd5936",
+      "textSha256": "01ca3b7c90cbbf7ec88d69bd2730ef09e347ba9562cc3e80cf84c39018e19d55"
+    },
+    "ai-07-evaluation": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/ai/07-evaluation.html",
+      "sha256": "ef710069a0c6fe4b3ea7dbeafde9565f1c5aae973b8dad142741e3a157897cf5",
+      "textSha256": "1c79f94be99abbefd105f633d284d2f8a855951d60dac748b4049117af112cbf"
+    },
+    "ai-08-deployment": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/ai/08-deployment.html",
+      "sha256": "394f568abd0d76cab451c97905729b9066125b103dc75f6e1559af38e4f01e90",
+      "textSha256": "88919a1d38a885db42e74a887ea4222aac41dbff2af7c24a03f6260b70dff8bf"
+    },
+    "ai-09-watch": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/ai/09-watch.html",
+      "sha256": "0557f714fc1533c05c1fe2b19b7307e4f31adbcf42bc513375cfd8f2cad2f408",
+      "textSha256": "721d56ba179a3340c426af5affd0bcb6bd10acaa41e352f7d1f88d140ff91da0"
+    },
+    "ai-10-keyword": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/ai/10-keyword.html",
+      "sha256": "bdc4c96961b0fa202d32a218119909c9b2db3d2cd2412a0e14d7d78c2efc3c04",
+      "textSha256": "ec4c864f5bd95ab23161c895df7f2e274e295e56971d1142c5df7ba40f960457"
+    },
+    "ai-11-sleep": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/ai/11-sleep.html",
+      "sha256": "afb459d83e2767f09bf6f4caec2250869b7e49724992a0e400d456bdf5ba4f5c",
+      "textSha256": "2dee332d256fb6f67a98e4245ae90c9d027158e1d02f993bc1c865d67022570b"
+    },
+    "proto-01-adaptation": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/proto/01-adaptation.html",
+      "sha256": "ad8015ce3cfb9143a3c219f264e2f73366259df064127793cbed6170874e39da",
+      "textSha256": "bd21df9d160251b5e5ae31251b9cd93d9ecdc7ffb71ae9e1e9761bd987b983db"
+    },
+    "proto-02-centers": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/proto/02-centers.html",
+      "sha256": "105e63413589af5ebc68e63824ac0d1ab8c102d8308e56a6cff5d8f3221fc46a",
+      "textSha256": "7ffd878cad438082474352bb2c6ae035c52504729d58f9c9fc1e50066ae498a3"
+    },
+    "proto-03-similarity": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/proto/03-similarity.html",
+      "sha256": "9b1ea1e9b0f25bd951d178e235ab78d79de19093bdd59499cadcf18ca38dab03",
+      "textSha256": "2a568319213766d4fbc08eab015fc97888e55359c69678a9bfa204bf6d9d4f46"
+    },
+    "proto-04-session": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/proto/04-session.html",
+      "sha256": "335a1a7672eeeb26bb33e42bd71403214088abbb6fc51e006dd33c70d7ef209d",
+      "textSha256": "ca37ba8be4e0929c60a18cf07fc83110a18430be16ee73af3b401a8556c3012c"
+    },
+    "proto-05-evaluation": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/proto/05-evaluation.html",
+      "sha256": "ec35997f3ca9146ff814ba1cc925e45e3ae9ee555c5b9ac9cfbaec7460da3d92",
+      "textSha256": "5454820109ce3744b455a4ef90cb861315d858e3fde8f5d527fd61b82b9e8e07"
+    },
+    "proto-06-backup": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/proto/06-backup.html",
+      "sha256": "a2ce3c794a448ad0684ce24e6bc0fba25bb5ac3fee87094408700315cc2dc659",
+      "textSha256": "d2f9d73e08e80840489449083008c1937e723f8bc47ccb4f8d53de72660cf7c1"
+    },
+    "proto-07-project": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/proto/07-project.html",
+      "sha256": "2c580af77cb10a25b7283634618ac95cc02bec72fa4a2375078833f455c73378",
+      "textSha256": "5b451e1632299d8831be1f51072615d8e7d86c39ad799aa177414585eff87c74"
+    },
+    "ota-01-startup": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/ota/01-startup.html",
+      "sha256": "23ffad45384d4d1f2e5a241da29864ef30d919b6e0f4a748db414859a38c9b8c",
+      "textSha256": "39f407494881dd360cf73834629b258836cdc3cbf81574edc5441267264e1690"
+    },
+    "ota-02-image": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/ota/02-image.html",
+      "sha256": "627a586f68e555123bb3486332976d5855c357246c256cd487716a9c8e5a2509",
+      "textSha256": "62279fd7327c38d8761960f07797f3064f7e3fd26a9420c17d0d3ad1b64d9a37"
+    },
+    "ota-03-staging": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/ota/03-staging.html",
+      "sha256": "e8637216dc0d739e477cc9652ca47b1607fb9f054f90a9cd51c41233a38c2800",
+      "textSha256": "18b14c9b213c05d428e1c32cf41853b75c33a52efe1bb47127029634297b9b1f"
+    },
+    "ota-04-trial": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/ota/04-trial.html",
+      "sha256": "5bf28e762e3c45271931eef1f93f1a5ff24dc0d0e840997f106af7fc1bfe5b51",
+      "textSha256": "63ca7b9d10f1ec588ae6e4a59451e69da546f1ec73597f1d43a24bc3258395c2"
+    },
+    "ota-05-wireless": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/ota/05-wireless.html",
+      "sha256": "e39fd18ee9b3f9c46e40832f7433ccec9c793d8089c30adfa2869b18ca6eac97",
+      "textSha256": "51fc49eff459bdb5c3b2db9412d4849b9df679e44340599f1304ab9f98e4c749"
+    },
+    "ota-06-validation": {
+      "path": "public/course-content/smartwatch/0.2.0/branches/ota/06-validation.html",
+      "sha256": "4529431a78cc2e253af9a9474a9c5c14e057e44ca9d88a70760bb22ce1d3c53b",
+      "textSha256": "e7ceceecc09984ef37c0e8cb21f62e1088cf45734e9a71284ceb3b7dff23704f"
+    }
+  }
+}

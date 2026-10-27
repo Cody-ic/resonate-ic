@@ -1,0 +1,2 @@
+import {Cpu,Layers3,Wrench} from 'lucide-react';
+export default function ResourceGuide(){return <section className="resource-guide"><div><div className="eyebrow">REUSABLE BUILDING BLOCKS</div><h1>开发资源：项目里可以直接拿来用的部分。</h1><p>收录可独立使用的组件、模块和工具，并写清接口、依赖与用法。完整应用和参赛作品放在「项目广场」，系统教程放在「课程学习」。</p></div><div className="resource-guide-grid">{[[Cpu,'驱动与组件','传感器驱动、通信协议、算法模块、FPGA IP'],[Layers3,'硬件模块','电源、转接板、接口板等可复用设计'],[Wrench,'开发与验证工具','串口工具、数据采集、标定程序、测试脚本']].map(([Icon,title,text]:any)=><article key={title}><Icon size={20}/><h3>{title}</h3><p>{text}</p></article>)}</div></section>;}

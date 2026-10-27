@@ -1,0 +1,13 @@
+'use client';
+import {verificationSteps} from '../lib/resource-verification';
+type Declaration={steps:string[];scope:string;unverified:string;evidence:string};
+const empty:Declaration={steps:[],scope:'',unverified:'',evidence:''};
+export function VerificationFields({value,onChange}:{value?:Declaration|null;onChange:(value:Declaration)=>void}){
+  const current=value??empty;
+  return <section className="resource-verification"><h3>当前版本的核验范围</h3><p>如实标明已做和未做的步骤。尚未实测也可以提交；这些是作者声明，不代表平台认证。</p><fieldset><legend>已完成的步骤（可多选，必填）</legend><div className="verification-steps">{Object.entries(verificationSteps).map(([key,label])=><label key={key}><input type="checkbox" checked={current.steps.includes(key)} required={key==='none'&&!current.steps.length} onChange={e=>onChange({...current,steps:key==='none'?(e.target.checked?['none']:[]):e.target.checked?[...current.steps.filter(s=>s!=='none'),key]:current.steps.filter(s=>s!==key)})}/>{label}</label>)}</div></fieldset><label>核验对象、环境与适用范围（必填）<textarea required minLength={10} maxLength={2000} value={current.scope} onChange={e=>onChange({...current,scope:e.target.value})} placeholder="例如：本版本只核对了3.3V供电和接口连接；尚未打样。" rows={3}/></label><label>尚未核验的部分（必填）<textarea required minLength={2} maxLength={2000} value={current.unverified} onChange={e=>onChange({...current,unverified:e.target.value})} placeholder="例如：负载、温升和长期运行尚未实测。" rows={2}/></label><label>核验依据（选填）<textarea maxLength={4000} value={current.evidence} onChange={e=>onChange({...current,evidence:e.target.value})} placeholder="可说明检测结果及对应附件文件名，也可以留空。" rows={2}/></label></section>;
+}
+export function ResourceVerification({project}:{project:Record<string,any>}){
+  if(project.kind!=='resource')return null;
+  const declaration=project.verification,review=project.resourceReview;
+  return <section className="resource-verification"><h2>核验范围 · {project.version}</h2><h3>作者声明</h3>{declaration?<><div className="verification-labels">{declaration.steps.map((s:keyof typeof verificationSteps)=><span className="tag" key={s}>{verificationSteps[s]}</span>)}</div><p className="prewrap">{declaration.scope}</p><p className="prewrap">尚未核验：{declaration.unverified}</p>{declaration.evidence&&<p className="prewrap">作者提供的依据：{declaration.evidence}</p>}</>:<p>此版本尚未填写结构化核验声明。</p>}<h3>本次 AI 检查</h3>{review?<><p className="prewrap">{review.checkedScope}</p>{review.inspection&&<p>实际读取 {review.inspection.filesRead} / {review.inspection.filesTotal} 个文件或原生记录分段，其中 {review.inspection.filesFullyRead} 个完整读取。</p>}<ul>{review.limitations.map((text:string,i:number)=><li key={i}>{text}</li>)}</ul><p>仅表示在上述检查范围内未发现证据充分的阻断问题，不代表整板或全部功能已获可靠性认证。</p></>:<p>此版本尚无已完成的 AI 检查范围记录。</p>}</section>;
+}

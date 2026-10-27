@@ -1,0 +1,83 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1792906181596,
+      "tag": "0000_boring_avengers",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1792917970360,
+      "tag": "0001_cuddly_dreadnoughts",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1792919150210,
+      "tag": "0002_elite_anthem",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1792940178914,
+      "tag": "0003_review_workflows",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1792941720000,
+      "tag": "0004_feedback_delivery",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1792943654158,
+      "tag": "0005_budget_currency",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1792952061516,
+      "tag": "0006_featured_material_batches",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "6",
+      "when": 1793012974205,
+      "tag": "0007_careful_thunderbolt",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "6",
+      "when": 1793013753635,
+      "tag": "0008_aromatic_silhouette",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "6",
+      "when": 1793037097157,
+      "tag": "0009_resource_offers",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "6",
+      "when": 1793088106689,
+      "tag": "0010_mail_delivery",
+      "breakpoints": true
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+'use client';
+type Item=Record<string,any>;
+export function notificationMailText(item:Item,enabled:boolean,mode?:string){
+  if(item.email_enabled===0)return '仅站内通知';
+  const states:Record<string,string>={accepted:'邮件已提交发送；是否收到请检查邮箱',sent:'邮件已提交发送；是否收到请检查邮箱',sending:'邮件正在提交',failed:'邮件发送失败，站内通知仍可查看',uncertain:'邮件提交结果待核对，站内通知仍可查看',expired:'邮件已过期'};
+  if(states[item.email_state])return states[item.email_state];
+  if(item.email_state==='queued')return !enabled?'站内通知已可查看 · 邮件暂停发送':mode==='test'?'站内通知已可查看 · 邮件仅限指定收件人联调':'站内通知已可查看 · 邮件排队中';
+  return enabled?'站内通知已可查看':'站内通知已可查看 · 邮件服务未启用';
+}
+export function MailOperations({data,busy,dispatch,retry}:{data:Item|null;busy:boolean;dispatch:()=>void;retry:(id:string)=>void}){
+  const health=data?.mailHealth;
+  return <section><h2>邮件投递</h2><p>{!health?.configured?'邮箱授权尚未完成，当前仅站内通知可用。':health.mode==='off'?'授权配置已提供，邮件发送已暂停；登录规则未自动改变。':health.mode==='test'?`联调模式：只向指定的 ${health.testRecipientCount} 个邮箱发送，其他邮件继续排队。`:'正式发送模式已开启。'}</p>{health?.configured&&<p>邮箱验证后登录：{health.verificationRequired?'已要求，现有账号可在登录页补验证':'尚未要求，现有登录方式保持可用'}。授权状态：{({not_checked:'待联调',unknown:'待验证',active:'可用',retry_wait:'等待重试',auth_required:'需重新授权'} as Item)[health.authState]??health.authState}。</p>}{health?.error&&<p role="alert" className="control-error">{health.error}</p>}<button className="button outline" disabled={busy||!health?.enabled} onClick={dispatch}>处理可发送邮件</button><p className="muted">“已提交发送”表示邮件服务已接受请求，不代表收件人已收到。结果不确定的邮件不会自动重发。</p>{data?.mail.map((mail:Item)=><article className="mail-row" key={mail.id}><strong>{mail.subject}</strong><span>{({queued:health?.enabled?'待发送':'暂停发送',failed:'发送失败',uncertain:'结果待核对',sending:'发送中',expired:'已过期',accepted:'已提交发送',sent:'已提交发送'} as Item)[mail.state]??mail.state}</span>{mail.error&&<small>{mail.error}</small>}{mail.next_attempt_at>Date.now()&&mail.state==='queued'&&<small>预计重试：{new Date(mail.next_attempt_at).toLocaleString('zh-CN')}</small>}{['failed','uncertain'].includes(mail.state)&&<button className="text-button" disabled={busy} onClick={()=>{if(confirm('请核对发件箱及收件情况。仅在确认没有发送成功后重试，是否已确认？'))retry(mail.id);}}>确认未投递后重试</button>}</article>)}</section>;
+}

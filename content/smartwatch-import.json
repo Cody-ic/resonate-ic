@@ -1,0 +1,2747 @@
+{
+  "courseId": "c1000000-0000-4000-8000-000000000001",
+  "revisionId": "d1000000-0000-4000-8000-000000000001",
+  "projectId": "a1000000-0000-4000-8000-000000000002",
+  "version": "0.2.0",
+  "basePath": "/course-content/smartwatch/0.2.0",
+  "sourceDigest": "5f28f99c2456603dbe2f653960d7cee23196f561de1f30f65e73dd4e62ba34f3",
+  "lessonPaths": {
+    "00-start": "main/00-start.html",
+    "01-gpio": "main/01-gpio.html",
+    "02-uart": "main/02-uart.html",
+    "03-interrupt": "main/03-interrupt.html",
+    "05-spi": "main/05-spi.html",
+    "06-i2c": "main/06-i2c.html",
+    "i2c-lsm6dsox": "main/i2c/01-lsm6dsox.html",
+    "i2c-max30102": "main/i2c/02-max30102.html",
+    "i2c-sampling": "main/i2c/03-sampling.html",
+    "i2c-mlc": "main/i2c/04-mlc.html",
+    "09-adc-dac": "main/09-adc-dac.html",
+    "adc-microphone": "main/adc/01-microphone.html",
+    "13-wireless": "main/13-wireless.html",
+    "04-protocol": "main/04-protocol.html",
+    "wireless-project": "main/wireless/02-project.html",
+    "10-dma": "main/10-dma.html",
+    "07-clock": "main/07-clock.html",
+    "08-timer-pwm": "main/08-timer-pwm.html",
+    "11-system": "main/11-system.html",
+    "12-baremetal": "main/12-baremetal.html",
+    "rtos-foundations": "main/freertos/00-foundations.html",
+    "14-freertos": "main/14-freertos.html",
+    "rtos-scheduling": "main/freertos/02-scheduling.html",
+    "rtos-semaphore": "main/freertos/03-semaphore.html",
+    "15-sync": "main/15-sync.html",
+    "rtos-resources": "main/freertos/05-resources.html",
+    "rtos-audio": "main/freertos/06-audio.html",
+    "rtos-memory": "main/freertos/07-memory.html",
+    "rtos-project": "main/freertos/08-project.html",
+    "05-display": "branches/lvgl/01-display.html",
+    "lvgl-port": "branches/lvgl/02-port.html",
+    "lvgl-widgets": "branches/lvgl/03-widgets.html",
+    "lvgl-layout": "branches/lvgl/04-layout.html",
+    "lvgl-events": "branches/lvgl/05-events.html",
+    "lvgl-data": "branches/lvgl/06-data.html",
+    "lvgl-performance": "branches/lvgl/07-performance.html",
+    "ch582m-00-platform": "branches/ch582m/00-platform.html",
+    "ch582m-01-project": "branches/ch582m/01-project.html",
+    "ch582m-02-uart": "branches/ch582m/02-uart.html",
+    "ch582m-03-events": "branches/ch582m/03-events.html",
+    "ch582m-04-gatt": "branches/ch582m/04-gatt.html",
+    "ch582m-05-phone-to-watch": "branches/ch582m/05-phone-to-watch.html",
+    "ch582m-06-watch-to-phone": "branches/ch582m/06-watch-to-phone.html",
+    "ch582m-07-integration": "branches/ch582m/07-integration.html",
+    "flutter-00-environment": "branches/flutter/00-environment.html",
+    "flutter-01-dart": "branches/flutter/01-dart.html",
+    "flutter-02-page": "branches/flutter/02-page.html",
+    "flutter-03-state": "branches/flutter/03-state.html",
+    "flutter-04-async": "branches/flutter/04-async.html",
+    "flutter-05-protocol": "branches/flutter/05-protocol.html",
+    "flutter-06-bluetooth": "branches/flutter/06-bluetooth.html",
+    "flutter-07-control": "branches/flutter/07-control.html",
+    "flutter-08-project": "branches/flutter/08-project.html",
+    "flutter-09-alert": "branches/flutter/09-alert.html",
+    "ai-00-python": "branches/ai/00-python.html",
+    "ai-01-problem": "branches/ai/01-problem.html",
+    "ai-02-data": "branches/ai/02-data.html",
+    "ai-03-windows": "branches/ai/03-windows.html",
+    "ai-04-learning": "branches/ai/04-learning.html",
+    "ai-05-training": "branches/ai/05-training.html",
+    "ai-06-convolution": "branches/ai/06-convolution.html",
+    "ai-07-evaluation": "branches/ai/07-evaluation.html",
+    "ai-08-deployment": "branches/ai/08-deployment.html",
+    "ai-09-watch": "branches/ai/09-watch.html",
+    "ai-10-keyword": "branches/ai/10-keyword.html",
+    "ai-11-sleep": "branches/ai/11-sleep.html",
+    "proto-01-adaptation": "branches/proto/01-adaptation.html",
+    "proto-02-centers": "branches/proto/02-centers.html",
+    "proto-03-similarity": "branches/proto/03-similarity.html",
+    "proto-04-session": "branches/proto/04-session.html",
+    "proto-05-evaluation": "branches/proto/05-evaluation.html",
+    "proto-06-backup": "branches/proto/06-backup.html",
+    "proto-07-project": "branches/proto/07-project.html",
+    "ota-01-startup": "branches/ota/01-startup.html",
+    "ota-02-image": "branches/ota/02-image.html",
+    "ota-03-staging": "branches/ota/03-staging.html",
+    "ota-04-trial": "branches/ota/04-trial.html",
+    "ota-05-wireless": "branches/ota/05-wireless.html",
+    "ota-06-validation": "branches/ota/06-validation.html"
+  },
+  "files": [
+    {
+      "path": "assets/book.css",
+      "sourceSha256": "8cfbbdb17920894adf0b93c1ed89988dc9b5d36fd43661a7fe75146e4f84a3f1",
+      "servedSha256": "8cfbbdb17920894adf0b93c1ed89988dc9b5d36fd43661a7fe75146e4f84a3f1",
+      "bytes": 9291
+    },
+    {
+      "path": "assets/book.js",
+      "sourceSha256": "132fb6a85f706b8738bdf48ff2a6f4d75a2daa339ccbae6dc161cca3743227a5",
+      "servedSha256": "132fb6a85f706b8738bdf48ff2a6f4d75a2daa339ccbae6dc161cca3743227a5",
+      "bytes": 9185
+    },
+    {
+      "path": "assets/branch-course.css",
+      "sourceSha256": "ac2662e6b2a78ff7023ac14669e21e8dfcc03a104866b4193ca557653f95bf5c",
+      "servedSha256": "ac2662e6b2a78ff7023ac14669e21e8dfcc03a104866b4193ca557653f95bf5c",
+      "bytes": 639
+    },
+    {
+      "path": "assets/branch-labs.js",
+      "sourceSha256": "f87ffe7e6217e8cb3f61b4f7be1c5428b4bb220d7edf902ef86668f8f45beefc",
+      "servedSha256": "f87ffe7e6217e8cb3f61b4f7be1c5428b4bb220d7edf902ef86668f8f45beefc",
+      "bytes": 2308
+    },
+    {
+      "path": "assets/display-lesson.css",
+      "sourceSha256": "310350510b55c0f4db1dc7e6a00df95c6d1a0743e171cba1c8f7f8ed33d46775",
+      "servedSha256": "310350510b55c0f4db1dc7e6a00df95c6d1a0743e171cba1c8f7f8ed33d46775",
+      "bytes": 658
+    },
+    {
+      "path": "assets/display-lesson.js",
+      "sourceSha256": "fbb45cf55cfd60f71c61bc5977f2bb33a8168d13d20c972c26f1825e996e1546",
+      "servedSha256": "fbb45cf55cfd60f71c61bc5977f2bb33a8168d13d20c972c26f1825e996e1546",
+      "bytes": 2511
+    },
+    {
+      "path": "assets/figures/00-start-1.svg",
+      "sourceSha256": "695a95ad2a6c11f4a97cf8a3b413be59fd06b5f1e996b4e71b6a8561370d6a3a",
+      "servedSha256": "695a95ad2a6c11f4a97cf8a3b413be59fd06b5f1e996b4e71b6a8561370d6a3a",
+      "bytes": 1244
+    },
+    {
+      "path": "assets/figures/01-gpio-1.svg",
+      "sourceSha256": "eeb391d24806d2868d5dc9ae208a9564564cefc4ecd3bb310240275a20f5bed9",
+      "servedSha256": "eeb391d24806d2868d5dc9ae208a9564564cefc4ecd3bb310240275a20f5bed9",
+      "bytes": 1295
+    },
+    {
+      "path": "assets/figures/01-gpio-2.svg",
+      "sourceSha256": "2488afef9aa941f805aef11bb2ad728a50c4fe411d8eb7d5f1b0dc52796d6814",
+      "servedSha256": "2488afef9aa941f805aef11bb2ad728a50c4fe411d8eb7d5f1b0dc52796d6814",
+      "bytes": 986
+    },
+    {
+      "path": "assets/figures/05-spi-1.svg",
+      "sourceSha256": "8a983ca4054b4b81afdd26c399b2d22fabbb25d6c3873a27e147432a1dac6f93",
+      "servedSha256": "8a983ca4054b4b81afdd26c399b2d22fabbb25d6c3873a27e147432a1dac6f93",
+      "bytes": 1393
+    },
+    {
+      "path": "assets/figures/05-spi-2.svg",
+      "sourceSha256": "83a0a917b1ce68e0d53e2457865beb4a627f993d9e88995a8722fb831dd9eafc",
+      "servedSha256": "83a0a917b1ce68e0d53e2457865beb4a627f993d9e88995a8722fb831dd9eafc",
+      "bytes": 1591
+    },
+    {
+      "path": "assets/figures/06-i2c-1.svg",
+      "sourceSha256": "e800ab48de6b22e339ef0bbf5b9a1bd126fb890e32a364e296a9f89e511e1419",
+      "servedSha256": "e800ab48de6b22e339ef0bbf5b9a1bd126fb890e32a364e296a9f89e511e1419",
+      "bytes": 785
+    },
+    {
+      "path": "assets/figures/07-clock-1.svg",
+      "sourceSha256": "b9a10da858badf89782dea6c3f3dfa6d0d3d353174e80b01b2b641ec84311984",
+      "servedSha256": "b9a10da858badf89782dea6c3f3dfa6d0d3d353174e80b01b2b641ec84311984",
+      "bytes": 1579
+    },
+    {
+      "path": "assets/figures/08-timer-pwm-1.svg",
+      "sourceSha256": "55ca557efa5bb42771c6275444ea6c4eadf21e8b6f01596029ef61b807849de8",
+      "servedSha256": "55ca557efa5bb42771c6275444ea6c4eadf21e8b6f01596029ef61b807849de8",
+      "bytes": 1266
+    },
+    {
+      "path": "assets/figures/09-adc-dac-1.svg",
+      "sourceSha256": "3b362addcc171e1057bce6b8d67494f8eb5a9341caee03020576354515763d69",
+      "servedSha256": "3b362addcc171e1057bce6b8d67494f8eb5a9341caee03020576354515763d69",
+      "bytes": 666
+    },
+    {
+      "path": "assets/figures/11-system-1.svg",
+      "sourceSha256": "881f35e6733e6bbbc5397817e447db472a09e36959a0b560fd6ad54902e7e593",
+      "servedSha256": "881f35e6733e6bbbc5397817e447db472a09e36959a0b560fd6ad54902e7e593",
+      "bytes": 1303
+    },
+    {
+      "path": "assets/figures/12-baremetal-1.svg",
+      "sourceSha256": "22c0d857448cfba4dc2988d02a1e845ccbf0fb1f7d8295ded9d312cce0f55cea",
+      "servedSha256": "22c0d857448cfba4dc2988d02a1e845ccbf0fb1f7d8295ded9d312cce0f55cea",
+      "bytes": 1277
+    },
+    {
+      "path": "assets/figures/14-freertos-1.svg",
+      "sourceSha256": "258c14b082b7962befbae1913a0853bbb8685fd89084d759d3bc2bca7a0176c3",
+      "servedSha256": "258c14b082b7962befbae1913a0853bbb8685fd89084d759d3bc2bca7a0176c3",
+      "bytes": 1631
+    },
+    {
+      "path": "assets/figures/14-freertos-2.svg",
+      "sourceSha256": "a17b8990b1d175a28ec4a720e072e77e12a70bbb3cfbc58054cb011e9e721980",
+      "servedSha256": "a17b8990b1d175a28ec4a720e072e77e12a70bbb3cfbc58054cb011e9e721980",
+      "bytes": 1761
+    },
+    {
+      "path": "assets/figures/ai-st-1.svg",
+      "sourceSha256": "e91458f874f9a42df6f9068e5abab0a9e607b96c53c34565c0ea2f19f19cacd6",
+      "servedSha256": "e91458f874f9a42df6f9068e5abab0a9e607b96c53c34565c0ea2f19f19cacd6",
+      "bytes": 1624
+    },
+    {
+      "path": "assets/figures/branch-ai-learning.svg",
+      "sourceSha256": "33c24148dfbdc6094db744cfeef93817ea7d635fcc95f95d1a1994e1acd9242a",
+      "servedSha256": "33c24148dfbdc6094db744cfeef93817ea7d635fcc95f95d1a1994e1acd9242a",
+      "bytes": 1418
+    },
+    {
+      "path": "assets/figures/branch-app-receive.svg",
+      "sourceSha256": "7f02c09bff5493a1aea675d979ca54a9ad101537c1d1338a4d1e6683e746dced",
+      "servedSha256": "7f02c09bff5493a1aea675d979ca54a9ad101537c1d1338a4d1e6683e746dced",
+      "bytes": 1420
+    },
+    {
+      "path": "assets/figures/branch-audio-spectrum.svg",
+      "sourceSha256": "c6aaf0747f8986f1335103df16a7e9c17fa554aec2eec5d62033a2b40fa79b73",
+      "servedSha256": "c6aaf0747f8986f1335103df16a7e9c17fa554aec2eec5d62033a2b40fa79b73",
+      "bytes": 66903
+    },
+    {
+      "path": "assets/figures/branch-boot-path.svg",
+      "sourceSha256": "d3c6a139b806f32aa80d9c3ad5fd22ad7c036c37da446b1b3196a56752c8f14b",
+      "servedSha256": "d3c6a139b806f32aa80d9c3ad5fd22ad7c036c37da446b1b3196a56752c8f14b",
+      "bytes": 1828
+    },
+    {
+      "path": "assets/figures/branch-byte-stream.svg",
+      "sourceSha256": "84e34cdea3ba39347ba4c97e7b9a6b31c79032cbdb5d15fd3487ee31092e4e91",
+      "servedSha256": "84e34cdea3ba39347ba4c97e7b9a6b31c79032cbdb5d15fd3487ee31092e4e91",
+      "bytes": 1362
+    },
+    {
+      "path": "assets/figures/branch-ch-downlink.svg",
+      "sourceSha256": "fdcf18a482f0b6a0c8579ea6907b44cab33ac2416f60b6fe8670639313720ccb",
+      "servedSha256": "fdcf18a482f0b6a0c8579ea6907b44cab33ac2416f60b6fe8670639313720ccb",
+      "bytes": 1809
+    },
+    {
+      "path": "assets/figures/branch-ch-system.svg",
+      "sourceSha256": "7360343cbab9cd117b7b623c67c55146d7d909225ab012faba724b557f6bb5ba",
+      "servedSha256": "7360343cbab9cd117b7b623c67c55146d7d909225ab012faba724b557f6bb5ba",
+      "bytes": 1395
+    },
+    {
+      "path": "assets/figures/branch-ch-uplink.svg",
+      "sourceSha256": "4be376e7a16159ad41af3215b0f6d5eb84bdc959b3921dd557dcb7dd0cf0c983",
+      "servedSha256": "4be376e7a16159ad41af3215b0f6d5eb84bdc959b3921dd557dcb7dd0cf0c983",
+      "bytes": 1810
+    },
+    {
+      "path": "assets/figures/branch-connect.svg",
+      "sourceSha256": "860bb26fc3ad2af272cbe5e227b1743d5d78f55fa845dc83ab2557a029d39bc1",
+      "servedSha256": "860bb26fc3ad2af272cbe5e227b1743d5d78f55fa845dc83ab2557a029d39bc1",
+      "bytes": 1732
+    },
+    {
+      "path": "assets/figures/branch-data-split.svg",
+      "sourceSha256": "bf20b3325526e7966aac15fc5926b293073575acc7e8f52a5ea2e8d828fe45dd",
+      "servedSha256": "bf20b3325526e7966aac15fc5926b293073575acc7e8f52a5ea2e8d828fe45dd",
+      "bytes": 1424
+    },
+    {
+      "path": "assets/figures/branch-feature-head.svg",
+      "sourceSha256": "418740e828278fc173528afbd474aba9aacbda2f217c63b51e0a4f4cc32a9a8a",
+      "servedSha256": "418740e828278fc173528afbd474aba9aacbda2f217c63b51e0a4f4cc32a9a8a",
+      "bytes": 1423
+    },
+    {
+      "path": "assets/figures/branch-har-project.svg",
+      "sourceSha256": "421f2a5988d0ff4017e60b84c22ebb1ba473cd75242fb6ae832aa317bb5d40c0",
+      "servedSha256": "421f2a5988d0ff4017e60b84c22ebb1ba473cd75242fb6ae832aa317bb5d40c0",
+      "bytes": 1802
+    },
+    {
+      "path": "assets/figures/branch-learning-loss.svg",
+      "sourceSha256": "e5c0aa8767b581458df1507d8392ac63f243fe5cef9d2cd1a920112e54ab5b0d",
+      "servedSha256": "e5c0aa8767b581458df1507d8392ac63f243fe5cef9d2cd1a920112e54ab5b0d",
+      "bytes": 44893
+    },
+    {
+      "path": "assets/figures/branch-ota-phone.svg",
+      "sourceSha256": "0f2b9a4a02534d06d47b7121c8a297fda17b2b5a11badc9528fa3442b5201344",
+      "servedSha256": "0f2b9a4a02534d06d47b7121c8a297fda17b2b5a11badc9528fa3442b5201344",
+      "bytes": 1779
+    },
+    {
+      "path": "assets/figures/branch-ota-staging.svg",
+      "sourceSha256": "63ace769d19d3fd137d5886461cfaf835690579a40fa765ee36b7b8707bcdc2c",
+      "servedSha256": "63ace769d19d3fd137d5886461cfaf835690579a40fa765ee36b7b8707bcdc2c",
+      "bytes": 1762
+    },
+    {
+      "path": "assets/figures/branch-phone-path.svg",
+      "sourceSha256": "6eb15fb35838b3948b098bdcf18e4d4093b4f656280570c0732395056a075dfc",
+      "servedSha256": "6eb15fb35838b3948b098bdcf18e4d4093b4f656280570c0732395056a075dfc",
+      "bytes": 1392
+    },
+    {
+      "path": "assets/figures/branch-prototype-commit.svg",
+      "sourceSha256": "eb2ffe846852e3ad8173371d1e64e5fe114b5ade107374c80fee32b6209021c3",
+      "servedSha256": "eb2ffe846852e3ad8173371d1e64e5fe114b5ade107374c80fee32b6209021c3",
+      "bytes": 1741
+    },
+    {
+      "path": "assets/figures/branch-session-update.svg",
+      "sourceSha256": "bdfb84f7ac429af8dde2c369ef23d0f8df95ce049fa3223292b16ceb3d47e7bb",
+      "servedSha256": "bdfb84f7ac429af8dde2c369ef23d0f8df95ce049fa3223292b16ceb3d47e7bb",
+      "bytes": 1750
+    },
+    {
+      "path": "assets/figures/branch-state-cycle.svg",
+      "sourceSha256": "0ec03121bfa6e71c40e693a35166875952016bb5274035c06f2132d5356f50bb",
+      "servedSha256": "0ec03121bfa6e71c40e693a35166875952016bb5274035c06f2132d5356f50bb",
+      "bytes": 1421
+    },
+    {
+      "path": "assets/figures/branch-widget-tree.svg",
+      "sourceSha256": "b4b49d4f7bf42262f203891ee9dddcdff9167a7e2271c68a80c52c4378f6384b",
+      "servedSha256": "b4b49d4f7bf42262f203891ee9dddcdff9167a7e2271c68a80c52c4378f6384b",
+      "bytes": 1367
+    },
+    {
+      "path": "assets/figures/display-address-grid.svg",
+      "sourceSha256": "c010d0cce89c657ff1fb165dd5f442afc271873f8b50f377475d6bd3d764a139",
+      "servedSha256": "c010d0cce89c657ff1fb165dd5f442afc271873f8b50f377475d6bd3d764a139",
+      "bytes": 1870
+    },
+    {
+      "path": "assets/figures/display-command-path.svg",
+      "sourceSha256": "dfb5b45f75628b028c07e7e5193e7b434a244b5580aeac5703a4abd5c4cd2a48",
+      "servedSha256": "dfb5b45f75628b028c07e7e5193e7b434a244b5580aeac5703a4abd5c4cd2a48",
+      "bytes": 1856
+    },
+    {
+      "path": "assets/figures/display-initialization.svg",
+      "sourceSha256": "0b792918bdc89b06beb949413664c1bddf8e794f3b26947efd9107df9ef71c91",
+      "servedSha256": "0b792918bdc89b06beb949413664c1bddf8e794f3b26947efd9107df9ef71c91",
+      "bytes": 2310
+    },
+    {
+      "path": "assets/figures/display-lvgl-path.svg",
+      "sourceSha256": "8814965c1e572f8266e6baacd686bc9feb3ec3daff4d4f54816423f86078618d",
+      "servedSha256": "8814965c1e572f8266e6baacd686bc9feb3ec3daff4d4f54816423f86078618d",
+      "bytes": 2310
+    },
+    {
+      "path": "assets/figures/flutter-1.svg",
+      "sourceSha256": "9490fa3ae8168f80f2455c93997c452f1b8ffed31defcf161a6be5940ccd1008",
+      "servedSha256": "9490fa3ae8168f80f2455c93997c452f1b8ffed31defcf161a6be5940ccd1008",
+      "bytes": 1295
+    },
+    {
+      "path": "assets/figures/i2c-ack-steps.svg",
+      "sourceSha256": "afe105fbaf7ec3c5ad2ddce077ccff221027f1c10787cd93ee7ee221f449c998",
+      "servedSha256": "afe105fbaf7ec3c5ad2ddce077ccff221027f1c10787cd93ee7ee221f449c998",
+      "bytes": 5354
+    },
+    {
+      "path": "assets/figures/i2c-bit-rules.svg",
+      "sourceSha256": "8193d59f2a7a7efee88e01f6284aee1a71c5fa82af9d77de5b237526a430356a",
+      "servedSha256": "8193d59f2a7a7efee88e01f6284aee1a71c5fa82af9d77de5b237526a430356a",
+      "bytes": 2285
+    },
+    {
+      "path": "assets/figures/i2c-driver-layers.svg",
+      "sourceSha256": "b8a5145b8775838986c589df73af20a1378e0bbf8f25841dc3831f5f26fe7d95",
+      "servedSha256": "b8a5145b8775838986c589df73af20a1378e0bbf8f25841dc3831f5f26fe7d95",
+      "bytes": 1580
+    },
+    {
+      "path": "assets/figures/i2c-open-drain.svg",
+      "sourceSha256": "6764a7b2b7901dd3f678e189321771cec28f0c569fe30f2b1ed8388a25d31091",
+      "servedSha256": "6764a7b2b7901dd3f678e189321771cec28f0c569fe30f2b1ed8388a25d31091",
+      "bytes": 2078
+    },
+    {
+      "path": "assets/figures/i2c-register-read.svg",
+      "sourceSha256": "a6b07b6c25059d98217a78bbf664d62c4fe3268874ce0e94a50839cbdcf30942",
+      "servedSha256": "a6b07b6c25059d98217a78bbf664d62c4fe3268874ce0e94a50839cbdcf30942",
+      "bytes": 4438
+    },
+    {
+      "path": "assets/figures/i2c-sample-bytes.svg",
+      "sourceSha256": "acd6c18937d7cedb920b84275989d2165c6159e1b20960ca6132190d30a95a7c",
+      "servedSha256": "acd6c18937d7cedb920b84275989d2165c6159e1b20960ca6132190d30a95a7c",
+      "bytes": 3652
+    },
+    {
+      "path": "assets/figures/i2c-shared-bus.svg",
+      "sourceSha256": "63fbdfdf97a5a2a6a735584f2bb267847f2b6290b001d703e0375d90262ae530",
+      "servedSha256": "63fbdfdf97a5a2a6a735584f2bb267847f2b6290b001d703e0375d90262ae530",
+      "bytes": 2303
+    },
+    {
+      "path": "assets/figures/i2c-start-stop-steps.svg",
+      "sourceSha256": "2226183f99c6dbe7ff4ab14d36fc0f8d12b6a7209568c8f36d4028dde71289ff",
+      "servedSha256": "2226183f99c6dbe7ff4ab14d36fc0f8d12b6a7209568c8f36d4028dde71289ff",
+      "bytes": 5100
+    },
+    {
+      "path": "assets/figures/irq-button-edges.svg",
+      "sourceSha256": "1c3efd6c0fc6610781b103d96f32d2b443988152fb556071482b31fcf645d1b3",
+      "servedSha256": "1c3efd6c0fc6610781b103d96f32d2b443988152fb556071482b31fcf645d1b3",
+      "bytes": 1070
+    },
+    {
+      "path": "assets/figures/irq-delay-deadlock.svg",
+      "sourceSha256": "f951e501c531651f7f668b3bc5b1097c1356f630aebd877fab984503ebb134df",
+      "servedSha256": "f951e501c531651f7f668b3bc5b1097c1356f630aebd877fab984503ebb134df",
+      "bytes": 1819
+    },
+    {
+      "path": "assets/figures/irq-exti-nvic.svg",
+      "sourceSha256": "9e4f3a72253ddc481447dfb61d3e0899f5547d1644d4d66b59d5c09e32ebce95",
+      "servedSha256": "9e4f3a72253ddc481447dfb61d3e0899f5547d1644d4d66b59d5c09e32ebce95",
+      "bytes": 2082
+    },
+    {
+      "path": "assets/figures/irq-handler-callback.svg",
+      "sourceSha256": "bac0b16d6445e6084a18c4dfbf77c842afe192f6e722ff38df3fff5d761ef783",
+      "servedSha256": "bac0b16d6445e6084a18c4dfbf77c842afe192f6e722ff38df3fff5d761ef783",
+      "bytes": 1791
+    },
+    {
+      "path": "assets/figures/irq-polling-vs-interrupt.svg",
+      "sourceSha256": "74d238c883d05e8373f96cdd33293d87e3a7e917ae57b45a3c02cb4a6612df00",
+      "servedSha256": "74d238c883d05e8373f96cdd33293d87e3a7e917ae57b45a3c02cb4a6612df00",
+      "bytes": 1637
+    },
+    {
+      "path": "assets/figures/irq-priority-nesting.svg",
+      "sourceSha256": "5e83293f02a8b8efe6a7ceab6a73ffaa0a8ff26445374cf55e00fe38d9ce2cc2",
+      "servedSha256": "5e83293f02a8b8efe6a7ceab6a73ffaa0a8ff26445374cf55e00fe38d9ce2cc2",
+      "bytes": 1149
+    },
+    {
+      "path": "assets/figures/irq-project-tick.svg",
+      "sourceSha256": "89bd0f2aa62a6548172eab6292f2f3e386efd1d33d14c85d331f320da5ee5a0f",
+      "servedSha256": "89bd0f2aa62a6548172eab6292f2f3e386efd1d33d14c85d331f320da5ee5a0f",
+      "bytes": 1689
+    },
+    {
+      "path": "assets/figures/irq-uart-mailbox.svg",
+      "sourceSha256": "3c70123827e4401b5e8cc2b076050520d486122ebe3551c2ea0cb420fde9676e",
+      "servedSha256": "3c70123827e4401b5e8cc2b076050520d486122ebe3551c2ea0cb420fde9676e",
+      "bytes": 1711
+    },
+    {
+      "path": "assets/figures/irq-vector-table.svg",
+      "sourceSha256": "58c9d6777eecef4dc7af7e2ea941bde95123797fd2442c271f6087f1b4824fa9",
+      "servedSha256": "58c9d6777eecef4dc7af7e2ea941bde95123797fd2442c271f6087f1b4824fa9",
+      "bytes": 1969
+    },
+    {
+      "path": "assets/figures/lvgl-data-state.svg",
+      "sourceSha256": "e312bc6273ea0f7b79d0c3370df6af60807f10633bad505258dfe48b54f8c17c",
+      "servedSha256": "e312bc6273ea0f7b79d0c3370df6af60807f10633bad505258dfe48b54f8c17c",
+      "bytes": 1792
+    },
+    {
+      "path": "assets/figures/lvgl-event-route.svg",
+      "sourceSha256": "45c7f7f8cbc4558d0a3acbc5859c7b850758c9b15ae823f0a974910e22cc4fed",
+      "servedSha256": "45c7f7f8cbc4558d0a3acbc5859c7b850758c9b15ae823f0a974910e22cc4fed",
+      "bytes": 1752
+    },
+    {
+      "path": "assets/figures/lvgl-layout-layers.svg",
+      "sourceSha256": "e364e8e86df298ed721f37f8256f4526b8cfe501da562f096f9b7e4226f69e28",
+      "servedSha256": "e364e8e86df298ed721f37f8256f4526b8cfe501da562f096f9b7e4226f69e28",
+      "bytes": 1744
+    },
+    {
+      "path": "assets/figures/lvgl-object-tree.svg",
+      "sourceSha256": "593da2a98f9a9468b354ac716bd02f0f9ad7ef0d1d1de65e00a26f1847ed4dcf",
+      "servedSha256": "593da2a98f9a9468b354ac716bd02f0f9ad7ef0d1d1de65e00a26f1847ed4dcf",
+      "bytes": 1765
+    },
+    {
+      "path": "assets/figures/lvgl-port-bridge.svg",
+      "sourceSha256": "bb47e48f736d53a2e29a51c2b19d8402560c4a089c77c6a5c749067891597641",
+      "servedSha256": "bb47e48f736d53a2e29a51c2b19d8402560c4a089c77c6a5c749067891597641",
+      "bytes": 1741
+    },
+    {
+      "path": "assets/figures/lvgl-refresh-timeline.svg",
+      "sourceSha256": "f9f71be85d2680fc52e57beeba0d1dd278c4a1bf209075477793940cfc054f7b",
+      "servedSha256": "f9f71be85d2680fc52e57beeba0d1dd278c4a1bf209075477793940cfc054f7b",
+      "bytes": 1821
+    },
+    {
+      "path": "assets/figures/map-1.svg",
+      "sourceSha256": "dee6b0953d7a4d2f69ed309093d5826512bd6460b35eabc1b2fb08e8a68b4464",
+      "servedSha256": "dee6b0953d7a4d2f69ed309093d5826512bd6460b35eabc1b2fb08e8a68b4464",
+      "bytes": 1622
+    },
+    {
+      "path": "assets/figures/mlc-bank-read.svg",
+      "sourceSha256": "773336a73d413c886e6bdd957e60021512afba973cfa9e6b0d0719808a68713f",
+      "servedSha256": "773336a73d413c886e6bdd957e60021512afba973cfa9e6b0d0719808a68713f",
+      "bytes": 3836
+    },
+    {
+      "path": "assets/figures/mlc-training-deployment.svg",
+      "sourceSha256": "20f7f772af2a04e35414262a063109cee0b18d95338a9fd52fc8ebd18e5c716c",
+      "servedSha256": "20f7f772af2a04e35414262a063109cee0b18d95338a9fd52fc8ebd18e5c716c",
+      "bytes": 4780
+    },
+    {
+      "path": "assets/figures/oled-arrow-packing.svg",
+      "sourceSha256": "32a8852f2d2f5ebaabe45758233b2ee84d9f7445a6653313e83e6ff4831c539a",
+      "servedSha256": "32a8852f2d2f5ebaabe45758233b2ee84d9f7445a6653313e83e6ff4831c539a",
+      "bytes": 6706
+    },
+    {
+      "path": "assets/figures/oled-arrow8.bmp",
+      "sourceSha256": "0168270ccb2085843af07700957d3f691b3594f79c67724ae2aa96d4ee2dddcc",
+      "servedSha256": "0168270ccb2085843af07700957d3f691b3594f79c67724ae2aa96d4ee2dddcc",
+      "bytes": 94
+    },
+    {
+      "path": "assets/figures/oled-buffer-flush.svg",
+      "sourceSha256": "58e6c34e8243bdc2210a4c276d9def708710cd8622957ad8d34389ec6faf2efb",
+      "servedSha256": "58e6c34e8243bdc2210a4c276d9def708710cd8622957ad8d34389ec6faf2efb",
+      "bytes": 1170
+    },
+    {
+      "path": "assets/figures/proto-1.svg",
+      "sourceSha256": "bb8672efde3a4574e15d7980ff09a3d72071d385d1183d94c23fe3f0650ad90e",
+      "servedSha256": "bb8672efde3a4574e15d7980ff09a3d72071d385d1183d94c23fe3f0650ad90e",
+      "bytes": 1619
+    },
+    {
+      "path": "assets/figures/rtos-audio-owners.svg",
+      "sourceSha256": "24655ab0af58c43ed3343915b1f3278636c97be1cb8061e04f08354f4678ef72",
+      "servedSha256": "24655ab0af58c43ed3343915b1f3278636c97be1cb8061e04f08354f4678ef72",
+      "bytes": 1918
+    },
+    {
+      "path": "assets/figures/rtos-context.svg",
+      "sourceSha256": "624022f91cba39f81f00b261599e5bc8f096ed36ec130675248663aee5b8317c",
+      "servedSha256": "624022f91cba39f81f00b261599e5bc8f096ed36ec130675248663aee5b8317c",
+      "bytes": 1424
+    },
+    {
+      "path": "assets/figures/rtos-foundations-flow.svg",
+      "sourceSha256": "e84d6794733fc6453b1e93f215aede99ba1eb0f40eefc956d5dfee535d3da817",
+      "servedSha256": "e84d6794733fc6453b1e93f215aede99ba1eb0f40eefc956d5dfee535d3da817",
+      "bytes": 1506
+    },
+    {
+      "path": "assets/figures/rtos-memory.svg",
+      "sourceSha256": "c1da7b60454d8d0299eef9d3602c3135bf6296d42dd2acd8d38157e9bd3d4eae",
+      "servedSha256": "c1da7b60454d8d0299eef9d3602c3135bf6296d42dd2acd8d38157e9bd3d4eae",
+      "bytes": 1562
+    },
+    {
+      "path": "assets/figures/rtos-queue.svg",
+      "sourceSha256": "e0df311dd735cafe7e777abef05d833e7789edf5926ce2b138cb8e6e8ad753fb",
+      "servedSha256": "e0df311dd735cafe7e777abef05d833e7789edf5926ce2b138cb8e6e8ad753fb",
+      "bytes": 1469
+    },
+    {
+      "path": "assets/figures/rtos-resource-interleave.svg",
+      "sourceSha256": "f4630ab969c7239e81808744b2a270989774dbd8fe90393255294006e3d9252b",
+      "servedSha256": "f4630ab969c7239e81808744b2a270989774dbd8fe90393255294006e3d9252b",
+      "bytes": 1450
+    },
+    {
+      "path": "assets/figures/rtos-semaphore.svg",
+      "sourceSha256": "6e96bd0d31ecd8179a02ab20722406a459334dc0778605860ab038b8a7a0fdc9",
+      "servedSha256": "6e96bd0d31ecd8179a02ab20722406a459334dc0778605860ab038b8a7a0fdc9",
+      "bytes": 1515
+    },
+    {
+      "path": "assets/figures/rtos-startup.svg",
+      "sourceSha256": "90616b790cae4bdd180f7c508d1758f7002a2affba7944df00c7607e8e00deb2",
+      "servedSha256": "90616b790cae4bdd180f7c508d1758f7002a2affba7944df00c7607e8e00deb2",
+      "bytes": 1877
+    },
+    {
+      "path": "assets/figures/sampling-watermark-irq.svg",
+      "sourceSha256": "08f29d16c30fd385d58a4cdf71566265cb0e7f21aa0479f135a4bad96edfc18f",
+      "servedSha256": "08f29d16c30fd385d58a4cdf71566265cb0e7f21aa0479f135a4bad96edfc18f",
+      "bytes": 6013
+    },
+    {
+      "path": "assets/figures/spi-display-sequence.svg",
+      "sourceSha256": "9fc2d26f63a5684d63d73928ff88dca4d2133c6651190c6f65b86d4fcf290e17",
+      "servedSha256": "9fc2d26f63a5684d63d73928ff88dca4d2133c6651190c6f65b86d4fcf290e17",
+      "bytes": 1902
+    },
+    {
+      "path": "assets/figures/spi-dma-helper.svg",
+      "sourceSha256": "9db7ae6d02ca261d217ac4f33d0a243b2acd9c246a651cfe478545d7f0f8d7d5",
+      "servedSha256": "9db7ae6d02ca261d217ac4f33d0a243b2acd9c246a651cfe478545d7f0f8d7d5",
+      "bytes": 1880
+    },
+    {
+      "path": "assets/figures/spi-duplex.svg",
+      "sourceSha256": "e7f939288f2aabec3d8b185160b2653c0e6502ee7d068d014495bcaba3709316",
+      "servedSha256": "e7f939288f2aabec3d8b185160b2653c0e6502ee7d068d014495bcaba3709316",
+      "bytes": 1498
+    },
+    {
+      "path": "assets/figures/spi-first-second-edge.svg",
+      "sourceSha256": "a4e3dad837bf2220d04d4f38d73dd030ece90e9e21518cc6a0412d49c6349607",
+      "servedSha256": "a4e3dad837bf2220d04d4f38d73dd030ece90e9e21518cc6a0412d49c6349607",
+      "bytes": 938
+    },
+    {
+      "path": "assets/figures/spi-multiple-slaves.svg",
+      "sourceSha256": "b9a10909193df82a638bb8c92940a69a5c8774459d317fee8a5b7424c1b16abc",
+      "servedSha256": "b9a10909193df82a638bb8c92940a69a5c8774459d317fee8a5b7424c1b16abc",
+      "bytes": 1424
+    },
+    {
+      "path": "assets/figures/spi-read-then-change.svg",
+      "sourceSha256": "b3d50e110a298305c4141f69ffb02fd96bbc9f6625d8bec1ccd8a7636dfcacd4",
+      "servedSha256": "b3d50e110a298305c4141f69ffb02fd96bbc9f6625d8bec1ccd8a7636dfcacd4",
+      "bytes": 1272
+    },
+    {
+      "path": "assets/figures/spi-why-clock.svg",
+      "sourceSha256": "76e7c0bb574f99f58b8e5e9a0e2dfe2c807658ac391ab9f55b55f828230365f8",
+      "servedSha256": "76e7c0bb574f99f58b8e5e9a0e2dfe2c807658ac391ab9f55b55f828230365f8",
+      "bytes": 1484
+    },
+    {
+      "path": "assets/figures/start-board-chip.svg",
+      "sourceSha256": "8f33262c3acbc4d586d93a6e12f0d619320f9a64fa5595a5d84ef4023e1e2d7e",
+      "servedSha256": "8f33262c3acbc4d586d93a6e12f0d619320f9a64fa5595a5d84ef4023e1e2d7e",
+      "bytes": 1383
+    },
+    {
+      "path": "assets/figures/start-build-run.svg",
+      "sourceSha256": "739a5deaf2724d667977206b91966e07f19044daff37c587d321d71e0f4527b1",
+      "servedSha256": "739a5deaf2724d667977206b91966e07f19044daff37c587d321d71e0f4527b1",
+      "bytes": 1803
+    },
+    {
+      "path": "assets/figures/start-code-pin.svg",
+      "sourceSha256": "c9d47a6fa156a3c2dfb93c7404138fb973b0c4cb0a806b0688d013502fd60c85",
+      "servedSha256": "c9d47a6fa156a3c2dfb93c7404138fb973b0c4cb0a806b0688d013502fd60c85",
+      "bytes": 1455
+    },
+    {
+      "path": "assets/figures/uart-blocking-loop.svg",
+      "sourceSha256": "c1ad87984fea0621b6efef273ddc9d41c0482e9ccd710fbdc331935d54b1a992",
+      "servedSha256": "c1ad87984fea0621b6efef273ddc9d41c0482e9ccd710fbdc331935d54b1a992",
+      "bytes": 1711
+    },
+    {
+      "path": "assets/figures/uart-byte-boundaries.svg",
+      "sourceSha256": "26517530ec938e6db6ebd741e91a5b652a099b83caebbdd25a325ac65e586fb2",
+      "servedSha256": "26517530ec938e6db6ebd741e91a5b652a099b83caebbdd25a325ac65e586fb2",
+      "bytes": 1679
+    },
+    {
+      "path": "assets/figures/uart-cross-wires.svg",
+      "sourceSha256": "bff1727abfaee905d298e16e5bab6abcdfc847c63534a5b550a6500ae6b7df2f",
+      "servedSha256": "bff1727abfaee905d298e16e5bab6abcdfc847c63534a5b550a6500ae6b7df2f",
+      "bytes": 2076
+    },
+    {
+      "path": "assets/figures/uart-equal-high.svg",
+      "sourceSha256": "788b6f527c2b994a46aa2315bb92ae9667b6995486efa37e54df3d5d37737c12",
+      "servedSha256": "788b6f527c2b994a46aa2315bb92ae9667b6995486efa37e54df3d5d37737c12",
+      "bytes": 1470
+    },
+    {
+      "path": "assets/figures/uart-meaning.svg",
+      "sourceSha256": "e2a39e040e81965719584f9927aa727d892a2bea930a4fc536325b518e590882",
+      "servedSha256": "e2a39e040e81965719584f9927aa727d892a2bea930a4fc536325b518e590882",
+      "bytes": 2072
+    },
+    {
+      "path": "assets/figures/uart-to-pc.svg",
+      "sourceSha256": "2fbda60a322b9facdc168a48a371adac874316fd71446c1e8c74639486721b06",
+      "servedSha256": "2fbda60a322b9facdc168a48a371adac874316fd71446c1e8c74639486721b06",
+      "bytes": 1719
+    },
+    {
+      "path": "assets/gpio-lesson.css",
+      "sourceSha256": "3b2ad3bf1bec6c6e68db0d723aa057bc928787220993cd79df81b3855eb68e7a",
+      "servedSha256": "3b2ad3bf1bec6c6e68db0d723aa057bc928787220993cd79df81b3855eb68e7a",
+      "bytes": 1464
+    },
+    {
+      "path": "assets/gpio-lesson.js",
+      "sourceSha256": "403d407c469924fdbddb3f2cbc37dc70b329682312bb935d9ed41d7cda36dab8",
+      "servedSha256": "403d407c469924fdbddb3f2cbc37dc70b329682312bb935d9ed41d7cda36dab8",
+      "bytes": 917
+    },
+    {
+      "path": "assets/i2c-lesson.css",
+      "sourceSha256": "e1b0643c77c4a16c742bc90d1148c31ed46258e3e38dcbc3f4aae71e33eebf26",
+      "servedSha256": "e1b0643c77c4a16c742bc90d1148c31ed46258e3e38dcbc3f4aae71e33eebf26",
+      "bytes": 236
+    },
+    {
+      "path": "assets/i2c-lesson.js",
+      "sourceSha256": "fbe030e7be1945353c002abf024c6ba8275976612e0effc4fcf3c9c6bad7a187",
+      "servedSha256": "fbe030e7be1945353c002abf024c6ba8275976612e0effc4fcf3c9c6bad7a187",
+      "bytes": 5252
+    },
+    {
+      "path": "assets/interrupt-lesson.css",
+      "sourceSha256": "6f25068138f8ac58689cb147e61091cdf23fd15c8f8506f435b422f2705da3ae",
+      "servedSha256": "6f25068138f8ac58689cb147e61091cdf23fd15c8f8506f435b422f2705da3ae",
+      "bytes": 1900
+    },
+    {
+      "path": "assets/interrupt-lesson.js",
+      "sourceSha256": "085353e582bd9c792d27ba9722e435d1122a52409288fc29f17fd89570632359",
+      "servedSha256": "085353e582bd9c792d27ba9722e435d1122a52409288fc29f17fd89570632359",
+      "bytes": 6058
+    },
+    {
+      "path": "assets/lvgl-course.css",
+      "sourceSha256": "f5c577bf4bddf367a6e405517c7dd6f4eb62841e89a6248e10275e7459f1df6f",
+      "servedSha256": "f5c577bf4bddf367a6e405517c7dd6f4eb62841e89a6248e10275e7459f1df6f",
+      "bytes": 1347
+    },
+    {
+      "path": "assets/lvgl-course.js",
+      "sourceSha256": "3dc0049599f6460e1de60e024d7478e861dc698b704b467c46f479bcaadcdca0",
+      "servedSha256": "3dc0049599f6460e1de60e024d7478e861dc698b704b467c46f479bcaadcdca0",
+      "bytes": 3956
+    },
+    {
+      "path": "assets/rtos-course.css",
+      "sourceSha256": "f853f3b6ed1bc04ef178e644502b89f1f784ac19b7fe2f41c7922c16b454dc7d",
+      "servedSha256": "f853f3b6ed1bc04ef178e644502b89f1f784ac19b7fe2f41c7922c16b454dc7d",
+      "bytes": 429
+    },
+    {
+      "path": "assets/rtos-course.js",
+      "sourceSha256": "6ba8602bacebac770f99c4d2d338dfe3ceff1ee9efc75138ef47d8f6d896ce5b",
+      "servedSha256": "6ba8602bacebac770f99c4d2d338dfe3ceff1ee9efc75138ef47d8f6d896ce5b",
+      "bytes": 1625
+    },
+    {
+      "path": "assets/screenshots/gpio-01-select-output.png",
+      "sourceSha256": "e40a01bab6804099f581955a37baeef5cac8c66c9e2dba9237ceeb72bc03f408",
+      "servedSha256": "e40a01bab6804099f581955a37baeef5cac8c66c9e2dba9237ceeb72bc03f408",
+      "bytes": 128263
+    },
+    {
+      "path": "assets/screenshots/gpio-input-options-pc1.png",
+      "sourceSha256": "730461c9a80298ea3e50c6a2e78545b30c978550717f0197c12a883581b2cbd0",
+      "servedSha256": "730461c9a80298ea3e50c6a2e78545b30c978550717f0197c12a883581b2cbd0",
+      "bytes": 73422
+    },
+    {
+      "path": "assets/screenshots/gpio-output-level.png",
+      "sourceSha256": "3d8ba0a5112a8da3314570c0254f5ae9b6eb139c9b2f815122676b12d3e11691",
+      "servedSha256": "3d8ba0a5112a8da3314570c0254f5ae9b6eb139c9b2f815122676b12d3e11691",
+      "bytes": 5804
+    },
+    {
+      "path": "assets/screenshots/gpio-output-mode.png",
+      "sourceSha256": "86068cb1d4d701719a36f8408c2f4e7539e74f4d7c33458924372a30b8f20c33",
+      "servedSha256": "86068cb1d4d701719a36f8408c2f4e7539e74f4d7c33458924372a30b8f20c33",
+      "bytes": 7713
+    },
+    {
+      "path": "assets/screenshots/gpio-panel-pa4.png",
+      "sourceSha256": "5331afef894cd7874669c65c53cb381b7e2c82a606f16f00b87eac5d3acdf906",
+      "servedSha256": "5331afef894cd7874669c65c53cb381b7e2c82a606f16f00b87eac5d3acdf906",
+      "bytes": 76334
+    },
+    {
+      "path": "assets/screenshots/gpio-pull-options.png",
+      "sourceSha256": "2be2f49e7d5d73ca63fad3101eb58b3ac21d267cabdf25ce7ba2153ca2edf3e7",
+      "servedSha256": "2be2f49e7d5d73ca63fad3101eb58b3ac21d267cabdf25ce7ba2153ca2edf3e7",
+      "bytes": 8904
+    },
+    {
+      "path": "assets/screenshots/gpio-user-label.png",
+      "sourceSha256": "5d681c54d8f466120f66fb8c4975ca340b033d0f003270d311175c0645eb6751",
+      "servedSha256": "5d681c54d8f466120f66fb8c4975ca340b033d0f003270d311175c0645eb6751",
+      "bytes": 2562
+    },
+    {
+      "path": "assets/screenshots/i2c-cubemx-nvic.png",
+      "sourceSha256": "bfd0f6f93ae6a4ae60a6824a5dd08b7768a95ce1966a8cff6d0f25c7f4b027db",
+      "servedSha256": "bfd0f6f93ae6a4ae60a6824a5dd08b7768a95ce1966a8cff6d0f25c7f4b027db",
+      "bytes": 26087
+    },
+    {
+      "path": "assets/screenshots/i2c-cubemx-parameters.png",
+      "sourceSha256": "4748997f0fe93136139d1ccfc992bc3ae897adcb37052fb5f4d64b98a2caf756",
+      "servedSha256": "4748997f0fe93136139d1ccfc992bc3ae897adcb37052fb5f4d64b98a2caf756",
+      "bytes": 73371
+    },
+    {
+      "path": "assets/screenshots/i2c-pin-configuration.png",
+      "sourceSha256": "cb7a78132998aa5ad3f5091d3d48afa18bc67d99b6ee634561b3e52b7c94fc8a",
+      "servedSha256": "cb7a78132998aa5ad3f5091d3d48afa18bc67d99b6ee634561b3e52b7c94fc8a",
+      "bytes": 56479
+    },
+    {
+      "path": "assets/screenshots/interrupt-nvic-priorities.png",
+      "sourceSha256": "b9f066555f134163697c7615329579d783ef2d19f39cade905fbf7f1b5f28a9c",
+      "servedSha256": "b9f066555f134163697c7615329579d783ef2d19f39cade905fbf7f1b5f28a9c",
+      "bytes": 82853
+    },
+    {
+      "path": "assets/screenshots/spi-mode-menu.png",
+      "sourceSha256": "e9b4b56c46b74ab06d93259f82a49a97755ceca7ade19a279e77d7e92594f6a7",
+      "servedSha256": "e9b4b56c46b74ab06d93259f82a49a97755ceca7ade19a279e77d7e92594f6a7",
+      "bytes": 22999
+    },
+    {
+      "path": "assets/screenshots/spi-nvic-start.png",
+      "sourceSha256": "fca4a13cc724e474507642e40b6a003241f7b20de8d79986f5c6d47c8295d1f9",
+      "servedSha256": "fca4a13cc724e474507642e40b6a003241f7b20de8d79986f5c6d47c8295d1f9",
+      "bytes": 19837
+    },
+    {
+      "path": "assets/screenshots/spi-parameter-start.png",
+      "sourceSha256": "ded3e279bdb909b8020a97e5d063bd48fa09f6271a85bce6146d7d9b6b7bf7a2",
+      "servedSha256": "ded3e279bdb909b8020a97e5d063bd48fa09f6271a85bce6146d7d9b6b7bf7a2",
+      "bytes": 95629
+    },
+    {
+      "path": "assets/screenshots/uart-basic-parameters.png",
+      "sourceSha256": "f5d0153b6c7990b38eaf7cd3433f979c313f0308e27c2b4cd4fa272e123fcbfe",
+      "servedSha256": "f5d0153b6c7990b38eaf7cd3433f979c313f0308e27c2b4cd4fa272e123fcbfe",
+      "bytes": 10743
+    },
+    {
+      "path": "assets/screenshots/uart-nvic-project.png",
+      "sourceSha256": "717083ffcbeeb7be9bf012ac81a29f772f1392f1622284d0d962f315fe1948b1",
+      "servedSha256": "717083ffcbeeb7be9bf012ac81a29f772f1392f1622284d0d962f315fe1948b1",
+      "bytes": 7231
+    },
+    {
+      "path": "assets/screenshots/uart-prescaler-invalid.png",
+      "sourceSha256": "481aa7cccff621510928c81bfa41c1808e2b8ef95dcf5a49f3434d8299dfff6a",
+      "servedSha256": "481aa7cccff621510928c81bfa41c1808e2b8ef95dcf5a49f3434d8299dfff6a",
+      "bytes": 27496
+    },
+    {
+      "path": "assets/sensor-course.css",
+      "sourceSha256": "75ae516cb61b42c07ae70e63701e72fa9dfda9733ad246616d43207920a2ac89",
+      "servedSha256": "75ae516cb61b42c07ae70e63701e72fa9dfda9733ad246616d43207920a2ac89",
+      "bytes": 673
+    },
+    {
+      "path": "assets/sensor-course.js",
+      "sourceSha256": "29d0bd183a61ff295c012e05f0eed80cae80b498adeffcab2289e1c8b9e9dbbd",
+      "servedSha256": "29d0bd183a61ff295c012e05f0eed80cae80b498adeffcab2289e1c8b9e9dbbd",
+      "bytes": 1698
+    },
+    {
+      "path": "assets/spi-lesson.css",
+      "sourceSha256": "42da67f22c532d231fc5923ec5f309ccb8f795014ff5157f101c787aa2346d98",
+      "servedSha256": "42da67f22c532d231fc5923ec5f309ccb8f795014ff5157f101c787aa2346d98",
+      "bytes": 1179
+    },
+    {
+      "path": "assets/spi-lesson.js",
+      "sourceSha256": "563ac6fc14353e0f762edbab512efd70a11224ea2a935fa8e49c9f4741374bce",
+      "servedSha256": "563ac6fc14353e0f762edbab512efd70a11224ea2a935fa8e49c9f4741374bce",
+      "bytes": 5754
+    },
+    {
+      "path": "assets/uart-lesson.css",
+      "sourceSha256": "bdb655d31e3dcefb841a44ac01929ddcce557c6304fb9996c572727250a61638",
+      "servedSha256": "bdb655d31e3dcefb841a44ac01929ddcce557c6304fb9996c572727250a61638",
+      "bytes": 1355
+    },
+    {
+      "path": "assets/uart-lesson.js",
+      "sourceSha256": "669d7a4f60c0718b000b0afe41f84758cb96eca5d659a8337812fec2a34affcb",
+      "servedSha256": "669d7a4f60c0718b000b0afe41f84758cb96eca5d659a8337812fec2a34affcb",
+      "bytes": 6147
+    },
+    {
+      "path": "branches/ai/00-python.html",
+      "sourceSha256": "645567ed106d416f650728d88f603c9e2e220d9d9480135f8eb81eb35d1d83fb",
+      "servedSha256": "60aeef31ded38b8664673ef1d48477e653a774ab8f3a68835e0c81bf5008f77c",
+      "bytes": 29739
+    },
+    {
+      "path": "branches/ai/01-problem.html",
+      "sourceSha256": "c8490b82133517815df15a4110154ca96f97408982ab0e4a7c7476f5e4d70a26",
+      "servedSha256": "f1c8fb73a4a3cbd8b20689a49e14aaf92160f2a65a55e789fb26ca065fcf30d3",
+      "bytes": 28723
+    },
+    {
+      "path": "branches/ai/02-data.html",
+      "sourceSha256": "1835c830c3b3e8fb26d9ac2d9302d59786d658e5118d41b97d742f56b0d6a53d",
+      "servedSha256": "4829d8429c6530bcb9d2acfd03104f256e41fd8c3f50aa805a2fb3a6b34119b8",
+      "bytes": 29031
+    },
+    {
+      "path": "branches/ai/03-windows.html",
+      "sourceSha256": "d10f761c02aea940aa26823e85c76063c8a5ed49233c58158d9b13769f101b92",
+      "servedSha256": "7048b5d42f147c0f2617dc3d283a70e9d2039733f5513736dbb26c2946047353",
+      "bytes": 28968
+    },
+    {
+      "path": "branches/ai/04-learning.html",
+      "sourceSha256": "449ff3dd8bb5b63306251e5897c833bd9ddcc13a0fc1d9857c41406b1981c84e",
+      "servedSha256": "540ea4d87f1b8e0a6b7b8c7dca3a03e44fe802af83cae3dce3339b7afd0bfa4d",
+      "bytes": 28697
+    },
+    {
+      "path": "branches/ai/05-training.html",
+      "sourceSha256": "4e4fd7f3b2efb4af755b9e794d6f98de4b4592b1455ed03c2a55959fc52efd96",
+      "servedSha256": "428a76ca038bfc2c79089b15a438d0c892a163d476e3ecc537a37a40bbc79328",
+      "bytes": 29520
+    },
+    {
+      "path": "branches/ai/06-convolution.html",
+      "sourceSha256": "d7cccf50b74a9ad03dda8101bd67e1d72e473431b84959326be70781950924cd",
+      "servedSha256": "1a3f3a9d0d2286dfb279797db263e2a212947494c1619876750a8fb7baa25d51",
+      "bytes": 28528
+    },
+    {
+      "path": "branches/ai/07-evaluation.html",
+      "sourceSha256": "2ed726f7bd0ab7189dc9665775790f4aad7b4c44550f4a704c741cfdb5958837",
+      "servedSha256": "b45bab7690b432c2b09423d7b83e283b0aa59f6c6cd466858218e588deb5bc04",
+      "bytes": 28284
+    },
+    {
+      "path": "branches/ai/08-deployment.html",
+      "sourceSha256": "d5fbc40669afcc9c5199454016b9d0a048d78b0bfe52ffda7e3199e985c6ac65",
+      "servedSha256": "8f7eb594d2b599b817bafed93fd9e686983c0b4a7b4c45ee2f9207f2f60ffe79",
+      "bytes": 29607
+    },
+    {
+      "path": "branches/ai/09-watch.html",
+      "sourceSha256": "ae1962c5f02ad0856e96f232015dc2bfa76399d83ca7a3d087af1c977717fb15",
+      "servedSha256": "ca61b05aa032dc9fbb343f082731e4e0bd9101606a86169174879a3d1e3042a5",
+      "bytes": 28826
+    },
+    {
+      "path": "branches/ai/10-keyword.html",
+      "sourceSha256": "3afbb73d3a640bb56c423e5f1827ef554620196bb0305135bbdb3d5e9d0fd224",
+      "servedSha256": "6ab395c6641784af13dee2f1ac54ae3acfaba3fa54c21599efca0cafff216e63",
+      "bytes": 28754
+    },
+    {
+      "path": "branches/ai/11-sleep.html",
+      "sourceSha256": "8523a7eeb82a80842a5da7f787d90b421fed16261d041d03408edebcf14a006a",
+      "servedSha256": "7966b7784a9372ce86ea4e608cbb8cca4225843e80ac9a89d5004e10aee0c4c8",
+      "bytes": 28441
+    },
+    {
+      "path": "branches/ai-st.html",
+      "sourceSha256": "d304914548c725d69f2ba02f458b4911150ed70a1200e9689903ceb81dc1c5ec",
+      "servedSha256": "b6b6538c9d3e49cd750a2f3f4f58197698446c2aac06235bc0b53845ce263ac8",
+      "bytes": 28629
+    },
+    {
+      "path": "branches/ch582m/00-platform.html",
+      "sourceSha256": "ddea3b9020377fdae288aab5211df5cf4b37f23908db44eb745ef97be3365525",
+      "servedSha256": "cafc846c631bee71d9d0742be8af2781663d3913902bd4e0c4e9a495d912bfa8",
+      "bytes": 29317
+    },
+    {
+      "path": "branches/ch582m/01-project.html",
+      "sourceSha256": "96f2ec0607283b8d3e75b6b84e1b6816ece4d94c34a1fc8c8c8162626243422a",
+      "servedSha256": "ce424cc8f03b43f63e10ba90506687a4ad0981bd2f992db52397afbe5cb8ecf5",
+      "bytes": 28736
+    },
+    {
+      "path": "branches/ch582m/02-uart.html",
+      "sourceSha256": "727dbd58db138b594c6543daf59471bd9bfa066c53176d0ac9b283245948b27b",
+      "servedSha256": "b65ac7b80ea66b87d23c3df485e27e4622706142eddcdee8d9b884c7ffc81553",
+      "bytes": 29039
+    },
+    {
+      "path": "branches/ch582m/03-events.html",
+      "sourceSha256": "75b79c436916f7738fc235585aab044d3da67dc51dd419b1173872b054f50925",
+      "servedSha256": "b41c05b1d9c2a1a8927c7b22380458873de30b838be16e8da7614826ee0569b2",
+      "bytes": 29448
+    },
+    {
+      "path": "branches/ch582m/04-gatt.html",
+      "sourceSha256": "65b493011be9cc362c3395fa19d105d142e91143657732afdbf9112872975a02",
+      "servedSha256": "aed57278b3a4e32aac15dac31fa2f670dd5d9563c6d3394c984c4a312212f967",
+      "bytes": 29470
+    },
+    {
+      "path": "branches/ch582m/05-phone-to-watch.html",
+      "sourceSha256": "a3ba716f1d0da4ce16d01c73fadd674956c1e92b63e82e5769e284d2f0405ff5",
+      "servedSha256": "81b0fdcc634e95b261f40972024acc4aa6f5a05c0651858c07c794a354d92f00",
+      "bytes": 29086
+    },
+    {
+      "path": "branches/ch582m/06-watch-to-phone.html",
+      "sourceSha256": "9013c86ac49ecaa902334117910885064374fbddb19e3354983aa351a5a969c0",
+      "servedSha256": "8da791f2f8187c8a2898e4ead4a60e55cf67fc43608bd1ae3869f87cf4242f7c",
+      "bytes": 29070
+    },
+    {
+      "path": "branches/ch582m/07-integration.html",
+      "sourceSha256": "25208d9518bd30c8347a62e1733a124faef3f84170f2cdbeb3f235f4d635aee1",
+      "servedSha256": "6a5708136aeda6753df55daa22f37ca8f57307a4d0e4846d7939cb2dc05ee950",
+      "bytes": 29927
+    },
+    {
+      "path": "branches/ch582m.html",
+      "sourceSha256": "973f60a70847b6039c538bf1f0a345248cb1206040eddcd40e7ebbeb1ca7f080",
+      "servedSha256": "a2adff0e8051d6b114b9a50a10c31ffd4deaaab51c7b40f5452f3104e4b43a8a",
+      "bytes": 27646
+    },
+    {
+      "path": "branches/flutter/00-environment.html",
+      "sourceSha256": "1ec256cc77c025fb3ec5235d558a8083ed320fead3b5f3eb11a205d0a24adfb3",
+      "servedSha256": "796f693197208337fbd6c4401103470e2b98fb18ab757e8f4340cfce9eb54eac",
+      "bytes": 29441
+    },
+    {
+      "path": "branches/flutter/01-dart.html",
+      "sourceSha256": "703a2ba21bafb6d4cb681c43bc29b64e8ab897f16b002103b7e0958c817eb837",
+      "servedSha256": "0ba42d85a3485afbf6d997c79e842f8f9f9d573913017bdf8cb8f86465953ab4",
+      "bytes": 30701
+    },
+    {
+      "path": "branches/flutter/02-page.html",
+      "sourceSha256": "061181ccada50c383715293c9f6ce1c7f719f6c0323c4656997eb9b172adee0c",
+      "servedSha256": "1a88319273dc58ee52929de45c53768fe4689d6391af4a7bc06549daef9c7c69",
+      "bytes": 29294
+    },
+    {
+      "path": "branches/flutter/03-state.html",
+      "sourceSha256": "7cf086909705179a23b37955057b4625a40e7f58afb931a7e7d3a518d862668c",
+      "servedSha256": "576c9ccc94ab4ef70dca59809774fb58c8be8809337a26501d77b706f7e982e2",
+      "bytes": 29536
+    },
+    {
+      "path": "branches/flutter/04-async.html",
+      "sourceSha256": "3bc094587aac509e84118892f1171a646d5675748dae97770f4dad7bebaf19c9",
+      "servedSha256": "da4042c9e19c3ddb8e30dd549e45e51951d2fb49a4ac13454eb7fbd3609812d7",
+      "bytes": 29666
+    },
+    {
+      "path": "branches/flutter/05-protocol.html",
+      "sourceSha256": "937579857f9229ba6b3566793b151f3fbee5d2635a4a9d60bc6bc2c4d6daf68b",
+      "servedSha256": "1fa15cb448746435014fd0588136b4c1907b1aa57ebff67c27b1894a5361522a",
+      "bytes": 29621
+    },
+    {
+      "path": "branches/flutter/06-bluetooth.html",
+      "sourceSha256": "8bde72febb599a306759b8e1379c7ecdeac81c729affa7f2805463cbe8753089",
+      "servedSha256": "fe2d2fa4790ab67b694f51a661a8adb44e94170062b99406d099df90239dd071",
+      "bytes": 29131
+    },
+    {
+      "path": "branches/flutter/07-control.html",
+      "sourceSha256": "ebcf774f75ce210fddf530083ba35889c13efbcd21354cc160e33804194277d6",
+      "servedSha256": "0b19b78d0594a6a981cafc7019e4ab10c828b64c00421ad7755e902a9f3d0fca",
+      "bytes": 29434
+    },
+    {
+      "path": "branches/flutter/08-project.html",
+      "sourceSha256": "aac16fa3f792b790f6bd18faf17692178ce4532d16da6f9c0cc67bac3251d317",
+      "servedSha256": "d524bf9b119af05f3aba6b724c722ca5fd5d8f126668b9ecfa3226afed53f261",
+      "bytes": 28674
+    },
+    {
+      "path": "branches/flutter/09-alert.html",
+      "sourceSha256": "d876b67e40dd98a9466683bc62b26e3228434faec94380b27994e457cfc662a4",
+      "servedSha256": "7bde9cb48cb79670a4adc8938fd18b453433509b07166cd7c8e614bae8d2953d",
+      "bytes": 28874
+    },
+    {
+      "path": "branches/flutter.html",
+      "sourceSha256": "a55a7280945fcd16859bf83d1555888d8e6bf893303c65353dbf7d4020b42f75",
+      "servedSha256": "ff6b4d1f84191a88c83a092224923bb9fa271e5d51f2a0938ab9cc9265928b96",
+      "bytes": 27984
+    },
+    {
+      "path": "branches/lvgl/01-display.html",
+      "sourceSha256": "428afe94d42fc4af4ad8548f9f61a82b85b330025649e148ae10b3920498a482",
+      "servedSha256": "d1d93aea8e91e70b3a69d3d24ba2e8d06198c013a6335294ce25567925e4e227",
+      "bytes": 57994
+    },
+    {
+      "path": "branches/lvgl/02-port.html",
+      "sourceSha256": "d114aa46bb17d215e47270778276fbf696923c76637828634b98c66ad38dcc05",
+      "servedSha256": "d340d130ad02846ce4d52fdcf6b0bbee22b77f8197caece5ef679f5c549450aa",
+      "bytes": 34677
+    },
+    {
+      "path": "branches/lvgl/03-widgets.html",
+      "sourceSha256": "a6e758103909c7dce6f41a2ac161c7a0028ec42f17cabf0c9db898d45d349bfd",
+      "servedSha256": "a6574ed631c6ae59526e8ff73b6e654aba52b7ee2b5aa1e540694e45131c2930",
+      "bytes": 34859
+    },
+    {
+      "path": "branches/lvgl/04-layout.html",
+      "sourceSha256": "a0e792061fbf509bcc51799c38d12cc9534f9f683309f51ff0584ab54d236b2f",
+      "servedSha256": "c1526b44cbd77cc35183188f8818b2538da7dbd8fe191b40c78879c30baac994",
+      "bytes": 35053
+    },
+    {
+      "path": "branches/lvgl/05-events.html",
+      "sourceSha256": "5360f732d2b037a5e7819297d862e16e0cf4a95212bbcf2140a413374d469ec1",
+      "servedSha256": "e108df178c8e4115366ed153905733f9f707e2d21f84e67c7257b5db2cac5070",
+      "bytes": 35693
+    },
+    {
+      "path": "branches/lvgl/06-data.html",
+      "sourceSha256": "dee7bc9ed73b943102bd6639d6baa3b54167b4d09da0bc7d163b79a83011ca06",
+      "servedSha256": "48ff3d2b0ec3eab50604acb2f35b9afe2602ffc77f9033ab01e2949d0269b1d3",
+      "bytes": 35012
+    },
+    {
+      "path": "branches/lvgl/07-performance.html",
+      "sourceSha256": "41806b30660af411f3e66a0f06b9f7f6bc7a871dbc467a6762b637c7e644e8c1",
+      "servedSha256": "c75b02685f36c6c9ff3ada2abde8c0e3b16b7755b1190596600127c1ca568d67",
+      "bytes": 34845
+    },
+    {
+      "path": "branches/lvgl.html",
+      "sourceSha256": "45c7e61b49adff64ff8ce6e1567f845ec32ed31822d9781c435c5be512064630",
+      "servedSha256": "c91c2b26987ac52f7ea5f61cc3edce48cd6b96068bd8b406be9c34401d90cc50",
+      "bytes": 28028
+    },
+    {
+      "path": "branches/ota/01-startup.html",
+      "sourceSha256": "039de2d25ed0effea23480c5277f33bd220784a8f9a26b1b8d1050cf88658424",
+      "servedSha256": "4ddf30180f4f6021a50211c4ec3fa2db924dd8454ad9df711288e2149b921130",
+      "bytes": 28820
+    },
+    {
+      "path": "branches/ota/02-image.html",
+      "sourceSha256": "021b0a88a54425d9513c1ed91584076d52213af2e85e1db03393af7efa59e54a",
+      "servedSha256": "5cdcb76ce75c91f0debd4058887cc40bcd38f353523331332a9b288d2531071d",
+      "bytes": 28506
+    },
+    {
+      "path": "branches/ota/03-staging.html",
+      "sourceSha256": "a5477d9b551adf73030c795ac955e35d5d1d4ab4b86dab8e6a0acac7044351ad",
+      "servedSha256": "c73c33875d156e69a5821de70d6d9221c9b45baf9ea1ccf1ff15bf061758bc0d",
+      "bytes": 28715
+    },
+    {
+      "path": "branches/ota/04-trial.html",
+      "sourceSha256": "a314bf9db64d08691f11b555e63d6c690c014289b10a69814dc7c4133edb04e1",
+      "servedSha256": "2684fa6bffca065b968951da0b44b3e8bd1c8cc20a184c842c1dd19268861746",
+      "bytes": 28529
+    },
+    {
+      "path": "branches/ota/05-wireless.html",
+      "sourceSha256": "7e9947e3e3bffc98a98aaadd84ba74b2ffabd9d58eaff44e0353a8b38308c1b9",
+      "servedSha256": "bc8a3bffb5689cab53c400006a0375d2dcdc89292c34ed421c06cc513a695d86",
+      "bytes": 28342
+    },
+    {
+      "path": "branches/ota/06-validation.html",
+      "sourceSha256": "73cc198e3f7f67193d8abf5760886a22bd4ed5eb97888a046a3573d76c7a1bf5",
+      "servedSha256": "65469502b10d2fad1724b32a9fe238d61c2c887301b068b27eeeaecd83e2b128",
+      "bytes": 28926
+    },
+    {
+      "path": "branches/ota.html",
+      "sourceSha256": "24b3a0e4ad982efa3494a28e93ed04ce75f40a0e4f00a252117d4a66075337c5",
+      "servedSha256": "a46d843b437b78de6908525be9414f65684f7b814ed101e619adf989915b0e95",
+      "bytes": 26749
+    },
+    {
+      "path": "branches/proto/01-adaptation.html",
+      "sourceSha256": "8f30a25ff73b9d115e09cb578e4971d636a270df943a3088e737f4d6595dcece",
+      "servedSha256": "80ab48feea765255f7343afc75272c61c5f2a82c5d27c99282c1ffa800a74fb7",
+      "bytes": 28312
+    },
+    {
+      "path": "branches/proto/02-centers.html",
+      "sourceSha256": "2432694781d180375e3ce2a83b902185cfa81dc4e681a24c113230cd0198a095",
+      "servedSha256": "dcf2827f056c114670f366e12582d70cf3a4ceb4845d0e7101beaff9f318bf98",
+      "bytes": 28476
+    },
+    {
+      "path": "branches/proto/03-similarity.html",
+      "sourceSha256": "f0c8447a74e92f662d3d72a15592458105d9af63e6126998aabc1f5cbaf2445b",
+      "servedSha256": "16b2e4893c6beb67f206286bdf9cddadc93e4c07871638466f66a44899d46a0a",
+      "bytes": 28085
+    },
+    {
+      "path": "branches/proto/04-session.html",
+      "sourceSha256": "319f3f14ecffd9b003e43c293f8f0ac9b32c422b10a78326e529eabb68ee19cd",
+      "servedSha256": "d1ec866c40f0b8ea1afec99a9695a3b43bd0f3c88f8a4d20ce55c19c9a5ccd7a",
+      "bytes": 28640
+    },
+    {
+      "path": "branches/proto/05-evaluation.html",
+      "sourceSha256": "a1ef8d3ae2844ae2abbb99baa8b4c9551b98a405166ad8cc51d720ebdebef20c",
+      "servedSha256": "55385cc14c974aa488e34c1f7d8513286b85b6edc5130d2cfe316058ae5de10b",
+      "bytes": 28122
+    },
+    {
+      "path": "branches/proto/06-backup.html",
+      "sourceSha256": "1e70a1801eb0c5702963b659071978b9f48423cbae0339f7e971c7de569e4a75",
+      "servedSha256": "5ec78e8bc3d5372c79012d071b393c3a449381e85159438a7ca1d613fb472bb4",
+      "bytes": 28386
+    },
+    {
+      "path": "branches/proto/07-project.html",
+      "sourceSha256": "a114ce5f4a2239904d5adf46b89c9bd753e318eafbb645b136b919cfae36a4bb",
+      "servedSha256": "3370c374b8ee027f592c00a955504b6d16c58f9a6f628f50f10ec0dd50384307",
+      "bytes": 28367
+    },
+    {
+      "path": "branches/proto.html",
+      "sourceSha256": "0a0cc1fe38c679882f47588d1cf44bb127ec52669c8cee6ac8bb02b37e8ed8f7",
+      "servedSha256": "0205a3ee869709146c13b5fab98abcf31f4e4b036daf34768b383b3b5ecc17a3",
+      "bytes": 26911
+    },
+    {
+      "path": "course-map.json",
+      "sourceSha256": "45b23501fae68b8a237086a6b6dc852e6ecda93de9043f1d99e2e22cd065af1d",
+      "servedSha256": "45b23501fae68b8a237086a6b6dc852e6ecda93de9043f1d99e2e22cd065af1d",
+      "bytes": 8543
+    },
+    {
+      "path": "DEVELOPMENT_NOTES.md",
+      "sourceSha256": "81c6b797c1894c9645284697a8302ab645513b55f2b91d8642e71dafe9d7667f",
+      "servedSha256": "81c6b797c1894c9645284697a8302ab645513b55f2b91d8642e71dafe9d7667f",
+      "bytes": 2448
+    },
+    {
+      "path": "examples/branches/battery_frame.dart",
+      "sourceSha256": "58fedf6b2d995cf320038a48b6f5a3236c674e78a450e812ff44885c5b1fbdcf",
+      "servedSha256": "58fedf6b2d995cf320038a48b6f5a3236c674e78a450e812ff44885c5b1fbdcf",
+      "bytes": 819
+    },
+    {
+      "path": "examples/branches/dart_async.dart",
+      "sourceSha256": "ebb27df350c8f9c2e36d43b3daad4940a7e9e4b005e47087a41c5da686e73dfb",
+      "servedSha256": "ebb27df350c8f9c2e36d43b3daad4940a7e9e4b005e47087a41c5da686e73dfb",
+      "bytes": 591
+    },
+    {
+      "path": "examples/branches/dart_basics.dart",
+      "sourceSha256": "cec0622bf168909664c842b3ecc9cc53ea47acae5ea38556b0bba03869a57212",
+      "servedSha256": "cec0622bf168909664c842b3ecc9cc53ea47acae5ea38556b0bba03869a57212",
+      "bytes": 994
+    },
+    {
+      "path": "examples/branches/ota_files.py",
+      "sourceSha256": "2dcc942186b1291506a567e2a69c2e96f634278749129f92b0803439727202fe",
+      "servedSha256": "2dcc942186b1291506a567e2a69c2e96f634278749129f92b0803439727202fe",
+      "bytes": 7018
+    },
+    {
+      "path": "examples/branches/prototype_demo.py",
+      "sourceSha256": "09524ef2c6849cefbe174f1f3e6178f15d7ddd654a6b7856766bdbb487b63d88",
+      "servedSha256": "09524ef2c6849cefbe174f1f3e6178f15d7ddd654a6b7856766bdbb487b63d88",
+      "bytes": 1015
+    },
+    {
+      "path": "examples/branches/python_basics.py",
+      "sourceSha256": "ec0d6342f8a338b210aa15270a0ff3f4ec932b9b9cfab990edb98656afc35846",
+      "servedSha256": "ec0d6342f8a338b210aa15270a0ff3f4ec932b9b9cfab990edb98656afc35846",
+      "bytes": 749
+    },
+    {
+      "path": "examples/branches/quantize_activity.py",
+      "sourceSha256": "4a77243ff21948c187f617a57015f7238e85a7ce28b1ba4bc713d805a2944029",
+      "servedSha256": "4a77243ff21948c187f617a57015f7238e85a7ce28b1ba4bc713d805a2944029",
+      "bytes": 2091
+    },
+    {
+      "path": "examples/branches/README.md",
+      "sourceSha256": "7828bdf8f39368f02c8de7ab7f9f3c0dc075630ed9f6cb51b2653c4bd773347f",
+      "servedSha256": "7828bdf8f39368f02c8de7ab7f9f3c0dc075630ed9f6cb51b2653c4bd773347f",
+      "bytes": 2646
+    },
+    {
+      "path": "examples/branches/requirements.txt",
+      "sourceSha256": "d64e2f130b1042d3f72acbcc289265a09041fe26e387e8942b9be501194ca9b3",
+      "servedSha256": "d64e2f130b1042d3f72acbcc289265a09041fe26e387e8942b9be501194ca9b3",
+      "bytes": 120
+    },
+    {
+      "path": "examples/branches/test_examples.py",
+      "sourceSha256": "77dfcc1e2fdd56073ff5fa1ec71474e9d30b64008a5acab6357b89452025849c",
+      "servedSha256": "77dfcc1e2fdd56073ff5fa1ec71474e9d30b64008a5acab6357b89452025849c",
+      "bytes": 4360
+    },
+    {
+      "path": "examples/branches/train_activity.py",
+      "sourceSha256": "fe1aa689ac9e03ca7d0a20e2cfe4472567e663423db20d760014070d5a0705c4",
+      "servedSha256": "fe1aa689ac9e03ca7d0a20e2cfe4472567e663423db20d760014070d5a0705c4",
+      "bytes": 7678
+    },
+    {
+      "path": "examples/flutter_watch/lib/main.dart",
+      "sourceSha256": "cca89c2c66b0523548d95c5ed64ac9b4f17816c0f83e2281f7696e4acb2b141c",
+      "servedSha256": "cca89c2c66b0523548d95c5ed64ac9b4f17816c0f83e2281f7696e4acb2b141c",
+      "bytes": 1613
+    },
+    {
+      "path": "examples/flutter_watch/pubspec.yaml",
+      "sourceSha256": "441df16a4adba653c1645fbc48d3b06fced2c2ef979b6db70b7374013406f7ef",
+      "servedSha256": "441df16a4adba653c1645fbc48d3b06fced2c2ef979b6db70b7374013406f7ef",
+      "bytes": 281
+    },
+    {
+      "path": "examples/flutter_watch/README.md",
+      "sourceSha256": "2dbd3274630d69f659bb3d84d63402286d01c03d91aae0615ab8aae4dbdb02fb",
+      "servedSha256": "2dbd3274630d69f659bb3d84d63402286d01c03d91aae0615ab8aae4dbdb02fb",
+      "bytes": 650
+    },
+    {
+      "path": "examples/flutter_watch/test/widget_test.dart",
+      "sourceSha256": "30bd2cfc5360485bcd39cd7e006f0e1954c363332649c6e0e84ca2c03f8db318",
+      "servedSha256": "30bd2cfc5360485bcd39cd7e006f0e1954c363332649c6e0e84ca2c03f8db318",
+      "bytes": 783
+    },
+    {
+      "path": "examples/freertos_function_pointer.c",
+      "sourceSha256": "b0dced04c39c36b1afced46a955920da54b7fc92608130b01cc27f92cb3a87e9",
+      "servedSha256": "b0dced04c39c36b1afced46a955920da54b7fc92608130b01cc27f92cb3a87e9",
+      "bytes": 369
+    },
+    {
+      "path": "examples/ssd1306-spi/oled_lesson.c",
+      "sourceSha256": "eada83da086281aae0791210c6297551e73cde0703501ba49fadf5587021aeac",
+      "servedSha256": "eada83da086281aae0791210c6297551e73cde0703501ba49fadf5587021aeac",
+      "bytes": 4314
+    },
+    {
+      "path": "examples/ssd1306-spi/oled_lesson.h",
+      "sourceSha256": "0333d9cab734265a3c519e23b81f11c87ae27be97a0de06129cdd349804882a3",
+      "servedSha256": "0333d9cab734265a3c519e23b81f11c87ae27be97a0de06129cdd349804882a3",
+      "bytes": 606
+    },
+    {
+      "path": "examples/wireless_frame.c",
+      "sourceSha256": "ae681864c5b33c5878c73b99244ace22c2a28933050220e74c4f50bf8ba785ba",
+      "servedSha256": "ae681864c5b33c5878c73b99244ace22c2a28933050220e74c4f50bf8ba785ba",
+      "bytes": 2524
+    },
+    {
+      "path": "index.html",
+      "sourceSha256": "09d0f343fd1966e433f153725ae33913dada3d55ed691fa88f8775f4216816dc",
+      "servedSha256": "ca3764c36aff7dde3b10235433687fa0c8023b4c9bacf833a6d736e425aa306a",
+      "bytes": 36553
+    },
+    {
+      "path": "main/00-start.html",
+      "sourceSha256": "0f4a9467dc11d4b02e9e8b9490ae67377c85b565ccb25ca5f9238dc788082e95",
+      "servedSha256": "9e712fc0a6177ed18c4cf902daf848a823bbb09a970fc288ce1b3855ac78db3b",
+      "bytes": 45986
+    },
+    {
+      "path": "main/01-gpio.html",
+      "sourceSha256": "48bcd28072ed6da9d0ffc064f8f91988aae6d229ccf7c31e59d28ec5195ed517",
+      "servedSha256": "8213d41ce36617339e9b04d8daf1d968467a6f11df70b2970754a5249c492cb9",
+      "bytes": 74429
+    },
+    {
+      "path": "main/02-uart.html",
+      "sourceSha256": "2a0d61c6b904741b5f4e8c048cc3789d173185ac55113ce7c4389a651bdbc7aa",
+      "servedSha256": "37080c4934a5837cb366fe8156d1f1036ec5f10ae892ac343463519b350b4738",
+      "bytes": 73487
+    },
+    {
+      "path": "main/03-interrupt.html",
+      "sourceSha256": "7becc03400fa55c4fea12e4e89ad2327c22511f47cf54e123de9ec38b497c1b7",
+      "servedSha256": "7129dfa596fece006cc3b415ffdc6466075b463baa861253ab94d18d6558ec9e",
+      "bytes": 85043
+    },
+    {
+      "path": "main/04-protocol.html",
+      "sourceSha256": "6a4c2a53931b97c95d9c5516702a0108e22bc1ca5dc9f5afb547c891fefeaec7",
+      "servedSha256": "cfbb629c55e8e5c266350fc5983f4ba38257812ff902702f8b0d5bcd9fd8ae31",
+      "bytes": 40915
+    },
+    {
+      "path": "main/05-display.html",
+      "sourceSha256": "965823d9dcc10794b36a1b4c7ad4756801df8feab6ed11ef8c1900d762ee9f1e",
+      "servedSha256": "5d1e18853df133bb2d89ec9d0e416775f402d4d86b07fdce3234948d9161480e",
+      "bytes": 649
+    },
+    {
+      "path": "main/05-spi.html",
+      "sourceSha256": "e91c0766ca4bc8ed13c37ce4fc618554044e9855ef3ab51279b667640bc5fa8a",
+      "servedSha256": "e57c9aa56e8212991090c2989e3e22a6acb2c4742eab61d626af6b5ddc815656",
+      "bytes": 86199
+    },
+    {
+      "path": "main/06-i2c.html",
+      "sourceSha256": "d7d60d08a67219c9c0d71c0c76b402113eee02751e9c22f942a30bdbfbe5832d",
+      "servedSha256": "4fdfb7671fa0ab2f9f145ba19594adbc6ab041c9e7375f5a6dde999543a2d694",
+      "bytes": 100653
+    },
+    {
+      "path": "main/07-clock.html",
+      "sourceSha256": "c5d4a2bb30cee748340befb05ac3c175b80f3f282be86b401dc22111f6b6eedc",
+      "servedSha256": "b6aaf45b14443d8c751ac880ec955e099f32b0c002ac78a10b1ff9a9f77fce87",
+      "bytes": 30904
+    },
+    {
+      "path": "main/08-timer-pwm.html",
+      "sourceSha256": "e837f3bda3d009c869d372377e66b272222ecb377191b284144ad36bf730060b",
+      "servedSha256": "3b9434cd2eb59279d39d179fc27f6c0277006d6bcd3739fb05326ecafd3e0fc6",
+      "bytes": 31394
+    },
+    {
+      "path": "main/09-adc-dac.html",
+      "sourceSha256": "1bd1584eed0635936a4e505531f31f6169fa9f9861e8eddcb93f3231c287ba44",
+      "servedSha256": "c9e91e87603460c01115d4defeddf4316220d6396c4f9d4b9cfac01458646e6d",
+      "bytes": 59375
+    },
+    {
+      "path": "main/10-dma.html",
+      "sourceSha256": "def87bbb3789bc802611e38e22ef9666319454dc592c3d59fbc0ddb5f2655d8d",
+      "servedSha256": "3e2a1487839e639a19954475526ad9e22e7c6b9a02beb5218ccd91b6c01bfe1d",
+      "bytes": 39789
+    },
+    {
+      "path": "main/11-system.html",
+      "sourceSha256": "cb98adf0389e82960489ae5524466376bdd14204f3a762fdfcbee4c3e61e4c90",
+      "servedSha256": "73b84cf693f502af5bbd6d39b0f37e62035c0206df925105f0d753b31e2d5ec1",
+      "bytes": 31643
+    },
+    {
+      "path": "main/12-baremetal.html",
+      "sourceSha256": "3efbead73d1206f9ad0bed67c0270f3da7b0296ae76b4b49198616a28f897035",
+      "servedSha256": "cf8136f5591e0909637a2b4c3e362b93ce8300dbe4e79d7e0990f6403e727b9b",
+      "bytes": 42124
+    },
+    {
+      "path": "main/13-wireless.html",
+      "sourceSha256": "acec201ca2a2b0a786378901d50861062f7aaf552a6dfb3c11d67a44b5f3780e",
+      "servedSha256": "003eae5bc085e7ddb96295244381b2ff46642f6f89cde216de4eef9b14034f98",
+      "bytes": 37392
+    },
+    {
+      "path": "main/14-freertos.html",
+      "sourceSha256": "39d93d2ff427a09ede6605684ebe65ddb25ba00ebf2537f77dd2704a2382f972",
+      "servedSha256": "48dd210005e7f09478278fe4e5480c3699e1476a223aa2fff83f4b81d18e9cdb",
+      "bytes": 32984
+    },
+    {
+      "path": "main/15-sync.html",
+      "sourceSha256": "d36dc74c76181056be4d40c02cc6b678cad176102e717cfb5a8fc0ae195eae69",
+      "servedSha256": "3da81e4b9fbd581a613be12bcb7923e57d9745e32e153a2047f1b13411a863e1",
+      "bytes": 31923
+    },
+    {
+      "path": "main/adc/01-microphone.html",
+      "sourceSha256": "adaccf671adef3e072890b6a96c4e4da27f79ebd6211a9a91ccbf25a48353cc6",
+      "servedSha256": "2b22a111ca85cb226f075aad61a9870e702571a853acba720259c14bb5ce49a5",
+      "bytes": 54704
+    },
+    {
+      "path": "main/freertos/00-foundations.html",
+      "sourceSha256": "7e1cc4aa5f03d3e16dbaba6eb6e7f8f75f86e87e39f02380d238353877308d30",
+      "servedSha256": "ae80732cd13637a1a9eb82af3f74886458208e688d798e7fe83d555f8db07e2a",
+      "bytes": 33626
+    },
+    {
+      "path": "main/freertos/02-scheduling.html",
+      "sourceSha256": "519e37a5323dd66f9b5c8d273107b08803a3b1a3241185b12a655c43821b3049",
+      "servedSha256": "7eb181bc8447ce363453dfac69ed13eeee70ba92293953676ff988cd6dbebbbe",
+      "bytes": 32988
+    },
+    {
+      "path": "main/freertos/03-semaphore.html",
+      "sourceSha256": "98e5de3e672f05dfb517ecf3d32b04e7c5f23298f998528015094af241a35af4",
+      "servedSha256": "128c4562935040236c4f6a96544518844e27ad4e42724fb06cf0b7274004e58e",
+      "bytes": 33966
+    },
+    {
+      "path": "main/freertos/05-resources.html",
+      "sourceSha256": "208851ac426244456c55c940cf3b803fa88d576b2e4bc7ef48e3044ca87537b1",
+      "servedSha256": "58782706a41848681376c38a64f2fad6531f6550c1c6b47bc198b103b5b1f59f",
+      "bytes": 32169
+    },
+    {
+      "path": "main/freertos/06-audio.html",
+      "sourceSha256": "b4d379b408e196ff385a8f42dd399c4a034f2544567a266f4dc1c9622b10fb33",
+      "servedSha256": "e1de207ebd0d623d3570f5d04c39404d90653c838454faa32ec9b48bd60f84b3",
+      "bytes": 35861
+    },
+    {
+      "path": "main/freertos/07-memory.html",
+      "sourceSha256": "57c9d8c224c0c9fbdb7cfa69550c73761a5a81aa1bec020699f3ed53a9d1934b",
+      "servedSha256": "2dc5b9aac5400f0e7039a17ef9e353fee08f351b703fd9d7e72ba5dfe6675ad3",
+      "bytes": 33158
+    },
+    {
+      "path": "main/freertos/08-project.html",
+      "sourceSha256": "ec31b8eb3f4176a5f620df9309ea0071bb34e65769b339e73dd364ef7aac5aad",
+      "servedSha256": "cf1dfafef80a6109d76726a89303178448afa507b129f4a7516d9561f9f48385",
+      "bytes": 34035
+    },
+    {
+      "path": "main/i2c/01-lsm6dsox.html",
+      "sourceSha256": "7203cd85b7c216855379174a5f4582131fcee0c213d4b1a3e8ad7f3300209cf8",
+      "servedSha256": "52eb7db06a5e614fb7913313ad260f7ede98293dfd6c19b6636d1dcb85198bf9",
+      "bytes": 63462
+    },
+    {
+      "path": "main/i2c/02-max30102.html",
+      "sourceSha256": "b92a429734da717d4c6b0225a0494e381766b003fe45fec87b287e0ce6593285",
+      "servedSha256": "6bbe35bbfdf7d2df3b4199def219a2bba0886b906182b033fddfe48ae1679949",
+      "bytes": 43874
+    },
+    {
+      "path": "main/i2c/03-sampling.html",
+      "sourceSha256": "4bebc9a356c82498763e38e7ac3d02dfceaf56db981550986ecbd1c36c2ab311",
+      "servedSha256": "e0d7dd32623ad4f0b62f57b0c8ee36a117655b4adeef0d9bf0895c4a57425357",
+      "bytes": 52002
+    },
+    {
+      "path": "main/i2c/04-mlc.html",
+      "sourceSha256": "3a4e772d27c894d34e9eafe6b84557486d0251f8f29ff527af0c2119ff8f9ee7",
+      "servedSha256": "213704b0f6f41dbe2881a23e9f929c95ce5654e7973d50af8201130f6ce890bf",
+      "bytes": 50328
+    },
+    {
+      "path": "main/wireless/02-project.html",
+      "sourceSha256": "3aa1417f53641dcd617c0739830d2ec5b5f70f01c11ea7eeda224ec66d1404c6",
+      "servedSha256": "849f36f033a4483da81e5b8a55b4c42f1c8bfadd63a3f34ca133803b1414c887",
+      "bytes": 36701
+    },
+    {
+      "path": "README.md",
+      "sourceSha256": "6841197567c89e8f87a097be4828f141b56703b49b6b84a712126d719495ba19",
+      "servedSha256": "6841197567c89e8f87a097be4828f141b56703b49b6b84a712126d719495ba19",
+      "bytes": 5156
+    },
+    {
+      "path": "references.html",
+      "sourceSha256": "9425f431be6a3ae7e2a2090e42334a959156074c54d70177d40b865d90d98666",
+      "servedSha256": "71fbdbf5a91a689ec1be0deb6b97a39bf65f7dffe5cb54873e404193e3d1bbc0",
+      "bytes": 37101
+    },
+    {
+      "path": "RELEASE_NOTES.md",
+      "sourceSha256": "4d6c4386118ea3a6348afe7e00f7078ea9578ad0d06b05c9548b1712ab380700",
+      "servedSha256": "4d6c4386118ea3a6348afe7e00f7078ea9578ad0d06b05c9548b1712ab380700",
+      "bytes": 4837
+    }
+  ],
+  "course": {
+    "title": "从外设到端侧 AI：基于 SmartWatch 的嵌入式实践",
+    "summary": "以一块智能手表为贯穿案例，从裸机、FreeRTOS，逐步探索显示、蓝牙、手机应用、模型部署与原型个性化。",
+    "category": "嵌入式系统",
+    "tags": [
+      "STM32U5",
+      "FreeRTOS",
+      "端侧AI"
+    ],
+    "version": "v0.2.0 预览版",
+    "stage": "连载中",
+    "description": "基于 SmartWatch 项目的图解与交互课程。主线两章共29篇，五条支线共50篇，共79篇课程。通过原理、独立实验和项目源码对照，把外设、系统、通信与算法逐层接起来。各支线可按前置要求选择学习。",
+    "prerequisites": "已经掌握 C 的变量、数组、函数和基本指针。Dart 与 Python 在各自支线补充入门；进入硬件实验前按对应章节准备工具与板卡。",
+    "outcomes": "能沿数据采集、任务组织、蓝牙消息、手机显示和模型推理理解完整嵌入式系统；完成独立实验，并能定位 SmartWatch 中的对应实现。",
+    "hardware": "主控 STM32U575、CH582M 蓝牙桥接、LSM6DSOX、MAX30102、GC9A01 圆屏与麦克风。语言、算法和部分 App 实验可在电脑完成；每章所需硬件以正文为准。",
+    "instructions": "先阅读学习地图与起点，再沿裸机、FreeRTOS 两条主线学习；完成对应前置后选择支线。章节中的交互可直接在浏览器操作；运行 C、Python、Dart 或 Flutter 示例需要各章说明的工具环境。学习进度仅保存在当前浏览器。",
+    "evidence": "发布说明记录了页面链接、电脑示例与软件流程验证。课程图示属于教学示意，不代表整机已完成硬件验收。",
+    "limitations": "当前为 v0.2.0 预览版。模型实际效果需要真实佩戴数据；固件升级支线使用普通文件模拟，当前手表尚未实现完整固件 OTA。",
+    "license": "遵循 SmartWatch 仓库的许可与各引用资料声明",
+    "links": [
+      {
+        "type": "repository",
+        "label": "SmartWatch 项目源码",
+        "url": "https://github.com/Cody-ic/SmartWatch"
+      },
+      {
+        "type": "other",
+        "label": "教程离线包 v0.2.0",
+        "url": "https://github.com/Cody-ic/SmartWatch/releases/tag/tutorial-v0.2.0"
+      }
+    ],
+    "fileIds": [],
+    "projectId": "a1000000-0000-4000-8000-000000000002",
+    "projectRevisionId": "b2000000-0000-4000-8000-000000000002",
+    "modules": [
+      {
+        "title": "主线一 · 裸机开发",
+        "description": "从外设与采样开始，把独立实验接回手表。",
+        "lessons": [
+          {
+            "id": "00-start",
+            "title": "起点：让电路、代码与工具对上号",
+            "summary": "已有 C 基础的嵌入式入门：原理、独立实验、图解与 SmartWatch 项目实践。",
+            "body": "",
+            "practice": "board",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/main/00-start.html"
+              }
+            ]
+          },
+          {
+            "id": "01-gpio",
+            "title": "GPIO：从点亮一盏灯到读懂按钮",
+            "summary": "已有 C 基础的嵌入式入门：原理、独立实验、图解与 SmartWatch 项目实践。",
+            "body": "",
+            "practice": "board",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/main/01-gpio.html"
+              }
+            ]
+          },
+          {
+            "id": "02-uart",
+            "title": "UART：从高低电平到一次完整收发",
+            "summary": "已有 C 基础的嵌入式入门：原理、独立实验、图解与 SmartWatch 项目实践。",
+            "body": "",
+            "practice": "board",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/main/02-uart.html"
+              }
+            ]
+          },
+          {
+            "id": "03-interrupt",
+            "title": "中断：从一次按钮事件到优先级与向量表",
+            "summary": "已有 C 基础的嵌入式入门：原理、独立实验、图解与 SmartWatch 项目实践。",
+            "body": "",
+            "practice": "board",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/main/03-interrupt.html"
+              }
+            ]
+          },
+          {
+            "id": "05-spi",
+            "title": "SPI：先读时序，再驱动一块屏幕",
+            "summary": "已有 C 基础的嵌入式入门：原理、独立实验、图解与 SmartWatch 项目实践。",
+            "body": "",
+            "practice": "board",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/main/05-spi.html"
+              }
+            ]
+          },
+          {
+            "id": "06-i2c",
+            "title": "I²C：读懂总线，写出一个传感器驱动",
+            "summary": "已有 C 基础的嵌入式入门：原理、独立实验、图解与 SmartWatch 项目实践。",
+            "body": "",
+            "practice": "board",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/main/06-i2c.html"
+              }
+            ]
+          },
+          {
+            "id": "i2c-lsm6dsox",
+            "title": "LSM6DSOX：从六轴读数到连续采集",
+            "summary": "IIC 项目实战：LSM6DSOX：从六轴读数到 FIFO",
+            "body": "",
+            "practice": "board",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/main/i2c/01-lsm6dsox.html"
+              }
+            ]
+          },
+          {
+            "id": "i2c-max30102",
+            "title": "MAX30102：红光和红外怎样算出心率、血氧？",
+            "summary": "IIC 项目实战：MAX30102：从光学原始数据到批量采样",
+            "body": "",
+            "practice": "board",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/main/i2c/02-max30102.html"
+              }
+            ]
+          },
+          {
+            "id": "i2c-sampling",
+            "title": "联合采集与重采样：从 104 Hz 到 100 Hz",
+            "summary": "IIC 项目实战：联合采集与重采样：从 104 Hz 到 100 Hz",
+            "body": "",
+            "practice": "board",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/main/i2c/03-sampling.html"
+              }
+            ]
+          },
+          {
+            "id": "i2c-mlc",
+            "title": "扩展：片内决策树与 AI 训练数据",
+            "summary": "IIC 项目实战：扩展：片内决策树与 AI 训练数据",
+            "body": "",
+            "practice": "board",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/main/i2c/04-mlc.html"
+              }
+            ]
+          },
+          {
+            "id": "09-adc-dac",
+            "title": "ADC：把电压变成程序能读的数",
+            "summary": "ADC 原理、采样量化、逐次比较、基本读取与项目麦克风。",
+            "body": "",
+            "practice": "board",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/main/09-adc-dac.html"
+              }
+            ]
+          },
+          {
+            "id": "adc-microphone",
+            "title": "项目麦克风：从模拟电压到声音数据",
+            "summary": "SPU0410 麦克风驱动：模拟电压、连续 ADC、DMA 缓冲、去直流偏置与声音强弱。",
+            "body": "",
+            "practice": "board",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/main/adc/01-microphone.html"
+              }
+            ]
+          },
+          {
+            "id": "13-wireless",
+            "title": "无线通信：让手机和手表交换数据",
+            "summary": "无线通信：让手机和手表交换数据，从具体问题、图解到项目源码。",
+            "body": "",
+            "practice": "board",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/main/13-wireless.html"
+              }
+            ]
+          },
+          {
+            "id": "04-protocol",
+            "title": "手写协议：从字节流认出一条消息",
+            "summary": "手写协议：从字节流认出一条消息，从具体问题、图解到项目源码。",
+            "body": "",
+            "practice": "board",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/main/04-protocol.html"
+              }
+            ]
+          },
+          {
+            "id": "wireless-project",
+            "title": "项目实现：一条消息怎样走完三端",
+            "summary": "项目实现：一条消息怎样走完三端，从具体问题、图解到项目源码。",
+            "body": "",
+            "practice": "board",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/main/wireless/02-project.html"
+              }
+            ]
+          },
+          {
+            "id": "10-dma",
+            "title": "DMA：数据怎样自动搬进数组？",
+            "summary": "DMA：数据怎样自动搬进数组？，从具体问题、图解到项目源码。",
+            "body": "",
+            "practice": "board",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/main/10-dma.html"
+              }
+            ]
+          },
+          {
+            "id": "07-clock",
+            "title": "时钟：这些“每秒多少次”从哪里来？",
+            "summary": "时钟：这些“每秒多少次”从哪里来？，从具体问题、图解到项目源码。",
+            "body": "",
+            "practice": "board",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/main/07-clock.html"
+              }
+            ]
+          },
+          {
+            "id": "08-timer-pwm",
+            "title": "定时器：让硬件计数、定时和输出脉冲",
+            "summary": "定时器：让硬件计数、定时和输出脉冲，从具体问题、图解到项目源码。",
+            "body": "",
+            "practice": "board",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/main/08-timer-pwm.html"
+              }
+            ]
+          },
+          {
+            "id": "11-system",
+            "title": "系统运行：看门狗、实时时钟、保存与低功耗",
+            "summary": "系统运行：看门狗、实时时钟、保存与低功耗，从具体问题、图解到项目源码。",
+            "body": "",
+            "practice": "board",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/main/11-system.html"
+              }
+            ]
+          },
+          {
+            "id": "12-baremetal",
+            "title": "裸机逻辑综合：把手表各部分接起来",
+            "summary": "裸机逻辑综合：把手表各部分接起来，从具体问题、图解到项目源码。",
+            "body": "",
+            "practice": "board",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/main/12-baremetal.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "主线二 · FreeRTOS",
+        "description": "从函数与多任务到调度、通信、资源和整机组织。",
+        "lessons": [
+          {
+            "id": "rtos-foundations",
+            "title": "从函数调用到多任务：先补上这几步",
+            "summary": "已经会写函数、指针和主循环，还需要认识“把函数交给别人调用”和“几个执行流程交替推进”。这一篇先用普通 C 程序看清它们，再进入 FreeRTOS。",
+            "body": "",
+            "practice": "board",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/main/freertos/00-foundations.html"
+              }
+            ]
+          },
+          {
+            "id": "14-freertos",
+            "title": "第一个 FreeRTOS 程序：让两个任务分别前进",
+            "summary": "已经知道任务入口是一个函数。这次创建两个任务，用两个计数变量观察它们各自执行，再解释创建、等待和启动之间的关系。",
+            "body": "",
+            "practice": "board",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/main/14-freertos.html"
+              }
+            ]
+          },
+          {
+            "id": "rtos-scheduling",
+            "title": "任务什么时候运行：从等待读懂调度",
+            "summary": "两个任务都在循环，为什么还能轮流前进？先看等待怎样交出执行机会，再看优先级怎样决定下一步，最后把系统节拍和周期工作接起来。",
+            "body": "",
+            "practice": "board",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/main/freertos/02-scheduling.html"
+              }
+            ]
+          },
+          {
+            "id": "rtos-semaphore",
+            "title": "传感器数据到了：从标志位走向信号量",
+            "summary": "沿用 LSM6DSOX 水印中断。先看任务怎样停止反复查询，再让中断唤醒它，最后解释当前项目为什么还设置了等待超时。",
+            "body": "",
+            "practice": "board",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/main/freertos/03-semaphore.html"
+              }
+            ]
+          },
+          {
+            "id": "15-sync",
+            "title": "任务之间传数据：先把一个整数交清楚",
+            "summary": "信号量告诉任务“有事要处理”。如果还要把一份数值交给另一个任务，并保留先后顺序，就需要明确数据存在哪里、谁负责保存。",
+            "body": "",
+            "practice": "board",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/main/15-sync.html"
+              }
+            ]
+          },
+          {
+            "id": "rtos-resources",
+            "title": "两个任务碰到同一个资源：先看怎样交错",
+            "summary": "任务有自己的栈，但总线、界面和文件级变量仍然可能共享。先沿着一次具体的交错找问题，再决定由谁使用资源，或怎样保护完整操作。",
+            "body": "",
+            "practice": "board",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/main/freertos/05-resources.html"
+              }
+            ]
+          },
+          {
+            "id": "rtos-audio",
+            "title": "一帧声音，两项用途：先通知，再交付",
+            "summary": "麦克风的一帧采样同时用于声音检测和关键词识别。沿着“采集完成、通知任务、读取私有帧、归还空间”理解当前实现，再比较通知指定任务的另一种方式。",
+            "body": "",
+            "practice": "board",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/main/freertos/06-audio.html"
+              }
+            ]
+          },
+          {
+            "id": "rtos-memory",
+            "title": "任务为什么创建失败，运行一会儿又为什么崩溃？",
+            "summary": "从创建接口里暂时略过的栈深度继续：分清任务栈、内核分配池和静态数组，用项目的大数组实例理解容量，再建立有证据的排查顺序。",
+            "body": "",
+            "practice": "board",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/main/freertos/07-memory.html"
+              }
+            ]
+          },
+          {
+            "id": "rtos-project",
+            "title": "接回手表：三个任务怎样组成一个系统",
+            "summary": "把前面分开学习的创建、等待、通知和存储放回实际项目。沿启动顺序和数据流读当前代码，明确每项任务负责什么，再说明哪些地方需要通过运行观察验证。",
+            "body": "",
+            "practice": "board",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/main/freertos/08-project.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "支线一 · 显示驱动与 LVGL",
+        "description": "完成 SPI 后，可以开始屏幕与界面实验。",
+        "lessons": [
+          {
+            "id": "05-display",
+            "title": "先驱动手表彩屏：GC9A01 与 RGB565",
+            "summary": "已有 C 基础的嵌入式入门：原理、独立实验、图解与 SmartWatch 项目实践。",
+            "body": "",
+            "practice": "board",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/lvgl/01-display.html"
+              }
+            ]
+          },
+          {
+            "id": "lvgl-port",
+            "title": "把 LVGL 接到屏幕：缓冲、刷新与时间",
+            "summary": "已有 C 基础的嵌入式入门：原理、独立实验、图解与 SmartWatch 项目实践。",
+            "body": "",
+            "practice": "board",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/lvgl/02-port.html"
+              }
+            ]
+          },
+          {
+            "id": "lvgl-widgets",
+            "title": "第一个界面：对象、标签与常用控件",
+            "summary": "已有 C 基础的嵌入式入门：原理、独立实验、图解与 SmartWatch 项目实践。",
+            "body": "",
+            "practice": "board",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/lvgl/03-widgets.html"
+              }
+            ]
+          },
+          {
+            "id": "lvgl-layout",
+            "title": "把界面排整齐：布局、样式与显示资源",
+            "summary": "已有 C 基础的嵌入式入门：原理、独立实验、图解与 SmartWatch 项目实践。",
+            "body": "",
+            "practice": "board",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/lvgl/04-layout.html"
+              }
+            ]
+          },
+          {
+            "id": "lvgl-events",
+            "title": "让界面响应：事件、输入与页面切换",
+            "summary": "已有 C 基础的嵌入式入门：原理、独立实验、图解与 SmartWatch 项目实践。",
+            "body": "",
+            "practice": "board",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/lvgl/05-events.html"
+              }
+            ]
+          },
+          {
+            "id": "lvgl-data",
+            "title": "让界面持续正确：数据、定时器与生命周期",
+            "summary": "已有 C 基础的嵌入式入门：原理、独立实验、图解与 SmartWatch 项目实践。",
+            "body": "",
+            "practice": "board",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/lvgl/06-data.html"
+              }
+            ]
+          },
+          {
+            "id": "lvgl-performance",
+            "title": "把刷新做稳：性能、DMA 改造与排错",
+            "summary": "已有 C 基础的嵌入式入门：原理、独立实验、图解与 SmartWatch 项目实践。",
+            "body": "",
+            "practice": "board",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/lvgl/07-performance.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "支线二 · CH582M 与蓝牙桥接",
+        "description": "沿串口、事件循环、GATT 与双向消息理解蓝牙桥接。",
+        "lessons": [
+          {
+            "id": "ch582m-00-platform",
+            "title": "从 STM32 到 CH582M：哪些知识可以继续用",
+            "summary": "手表需要一颗能与手机无线通信的芯片。本项目把采集、界面和推理交给 STM32U575，把低功耗蓝牙与串口桥接交给 CH582M。先认清这两颗芯片怎样配合，再打开新的开发环境。",
+            "body": "",
+            "practice": "board",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/ch582m/00-platform.html"
+              }
+            ]
+          },
+          {
+            "id": "ch582m-01-project",
+            "title": "打开 CH 工程：编译、下载与入口",
+            "summary": "先让工程的目标、编译结果和下载对象一一对应。然后沿 main 的初始化顺序，看看蓝牙库与自己写的外设代码分别从哪里开始运行。",
+            "body": "",
+            "practice": "board",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/ch582m/01-project.html"
+              }
+            ]
+          },
+          {
+            "id": "ch582m-02-uart",
+            "title": "用熟悉的串口，接上另一颗主控",
+            "summary": "无线功能先放在一边。CH582M 与 STM32 之间仍然是已经学过的串口：发送脚接接收脚、共地，并约定相同格式。先把这一段对应清楚。",
+            "body": "",
+            "practice": "board",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/ch582m/02-uart.html"
+              }
+            ]
+          },
+          {
+            "id": "ch582m-03-events",
+            "title": "蓝牙和串口怎样共用主循环",
+            "summary": "串口能收到字节以后，为什么没有直接在中断里发送蓝牙？先看主循环每轮在做什么，再认识项目使用的事件处理方式。",
+            "body": "",
+            "practice": "board",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/ch582m/03-events.html"
+              }
+            ]
+          },
+          {
+            "id": "ch582m-04-gatt",
+            "title": "手机找到的服务和特征，怎样变成代码",
+            "summary": "手机能扫描并连接，只说明无线连接已经建立。接下来还要找到“往哪里写、从哪里收”。项目用一个服务和两个特征，把这两个方向交代给手机。",
+            "body": "",
+            "practice": "board",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/ch582m/04-gatt.html"
+              }
+            ]
+          },
+          {
+            "id": "ch582m-05-phone-to-watch",
+            "title": "手机写入之后，字节怎样到达 STM32",
+            "summary": "从一次 FFE2 写入出发，依次跟过库回调、事件回调、软件队列与串口寄存器。这里不增加新的业务协议，沿用主线的消息格式。",
+            "body": "",
+            "practice": "board",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/ch582m/05-phone-to-watch.html"
+              }
+            ]
+          },
+          {
+            "id": "ch582m-06-watch-to-phone",
+            "title": "STM32 发出之后，怎样成为蓝牙通知",
+            "summary": "反向传输多了一项限制：串口随时可能收到字节，蓝牙通知却要满足连接、订阅和发送资源条件。沿着现有发送流程看每个缓冲区为何出现。",
+            "body": "",
+            "practice": "board",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/ch582m/06-watch-to-phone.html"
+              }
+            ]
+          },
+          {
+            "id": "ch582m-07-integration",
+            "title": "把蓝牙接口与应用协议逐层对上",
+            "summary": "最后把两种“协议”放在各自的位置：蓝牙库负责连接和特征访问，应用协议说明这些字节代表什么。用一份实际电量消息，从主控一直追踪到手机显示。",
+            "body": "",
+            "practice": "board",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/ch582m/07-integration.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "支线三 · Dart 与 Flutter App",
+        "description": "先从模拟电量小应用开始，再接入协议与蓝牙。",
+        "lessons": [
+          {
+            "id": "flutter-00-environment",
+            "title": "先把开发环境和第一个程序跑起来",
+            "summary": "先认识手机、电脑和手表各自运行什么，再准备工具。第一次运行只输出一句话，确认环境之后再接触页面和蓝牙。",
+            "body": "",
+            "practice": "computer",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/flutter/00-environment.html"
+              }
+            ]
+          },
+          {
+            "id": "flutter-01-dart",
+            "title": "Dart 语法入门：从 C 迁移到新语言",
+            "summary": "把后面会遇到的写法在这一篇集中解释。先读普通数值和函数，再认识集合、空值、对象与回调，每段都能独立观察结果。",
+            "body": "",
+            "practice": "computer",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/flutter/01-dart.html"
+              }
+            ]
+          },
+          {
+            "id": "flutter-02-page",
+            "title": "第一个页面：代码怎样变成文字与按钮",
+            "summary": "只摆出电量读数和一个按钮，沿着入口、页面对象和布局读代码。先有能看见的结果，再解释框架调用关系。",
+            "body": "",
+            "practice": "computer",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/flutter/02-page.html"
+              }
+            ]
+          },
+          {
+            "id": "flutter-03-state",
+            "title": "按钮按下后，为什么修改变量还不够",
+            "summary": "从修改一个读数开始，引入页面状态和重新构建；再认识页面建立、持续存在和退出这三个时刻。",
+            "body": "",
+            "practice": "computer",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/flutter/03-state.html"
+              }
+            ]
+          },
+          {
+            "id": "flutter-04-async",
+            "title": "等待设备时，界面怎样继续响应",
+            "summary": "先观察一次延迟结果，再接收连续数据。把 Future、Stream 和回调放在同一条事件顺序中，避免把 async 当成另建任务。",
+            "body": "",
+            "practice": "computer",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/flutter/04-async.html"
+              }
+            ]
+          },
+          {
+            "id": "flutter-05-protocol",
+            "title": "收到七个字节，怎样显示成 4000 毫伏",
+            "summary": "从主线已经见过的电量帧开始，在电脑上完成解析，再让解析结果更新页面。先把字节到含义这一步独立跑通。",
+            "body": "",
+            "practice": "computer",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/flutter/05-protocol.html"
+              }
+            ]
+          },
+          {
+            "id": "flutter-06-bluetooth",
+            "title": "自己的 App 怎样真正连上手表",
+            "summary": "先让调试工具证明设备链路可用，再在程序中完成相同操作。每一步都有可观察的状态，最后才把通知交给前一篇的解析流程。",
+            "body": "",
+            "practice": "computer",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/flutter/06-bluetooth.html"
+              }
+            ]
+          },
+          {
+            "id": "flutter-07-control",
+            "title": "手机怎样设置手表，并记住用户输入",
+            "summary": "接收已经跑通，这次从一个体重输入框出发，把校验、组帧、发送和保存串起来，区分每一步完成的含义。",
+            "body": "",
+            "practice": "computer",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/flutter/07-control.html"
+              }
+            ]
+          },
+          {
+            "id": "flutter-08-project",
+            "title": "接回完整 App：沿一条消息读三个文件",
+            "summary": "已经写过页面、状态、异步和收发，现在把它们对应到仓库。先追踪一条电量消息，再扩展到已有的会话、备份和健康数据。",
+            "body": "",
+            "practice": "computer",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/flutter/08-project.html"
+              }
+            ]
+          },
+          {
+            "id": "flutter-09-alert",
+            "title": "Android 拓展：从告警倒计时到原生短信接口",
+            "summary": "先把取消和失败流程做成可观察的界面，再解释 Dart 如何请求 Android 能力。配套测试使用模拟通道，不向实际号码发送消息。",
+            "body": "",
+            "practice": "computer",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/flutter/09-alert.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "支线四 · 数据、训练与部署",
+        "description": "从 Python、数据与训练走到评估和 STM32 部署。",
+        "lessons": [
+          {
+            "id": "ai-00-python",
+            "title": "Python 语法入门：先把数据读进程序",
+            "summary": "沿着已有 C 基础，补上缩进、列表、切片、模块和对象。最后读两行采样记录，为后面的数据处理准备最小语言工具。",
+            "body": "",
+            "practice": "computer",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/ai/00-python.html"
+              }
+            ]
+          },
+          {
+            "id": "ai-01-problem",
+            "title": "读到了加速度，怎样知道人在走路",
+            "summary": "从已经熟悉的传感器波形开始，先尝试规则判断，再认识带标签的数据、模型、训练与推理。所有术语都对应当前要解决的动作识别问题。",
+            "body": "",
+            "practice": "computer",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/ai/01-problem.html"
+              }
+            ]
+          },
+          {
+            "id": "ai-02-data",
+            "title": "怎样准备一份能用于训练的数据",
+            "summary": "先把数据来源、时间和动作答案保存清楚，再划分训练、验证和测试。每条规则都对应一种会把结果变得不可信的具体情况。",
+            "body": "",
+            "practice": "computer",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/ai/02-data.html"
+              }
+            ]
+          },
+          {
+            "id": "ai-03-windows",
+            "title": "一个点、一段窗口和一批数据有什么区别",
+            "summary": "从一张六轴表开始，用小数组看清下标，再扩展到 512 点。最后解释输入形状、滑动窗口和归一化为什么必须与模型一致。",
+            "body": "",
+            "practice": "computer",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/ai/03-windows.html"
+              }
+            ]
+          },
+          {
+            "id": "ai-04-learning",
+            "title": "训练在改变什么：从一个分数手算起",
+            "summary": "先用两个特征计算判断分数，再看预测错误如何推动参数变化。损失、梯度和学习率都通过可计算的小例子引入。",
+            "body": "",
+            "practice": "computer",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/ai/04-learning.html"
+              }
+            ]
+          },
+          {
+            "id": "ai-05-training",
+            "title": "亲手训练第一个小模型",
+            "summary": "让数据读取、前向、更新和评估都能实际运行。先用人工数据检查程序，再把真实记录放进同一条流程，并保留每次实验的依据。",
+            "body": "",
+            "practice": "computer",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/ai/05-training.html"
+              }
+            ]
+          },
+          {
+            "id": "ai-06-convolution",
+            "title": "为什么要让一个小窗口沿波形移动",
+            "summary": "全连接小模型跑通后，再看动作的局部变化怎样被重复利用。从一次小卷积手算起，逐步认识一维卷积、通道和池化。",
+            "body": "",
+            "practice": "computer",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/ai/06-convolution.html"
+              }
+            ]
+          },
+          {
+            "id": "ai-07-evaluation",
+            "title": "训练越久，为什么新数据可能反而更差",
+            "summary": "围绕具体错误理解过拟合、类别不均衡和独立测试。把一个总分拆成每类结果，再决定下一步该补数据还是改模型。",
+            "body": "",
+            "practice": "computer",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/ai/07-evaluation.html"
+              }
+            ]
+          },
+          {
+            "id": "ai-08-deployment",
+            "title": "模型文件怎样变成 STM32 能执行的计算",
+            "summary": "先保存模型结构与参数，再解释量化为什么能减少存储。最后使用 ST 工具做分析、验证和代码导出，每一步都有需要保留的产物。",
+            "body": "",
+            "practice": "computer",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/ai/08-deployment.html"
+              }
+            ]
+          },
+          {
+            "id": "ai-09-watch",
+            "title": "接回手表：一份窗口怎样走到分类结果",
+            "summary": "沿真实调用路径读当前活动识别，把窗口、预处理、模型接口和应用更新连起来。完成后应能指出每次推理究竟用了哪份数据。",
+            "body": "",
+            "practice": "computer",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/ai/09-watch.html"
+              }
+            ]
+          },
+          {
+            "id": "ai-10-keyword",
+            "title": "声音拓展：波形怎样变成“救命”这个词",
+            "summary": "复用训练、评估和部署流程，重点补声音输入与特征变换。先看时域与频域，再逐步解释项目为何准备 40×32 个特征。",
+            "body": "",
+            "practice": "computer",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/ai/10-keyword.html"
+              }
+            ]
+          },
+          {
+            "id": "ai-11-sleep",
+            "title": "睡眠拓展：为什么一次判断需要更长时间",
+            "summary": "从三十秒记录的统计特征出发，解释五个窗口怎样组成输入，以及实时运行时的时间对齐与数据缺失为什么重要。",
+            "body": "",
+            "practice": "computer",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/ai/11-sleep.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "支线五 A · 原型学习与个性化",
+        "description": "从二维类别中心理解 embedding、会话、评估与备份。",
+        "lessons": [
+          {
+            "id": "proto-01-adaptation",
+            "title": "换个人佩戴，怎样让模型适应新的动作习惯",
+            "summary": "接回支线四的特征提取与分类，先确定哪些参数改变，再讨论用新佩戴者的数据更新类别代表点。",
+            "body": "",
+            "practice": "computer",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/proto/01-adaptation.html"
+              }
+            ]
+          },
+          {
+            "id": "proto-02-centers",
+            "title": "先画二维点，再亲手算一个类别中心",
+            "summary": "把每份特征看成平面上的一点，先求平均，再判断新点。图上能看到的变化，之后才变成数组运算。",
+            "body": "",
+            "practice": "computer",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/proto/02-centers.html"
+              }
+            ]
+          },
+          {
+            "id": "proto-03-similarity",
+            "title": "长度、方向和点积：怎样比较两串特征",
+            "summary": "先从二维箭头说明为什么要归一化，再扩展到 128 维。相似度、最大类别和显示用分数分别解释。",
+            "body": "",
+            "practice": "computer",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/proto/03-similarity.html"
+              }
+            ]
+          },
+          {
+            "id": "proto-04-session",
+            "title": "一次个人采集，怎样形成新原型",
+            "summary": "从 App 选择动作开始，沿开始、筛选、累加、结束或取消的顺序读代码。每个条件都对应一项数据质量或业务要求。",
+            "body": "",
+            "practice": "computer",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/proto/04-session.html"
+              }
+            ]
+          },
+          {
+            "id": "proto-05-evaluation",
+            "title": "个人化以后，怎样知道哪一类真的改善了",
+            "summary": "把更新前后的原型放到同一批独立记录上比较，既看目标类，也看其他类别和未知动作。",
+            "body": "",
+            "practice": "computer",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/proto/05-evaluation.html"
+              }
+            ]
+          },
+          {
+            "id": "proto-06-backup",
+            "title": "重启后原型去哪了：备份与完整恢复",
+            "summary": "先看 RAM 的生命周期，再把几千字节原型放进现有可靠传输流程。传输的终点是整份数据检查并提交，不只是最后一次写入返回。",
+            "body": "",
+            "practice": "computer",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/proto/06-backup.html"
+              }
+            ]
+          },
+          {
+            "id": "proto-07-project",
+            "title": "把个人化的数学与三端操作接起来",
+            "summary": "沿一次新特征的产生、筛选、更新和显示，串起主控与手机，再明确基础模型变化后的重新核对工作。",
+            "body": "",
+            "practice": "computer",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/proto/07-project.html"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "支线五 B · 固件升级设计",
+        "description": "用普通文件演练暂存、试运行与回退；整机 OTA 尚未实现。",
+        "lessons": [
+          {
+            "id": "ota-01-startup",
+            "title": "上电以后，处理器怎样走到 main",
+            "summary": "先认识程序存放位置、复位入口和启动代码，再引入负责选择应用的启动加载程序。当前手表尚未实现完整无线固件升级。",
+            "body": "",
+            "practice": "computer",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/ota/01-startup.html"
+              }
+            ]
+          },
+          {
+            "id": "ota-02-image",
+            "title": "固件文件怎样变成可以执行的镜像",
+            "summary": "从 ELF、HEX、BIN 的区别进入 Flash 存储，再明确镜像清单与分区需要记录什么。每项元数据都有启动或检查上的用途。",
+            "body": "",
+            "practice": "computer",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/ota/02-image.html"
+              }
+            ]
+          },
+          {
+            "id": "ota-03-staging",
+            "title": "接收到一半断开，为什么旧程序必须还在",
+            "summary": "从失败场景反推暂存和状态记录。用两个普通文件实际收一份候选内容，每次命令结束后都可以重新读取进度。",
+            "body": "",
+            "practice": "computer",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/ota/03-staging.html"
+              }
+            ]
+          },
+          {
+            "id": "ota-04-trial",
+            "title": "新程序能启动，就算升级成功了吗",
+            "summary": "把候选、试运行、确认和回退画成状态变化，再通过重新启动文件模型观察每个分支。",
+            "body": "",
+            "practice": "computer",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/ota/04-trial.html"
+              }
+            ]
+          },
+          {
+            "id": "ota-05-wireless",
+            "title": "手机到主控，怎样接起一条升级链",
+            "summary": "复用已经学过的字节流和可靠事务知识，把升级文件、链路分块、Flash 接收与 App 状态连起来，明确两个芯片的边界。",
+            "body": "",
+            "practice": "computer",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/ota/05-wireless.html"
+              }
+            ]
+          },
+          {
+            "id": "ota-06-validation",
+            "title": "每一步中断之后，设备应该怎样恢复",
+            "summary": "先在普通文件模型执行明确的失败路径，再制定实际硬件的验证顺序。完成设计时，要能解释每次重启依据哪份记录做决定。",
+            "body": "",
+            "practice": "computer",
+            "links": [
+              {
+                "type": "other",
+                "label": "章节源文件与引用",
+                "url": "https://github.com/Cody-ic/SmartWatch/blob/tutorial-v0.2.0/tutorial/branches/ota/06-validation.html"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "displayOverlay": "course-reading-v1"
+}
