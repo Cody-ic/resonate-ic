@@ -62,3 +62,4 @@ yarn-error.log*
 # Encrypted backups and restored private credential exports
 *.resbackup
 recovery-secrets.original.env
+/dist-pages/

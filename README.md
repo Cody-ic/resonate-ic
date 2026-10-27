@@ -4,6 +4,10 @@
 
 ## GitHub 源码与运行数据
 
+GitHub Pages 静态界面预览：<https://cody-ic.github.io/resonate-ic/>。使用独立手写示例数据，复用正式界面；支持浏览、筛选、项目详情与示例课程阅读。此地址不连接正式后端，不接受登录、投稿、评论或审核。真实账号、私有通知、密钥与运行数据库不会打包。
+
+本机构建：`node scripts/build-pages.mjs`，输出 `dist-pages/`；`.github/workflows/pages.yml` 只将此目录发布到 Pages。预览入口位于 `static-preview/`，不改变正式站点运行方式。
+
 独立源码仓库：<https://github.com/Cody-ic/resonate-ic>。源码上传不等于网站已部署，当前运行架构仍依赖 Cloudflare Worker、D1、R2、Durable Objects 和 Workflows；普通 VPS 部署需要另外适配这些服务。
 
 ```powershell
