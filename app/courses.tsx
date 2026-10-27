@@ -1,4 +1,5 @@
 "use client";
+import {requestErrorMessage} from "../lib/request-error";
 import {siteFetch as fetch} from './site-fetch';
 import { useEffect, useState } from "react";
 import { ArrowRight, ArrowUpRight, BookOpen, ChevronRight, Plus, X, Check, AlertCircle, Link2, ExternalLink, Download, ArrowUp, ArrowDown, Cpu, Laptop, Layers3, Upload, Search } from "lucide-react";
@@ -20,7 +21,7 @@ const freshLesson=()=>({id:`lesson-${crypto.randomUUID().slice(0,8)}`,title:"",s
 async function request(path:string,method="GET",body?:unknown):Promise<Item>{
   const response=await fetch(`/api/${path}`,{method,headers:body instanceof FormData?undefined:{"Content-Type":"application/json"},body:body===undefined?undefined:body instanceof FormData?body:JSON.stringify(body)});
   const value=await response.json() as Item;
-  if(!response.ok)throw new Error(value.error+(value.fields?"："+Object.entries(value.fields.fieldErrors??{}).map(([k,v])=>`${k} ${v}`).join("；"):""));
+  if(!response.ok)throw new Error(requestErrorMessage(value));
   return value;
 }
 function lessonCount(course:Item){return course.modules?.reduce((n:number,m:Item)=>n+m.lessons.length,0)??0;}

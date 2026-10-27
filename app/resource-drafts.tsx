@@ -1,9 +1,10 @@
 'use client';
+import {requestErrorMessage} from '../lib/request-error';
 import {siteFetch as fetch} from './site-fetch';
 import {useEffect,useState} from 'react';
 import {VerificationFields,ResourceVerification} from './resource-verification';
 type Item=Record<string,any>;
-async function api(path:string,method='GET',body?:unknown):Promise<Item>{const response=await fetch('/api/'+path,{method,headers:{'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body)}),value=await response.json() as Item;if(!response.ok)throw Error(value.error??'操作未完成');return value;}
+async function api(path:string,method='GET',body?:unknown):Promise<Item>{const response=await fetch('/api/'+path,{method,headers:{'Content-Type':'application/json'},body:body===undefined?undefined:JSON.stringify(body)}),value=await response.json() as Item;if(!response.ok)throw Error(requestErrorMessage(value,'操作未完成'));return value;}
 export default function ResourceDrafts({user}:{user:Item|null}){
   const [items,setItems]=useState<Item[]>([]),[error,setError]=useState(''),[notice,setNotice]=useState(''),[busy,setBusy]=useState(false),[editing,setEditing]=useState<string|null>(null),[draft,setDraft]=useState<Item|null>(null),[license,setLicense]=useState(''),[verification,setVerification]=useState<any>(null);
   const load=async()=>{const value=await api('resource-offers');setItems(value.items);};

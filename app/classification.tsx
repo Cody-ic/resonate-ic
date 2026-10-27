@@ -1,4 +1,5 @@
 "use client";
+import {requestErrorMessage} from "../lib/request-error";
 import {siteFetch as fetch} from './site-fetch';
 import { useDeferredValue,useEffect,useState,useRef } from "react";
 import { Plus,X,SlidersHorizontal,Check } from "lucide-react";
@@ -47,7 +48,7 @@ export function FacetFilters({filters,onChange,availability}:{filters:Filters;on
 }
 export function TaxonomyReview({id,onChange}:{id:string;onChange:(value:Item)=>void}){
   const vocabulary=useVocabulary(),[snapshot,setSnapshot]=useState<Item|null>(null),[plan,setPlan]=useState<Item>({tags:[],platforms:[],sources:[]}),[error,setError]=useState(''),[selected,setSelected]=useState<string[]>([]);
-  useEffect(()=>{let active=true;fetch(`/api/reviews/${id}`).then(async r=>{const data=await r.json() as Item;if(!r.ok)throw new Error(data.error);return data;}).then(r=>{if(!active)return;setSnapshot(r.entityType==='revision'?r.snapshot:null);const next={tags:[],platforms:[],sources:[],...(r.result?.taxonomy??{})};setPlan(next);onChange(next);setSelected([]);}).catch(e=>{if(active)setError(e.message);});return()=>{active=false;};},[id]);
+  useEffect(()=>{let active=true;fetch(`/api/reviews/${id}`).then(async r=>{const data=await r.json() as Item;if(!r.ok)throw new Error(requestErrorMessage(data));return data;}).then(r=>{if(!active)return;setSnapshot(r.entityType==='revision'?r.snapshot:null);const next={tags:[],platforms:[],sources:[],...(r.result?.taxonomy??{})};setPlan(next);onChange(next);setSelected([]);}).catch(e=>{if(active)setError(e.message);});return()=>{active=false;};},[id]);
   const update=(next:Item)=>{setPlan(next);onChange(next);};
   function termRule(kind:'tags'|'platforms',label:string,partial:Item){const old=plan[kind].find((r:Item)=>r.label===label)??{label,action:'allow',target:''};update({...plan,[kind]:[...plan[kind].filter((r:Item)=>r.label!==label),{...old,...partial}]});}
   function sourceRule(index:number,partial:Item){const source=snapshot?.sources?.[index];const old=plan.sources.find((r:Item)=>r.index===index)??{index,name:source?.name??'其他',division:source?.division??'',createSource:false,createDivision:false};update({...plan,sources:[...plan.sources.filter((r:Item)=>r.index!==index),{...old,...partial}]});}

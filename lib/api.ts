@@ -1,4 +1,5 @@
 import {logApiFailure} from './operation-log';
+import {readiness} from './readiness';
 import { env } from "cloudflare:workers";
 import { and, desc, eq, or, sql as expression } from "drizzle-orm";
 import { z } from "zod/v3";
@@ -103,12 +104,13 @@ async function entitySnapshot(type:string,entityId:string) {
 export async function api(request:Request) {
   try {
     const path=new URL(request.url).pathname.replace(/^\/api\/?/,"").split("/").filter(Boolean);
-    const courseRequest=path[0]==="courses", root=courseRequest?"projects":path[0], key=path[1], action=path[2], method=request.method, db=getDb();
+    const courseRequest=path[0]==="courses", root=courseRequest?"projects":path[0], key=path[1], action=path[2], method=request.method;
     if(!["GET","HEAD"].includes(method)) {
       const origin=request.headers.get("Origin");
       must(!origin || origin===new URL(request.url).origin,403,"跨站写入被拒绝");
     }
-    if(root==="health") return json({ok:true,service:"relay-api",version:"0.1.0",database:!!env.DB,uploads:!!env.BUCKET});
+    if(root==="health" && ["GET","HEAD"].includes(method)) return await readiness(env);
+    const db=getDb();
     if(root==="config" && method==="GET") return json({categories,boards,criteria:criteriaLabels,auth:"password_and_platform",platformLoginEnabled:platformLoginEnabled(),maxUploadBytes:10485760,
       emailVerificationEnabled:mailVerificationAvailable(),emailVerificationRequired:mailVerificationRequired(),moderation:{forum:"ai_before_publish",projects:"off_peak_ai",projectPublicationEnabled:config().PROJECT_PUBLICATION_ENABLED!=="false",projectAIConfigured:!!laneConfig("project").key,discussionAIConfigured:!!laneConfig("discussion").key}});
     if(root==="taxonomy"&&method==="GET")return json(await taxonomyConfig());
