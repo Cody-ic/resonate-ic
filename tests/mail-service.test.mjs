@@ -31,7 +31,7 @@ test('test mode only sends to exact allowed recipients, including onlyId request
 test('configured sender alias is included and invalid sender pauses delivery',()=>scenario(async({api,env,queue,calls})=>{
  env.MAIL_FROM='sender-alias@outlook.com';await queue('alias');assert.equal((await api.dispatchMail()).accepted,1);
  assert.equal(JSON.parse(calls.find(c=>c.url.includes('/sendMail')).options.body).message.from.emailAddress.address,'sender-alias@outlook.com');
- assert.equal(JSON.parse(calls.find(c=>c.url.includes('/sendMail')).options.body).message.from.emailAddress.name,'共振');
+ assert.deepEqual(JSON.parse(calls.find(c=>c.url.includes('/sendMail')).options.body).message.from.emailAddress,{address:'sender-alias@outlook.com'});
  env.MAIL_FROM='sender@outlook.com\r\nInjected: value';await queue('invalid-alias');assert.equal(api.mailConfigured(),false);await api.dispatchMail();assert.equal(calls.filter(c=>c.url.includes('/sendMail')).length,1);
 }));
 
@@ -41,7 +41,6 @@ test('Microsoft account suspension pauses the provider until an explicit recover
  assert.equal(await api.nextMailWake(),null);
  await queue('later');await api.dispatchMail();assert.equal(calls.filter(c=>c.url.includes('/sendMail')).length,1);
  assert.equal(db.prepare("SELECT state FROM email_outbox WHERE event_key='later'").get().state,'queued');
- env.MAIL_FROM_NAME='共振通知';assert.equal(api.mailSenderName(),'共振通知');env.MAIL_FROM_NAME='bad\r\nheader';assert.equal(api.mailConfigured(),false);
 },{outbound:async(call)=>call.url.includes('/token')?Response.json({access_token:'access'}):Response.json({error:{code:'ErrorAccountSuspend',message:'sensitive-provider-text'}},{status:403})}));
 
 test('AADSTS70000 service-abuse refresh failure requires account verification rather than repeated OAuth consent',()=>scenario(async({api,queue,calls})=>{
