@@ -85,6 +85,12 @@ export async function dispatchMail(limit=5,options:{onlyId?:string}={}){
         await db.prepare("UPDATE mail_credentials SET error='授权服务暂时无法连接',retry_after_at=?,updated_at=? WHERE id=?").bind(Date.now()+60000,Date.now(),id).run();return {...report,error:'授权服务暂时无法连接'};
       }
       if(!response.ok){
+        const problem=await response.json().catch(()=>null) as {error_codes?:number[];error_description?:string}|null;
+        if(problem?.error_codes?.includes(70000)&&/service abuse mode/i.test(problem.error_description??'')){
+          const reason='微软账号仍处于反滥用限制状态，需由邮箱持有人完成微软账号验证或联系官方支持';
+          await db.prepare("UPDATE mail_credentials SET auth_state='account_verification_required',error=?,retry_after_at=0,updated_at=? WHERE id=?").bind(reason,Date.now(),id).run();
+          await authAlert(id+':account-verification:'+seed,reason);return {...report,error:reason};
+        }
         const temporary=response.status===429||response.status>=500,reason=temporary?'授权服务暂时不可用':'邮箱授权失效或权限配置有误，需要重新授权';
         await db.prepare('UPDATE mail_credentials SET auth_state=?,error=?,retry_after_at=?,updated_at=? WHERE id=?').bind(temporary?'retry_wait':'auth_required',reason,temporary?Date.now()+retryDelay(response.headers.get('Retry-After'),1):0,Date.now(),id).run();
         if(!temporary)await authAlert(id+':'+seed,reason);return {...report,error:reason};

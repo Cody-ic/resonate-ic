@@ -43,6 +43,11 @@ test('Microsoft account suspension pauses the provider until an explicit recover
  assert.equal(db.prepare("SELECT state FROM email_outbox WHERE event_key='later'").get().state,'queued');
  env.MAIL_FROM_NAME='共振通知';assert.equal(api.mailSenderName(),'共振通知');env.MAIL_FROM_NAME='bad\r\nheader';assert.equal(api.mailConfigured(),false);
 },{outbound:async(call)=>call.url.includes('/token')?Response.json({access_token:'access'}):Response.json({error:{code:'ErrorAccountSuspend',message:'sensitive-provider-text'}},{status:403})}));
+
+test('AADSTS70000 service-abuse refresh failure requires account verification rather than repeated OAuth consent',()=>scenario(async({api,queue,calls})=>{
+ await queue('account-refresh-block');await api.dispatchMail();assert.equal((await api.mailHealth()).authState,'account_verification_required');
+ await api.dispatchMail();assert.equal(calls.length,1);assert.equal(await api.nextMailWake(),null);
+},{outbound:async()=>Response.json({error:'invalid_grant',error_codes:[70000],error_description:'AADSTS70000: User account is found to be in service abuse mode.'},{status:400})}));
 test('old creation time cannot mark a fresh sending attempt as uncertain; concurrent dispatch is serialized',()=>scenario(async({api,db,queue,now})=>{
  const id=await queue('old');db.prepare('UPDATE email_outbox SET created_at=? WHERE id=?').run(now()-86400000,id);await api.dispatchMail();assert.equal(db.prepare('SELECT state FROM email_outbox WHERE id=?').get(id).state,'accepted');
 },{outbound:async(call,{api,db})=>{if(call.url.includes('/token'))return Response.json({access_token:'access'});const row=db.prepare("SELECT * FROM email_outbox WHERE state='sending'").get();assert.equal(row.started_at,Date.now());assert.notEqual(row.created_at,row.started_at);assert.equal((await api.dispatchMail()).busy,true);assert.equal(db.prepare('SELECT state FROM email_outbox WHERE id=?').get(row.id).state,'sending');return new Response(null,{status:202});}}));
