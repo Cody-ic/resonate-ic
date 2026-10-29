@@ -4,6 +4,7 @@ import {useEffect,useState} from "react";
 import {Bell,Flag,ShieldCheck,ThumbsUp,ChevronDown,ArrowUpRight,CheckCheck,Mail,Inbox,RefreshCw,Star,X} from "lucide-react";
 import {AppealControl} from "./appeal-control";
 import {request} from "./accounts";
+import {rememberDelivery,rememberedDelivery} from '../lib/mail-delivery-client';
 import {criteriaLabels} from "../lib/domain";
 type Item=Record<string,any>;
 export function NotificationBell({user}:{user:Item|null}){
@@ -56,10 +57,17 @@ function NoticeApproval({notice,busy,act}:{notice:Item;busy:boolean;act:(fn:()=>
   return <article className="inbox-item"><small>接收者：{notice.recipient_name??notice.recipient_id} · {notice.email_enabled?"站内及邮件":"仅站内"}</small><label>标题<input value={title} maxLength={160} onChange={e=>setTitle(e.target.value)}/></label><label>正文<textarea rows={6} value={body} maxLength={6400} onChange={e=>setBody(e.target.value)}/></label><button className="button dark" disabled={busy} onClick={()=>act(()=>request(`admin/notices/${notice.id}/approve`,"POST",{title,body}))}>确认文案并通知</button><details><summary>撤回文案<ChevronDown size={13}/></summary><input aria-label="撤回理由" value={reason} onChange={e=>setReason(e.target.value)}/><button className="button outline" disabled={busy||reason.trim().length<2} onClick={()=>act(()=>request(`admin/notices/${notice.id}/reject`,"POST",{reason}))}>记录理由并撤回</button></details></article>;
 }
 export function EmailSupport({reset=false}:{reset?:boolean}){
-  const [email,setEmail]=useState(""),[otp,setOtp]=useState(""),[password,setPassword]=useState(""),[message,setMessage]=useState(""),[busy,setBusy]=useState(false);
+  const [email,setEmail]=useState(""),[otp,setOtp]=useState(""),[password,setPassword]=useState(""),[message,setMessage]=useState(""),[busy,setBusy]=useState(false),[ticket,setTicket]=useState("");
   useEffect(()=>{setEmail(new URLSearchParams(location.search).get("email")??"");},[]);
-  async function act(fn:()=>Promise<any>,success:string){setBusy(true);try{await fn();setMessage(success);}catch(e){setMessage((e as Error).message);}finally{setBusy(false);}}
-  return <section className="workflow-page auth-support"><h1>{reset?"找回密码":"验证邮箱"}</h1><p>验证码5分钟内有效，请勿转发给他人。</p><label>账号邮箱<input type="email" required value={email} onChange={e=>setEmail(e.target.value)}/></label><button className="button outline" disabled={busy||!email.includes("@")} onClick={()=>act(()=>request(reset?"auth/email-otp/request-password-reset":"auth/email-otp/send-verification-otp","POST",reset?{email}:{email,type:"email-verification"}),"如果该邮箱可以接收验证码，邮件将发往该地址，请检查收件箱与垃圾邮件。")}>发送验证码</button><form onSubmit={e=>{e.preventDefault();act(()=>request(reset?"auth/email-otp/reset-password":"auth/email-otp/verify-email","POST",reset?{email,otp,password}:{email,otp}),reset?"密码已更新，请返回登录。":"邮箱已验证，可以返回登录或继续使用网站。");}}><label>六位验证码<input required inputMode="numeric" pattern="[0-9]{6}" maxLength={6} value={otp} onChange={e=>setOtp(e.target.value)}/></label>{reset&&<label>新密码<input type="password" required minLength={12} maxLength={128} value={password} onChange={e=>setPassword(e.target.value)}/></label>}<button className="button dark" disabled={busy}>确认</button></form>{message&&<p role="status">{message}</p>}<a href="/login">返回登录</a></section>;
+  useEffect(()=>{setTicket(rememberedDelivery(email,reset));setMessage("");},[email,reset]);
+  useEffect(()=>{
+    if(!ticket)return;let active=true,timer:ReturnType<typeof setTimeout>;
+    const poll=async()=>{try{const status=await request('auth/email-otp/delivery-status?ticket='+encodeURIComponent(ticket));if(!active)return;setMessage(status.message);if(['queued','sending'].includes(status.state))timer=setTimeout(poll,2500);}catch(e){if(active)setMessage((e as Error).message);}};
+    void poll();return()=>{active=false;clearTimeout(timer);};
+  },[ticket]);
+  async function act(fn:()=>Promise<any>,success:string){setBusy(true);try{await fn();setTicket("");setMessage(success);}catch(e){setMessage((e as Error).message);}finally{setBusy(false);}}
+  async function send(){setBusy(true);setTicket("");setMessage('正在申请验证码并提交邮件…');try{const result=await request(reset?'auth/email-otp/request-password-reset':'auth/email-otp/send-verification-otp','POST',reset?{email}:{email,type:'email-verification'});if(result.deliveryTicket){rememberDelivery(email,result.deliveryTicket,reset);setTicket(result.deliveryTicket);}else setMessage('如果该邮箱可用于此操作，验证码申请已受理。若未收到，请稍后重新申请或联系维护者。');}catch(e){setMessage((e as Error).message);}finally{setBusy(false);}}
+  return <section className="workflow-page auth-support"><h1>{reset?"找回密码":"验证邮箱"}</h1><p>验证码5分钟内有效，请勿转发给他人。</p><label>账号邮箱<input type="email" required disabled={busy} value={email} onChange={e=>setEmail(e.target.value)}/></label><button className="button outline" disabled={busy||!email.includes("@")} onClick={send}>{busy?'正在处理…':'发送验证码'}</button><form onSubmit={e=>{e.preventDefault();act(()=>request(reset?"auth/email-otp/reset-password":"auth/email-otp/verify-email","POST",reset?{email,otp,password}:{email,otp}),reset?"密码已更新，请返回登录。":"邮箱已验证，可以返回登录或继续使用网站。");}}><label>六位验证码<input required inputMode="numeric" pattern="[0-9]{6}" maxLength={6} value={otp} onChange={e=>setOtp(e.target.value)}/></label>{reset&&<label>新密码<input type="password" required minLength={12} maxLength={128} value={password} onChange={e=>setPassword(e.target.value)}/></label>}<button className="button dark" disabled={busy}>确认</button></form>{message&&<p role="status">{message}</p>}<p>一直收不到？可联系 <a href="mailto:resonate_ic@outlook.com">resonate_ic@outlook.com</a>，请勿提供密码或验证码。</p><a href="/login">返回登录</a></section>;
 }
 export function TechnicalFeedbackPage({user}:{user:Item|null}){
   const [items,setItems]=useState<Item[]>([]),[error,setError]=useState("");

@@ -11,6 +11,7 @@ import { getChatGPTUser } from "../app/chatgpt-auth";
 import { HTTPError,json } from "./domain";
 import {mailMode,mailDeliveryEnabled,mailVerificationAvailable,mailVerificationRequired,canSendMailTo,mailSettings,queueEmail,mailHealth} from "./notifications";
 import {loginWindowSeconds,loginAccountMax,loginIpMax,trustedCampusLogin,loginAccountLimitKey} from "./login-policy";
+import {withDeliveryReceipt,deliveryStatus} from './mail-delivery';
 
 type Settings={BETTER_AUTH_SECRET?:string;BETTER_AUTH_URL?:string;PLATFORM_AUTH_ENABLED?:string;SEU_LOGIN_TRUSTED_CIDRS?:string};
 // Reuse the configured service, never a user's identity/session. Every identity
@@ -80,7 +81,7 @@ export async function registerAccount(request:Request){
     if(await getDb().select().from(s.accountLinks).where(eq(s.accountLinks.profileId,identity.id)).get())throw new HTTPError(409,"当前账户已经设置了站内登录");
   }
   const url=new URL("/api/auth/sign-up/email",request.url),headers=new Headers(request.headers);headers.set("Content-Type","application/json");headers.delete("content-length");
-  const response=await registrationAuth.handler(new Request(url,{method:"POST",headers,body:JSON.stringify({name:body.name,email:body.email,password:body.password})}));
+  const response=await withDeliveryReceipt(()=>registrationAuth.handler(new Request(url,{method:"POST",headers,body:JSON.stringify({name:body.name,email:body.email,password:body.password})})));
   if(response.ok){
     const result=await response.clone().json() as {user?:{id:string}};
     if(!result.user?.id)throw new HTTPError(500,"注册结果不完整");
@@ -95,6 +96,7 @@ export async function registerAccount(request:Request){
 
 export async function authHandler(request:Request){
   const pathname=new URL(request.url).pathname;
+  if(pathname==='/api/auth/email-otp/delivery-status'&&request.method==='GET')return deliveryStatus(request);
   // All registration goes through validation and the explicit profile-link choice.
   const allowed=["/api/auth/sign-in/email","/api/auth/sign-out","/api/auth/get-session","/api/auth/change-password","/api/auth/email-otp/send-verification-otp","/api/auth/email-otp/verify-email","/api/auth/email-otp/request-password-reset","/api/auth/email-otp/reset-password"];
   if(!allowed.includes(pathname))return json({error:"接口不存在"},404);
@@ -135,5 +137,6 @@ export async function authHandler(request:Request){
     const headers=new Headers(request.headers);headers.delete("content-length");
     request=new Request(request.url,{method:"POST",headers,body:JSON.stringify(body)});
   }
-  return await auth.handler(request);
+  const sending=request.method==='POST'&&['/api/auth/email-otp/send-verification-otp','/api/auth/email-otp/request-password-reset'].includes(pathname);
+  return sending?withDeliveryReceipt(()=>auth.handler(request)):await auth.handler(request);
 }

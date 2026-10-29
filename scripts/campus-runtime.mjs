@@ -9,6 +9,7 @@ import {pipeline} from 'node:stream/promises';
 import crypto from 'node:crypto';
 import {fileURLToPath} from 'node:url';
 import {execFileSync} from 'node:child_process';
+import {campusMailTransport} from './campus-mail-transport.mjs';
 
 process.umask(0o077);
 const root=fileURLToPath(new URL('../',import.meta.url)),shared=path.resolve(process.env.CAMPUS_SHARED||'campus-private');
@@ -24,15 +25,19 @@ if(process.argv.includes('--import-course')){
   const active=execFileSync('systemctl',['--user','show','resonate-campus.service','--property=ActiveState','--value'],{encoding:'utf8'}).trim();
   if(!['inactive','failed'].includes(active))throw Error('Stop the campus service before opening its persistent state for import');
 }
-const mf=new Miniflare({name:'resonate-campus',host:'127.0.0.1',port:0,cf:false,
+const mailTransport=campusMailTransport();
+const mf=new Miniflare({host:'127.0.0.1',port:0,cf:false,
+  d1Persist:path.join(state,'d1'),r2Persist:path.join(state,'r2'),
+  durableObjectsPersist:path.join(state,'do'),workflowsPersist:path.join(state,'workflows'),
+  workers:[{name:'resonate-campus',outboundService:'campus-mail-router',
   modules,modulesRoot:workerRoot,modulesRules:[{type:'ESModule',include:['**/*.js','**/*.mjs'],fallthrough:true}],
   compatibilityDate:cfg.compatibility_date,compatibilityFlags:cfg.compatibility_flags,bindings,
   assets:{directory:path.join(root,'dist/client'),routerConfig:{has_user_worker:true}},
-  d1Databases:{DB:'resonate-campus-db'},d1Persist:path.join(state,'d1'),
-  r2Buckets:{BUCKET:'resonate-campus-files'},r2Persist:path.join(state,'r2'),
-  durableObjects:{REVIEW_COORDINATOR:{className:'ReviewCoordinator',useSQLite:true}},durableObjectsPersist:path.join(state,'do'),
-  workflows:{REVIEW_WORKFLOW:{name:'review-workflow',className:'ReviewWorkflow'}},workflowsPersist:path.join(state,'workflows'),
-});
+  d1Databases:{DB:'resonate-campus-db'},
+  r2Buckets:{BUCKET:'resonate-campus-files'},
+  durableObjects:{REVIEW_COORDINATOR:{className:'ReviewCoordinator',useSQLite:true}},
+  workflows:{REVIEW_WORKFLOW:{name:'review-workflow',className:'ReviewWorkflow'}},
+},mailTransport.worker]});
 await mf.ready;
 const db=await mf.getD1Database('DB');
 await db.prepare('CREATE TABLE IF NOT EXISTS campus_migrations(name TEXT PRIMARY KEY, digest TEXT NOT NULL, applied_at INTEGER NOT NULL)').run();
@@ -93,4 +98,4 @@ async function tick(){if(scheduled)return;scheduled=true;try{await(await mf.getW
 const timer=setInterval(tick,60000);
 await new Promise((resolve,reject)=>{server.once('error',reject);server.listen(Number(origin.port||443),process.env.CAMPUS_BIND||origin.hostname,resolve);});
 console.log('Campus beta listening',origin.origin);void tick();
-for(const signal of ['SIGINT','SIGTERM'])process.once(signal,async()=>{clearInterval(timer);server.close();server.closeIdleConnections();await mf.dispose();process.exit(0);});
+for(const signal of ['SIGINT','SIGTERM'])process.once(signal,async()=>{clearInterval(timer);server.close();server.closeIdleConnections();await mf.dispose();await mailTransport.close();process.exit(0);});

@@ -1,6 +1,7 @@
 import {env} from 'cloudflare:workers';
 import {timeouts} from './timeouts';
 import {notificationEmailEnabled,notificationEmail,adminIds,adminEmails,supportEmail} from './notification-policy';
+import {trackVerificationMail} from './mail-delivery';
 type MailSettings={MAIL_PROVIDER?:string;MAIL_FROM?:string;MAIL_GRAPH_CLIENT_ID?:string;MAIL_GRAPH_CLIENT_SECRET?:string;MAIL_GRAPH_REFRESH_TOKEN?:string;MAIL_DELIVERY_MODE?:string;MAIL_TEST_RECIPIENTS?:string;MAIL_REQUIRE_EMAIL_VERIFICATION?:string;ADMIN_USER_IDS?:string;ADMIN_EMAILS?:string;BETTER_AUTH_SECRET?:string};
 export const mailSettings=()=>env as typeof env & MailSettings;
 export const mailMode=()=>['test','live'].includes(mailSettings().MAIL_DELIVERY_MODE??'')?mailSettings().MAIL_DELIVERY_MODE as 'test'|'live':'off';
@@ -34,7 +35,9 @@ export async function queueEmail(key:string,to:string,title:string,body:string,o
   const row=await env.DB!.prepare("INSERT INTO email_outbox(id,event_key,recipient,subject,body,state,purpose,notification_id,created_at,expires_at) VALUES(?,?,?,?,?,'queued',?,?,?,?) ON CONFLICT(event_key) DO NOTHING RETURNING id")
     .bind(id,key,to.trim(),title.replace(/[\r\n]/g,' ').slice(0,160),options.purpose==='verification'?await encryptMailValue(body):body,options.purpose??'notification',options.notificationId??null,Date.now(),options.expiresAt??null).first<{id:string}>();
   if(options.wake!==false)try{await kickMailQueue();}catch{/* Persistent queued rows remain recoverable by the periodic kick. */}
-  return row?.id??(await env.DB!.prepare('SELECT id FROM email_outbox WHERE event_key=?').bind(key).first<{id:string}>())?.id??null;
+  const queuedId=row?.id??(await env.DB!.prepare('SELECT id FROM email_outbox WHERE event_key=?').bind(key).first<{id:string}>())?.id??null;
+  if(queuedId&&options.purpose==='verification')trackVerificationMail(queuedId);
+  return queuedId;
 }
 export async function mailHealth(){
   const c=mailSettings(),row=c.MAIL_GRAPH_CLIENT_ID?await env.DB!.prepare('SELECT auth_state,error,retry_after_at FROM mail_credentials WHERE id=?').bind('graph:'+c.MAIL_GRAPH_CLIENT_ID).first<any>():null;
