@@ -1,0 +1,23 @@
+[Unit]
+Description=Resonate IC campus beta
+After=network-online.target
+StartLimitIntervalSec=300
+StartLimitBurst=10
+
+[Service]
+Type=simple
+WorkingDirectory=%h/resonate-ic/current
+Environment=CAMPUS_SHARED=%h/resonate-ic/shared
+Environment=CAMPUS_BIND=10.10.60.102
+Environment=NODE_ENV=production
+ExecStart=%h/resonate-ic/runtime/node/bin/node scripts/campus-runtime.mjs
+Restart=on-failure
+RestartSec=10
+SuccessExitStatus=143
+TimeoutStopSec=90
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=default.target
