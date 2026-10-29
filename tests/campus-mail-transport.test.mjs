@@ -1,6 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {EventEmitter} from 'node:events';import {PassThrough,Writable} from 'node:stream';
-import {curlMailRequest,mailTransportFailure} from '../scripts/campus-mail-transport.mjs';
+import {curlMailRequest,pythonMailRequest,mailTransportFailure} from '../scripts/campus-mail-transport.mjs';
 function fakeTransport({reply='HTTP/1.1 202 Accepted\r\nContent-Length: 0\r\n\r\n',exit=0}={}){
   const calls=[];return {calls,launch(command,args,options){
     const child=new EventEmitter();child.stdout=new PassThrough();child.stderr=new PassThrough();child.kill=()=>{};let input='';
@@ -15,6 +15,22 @@ test('local transport failures distinguish safe unsent requests from uncertain w
   const unknown=mailTransportFailure(new Error('timeout'));
   assert.equal(unknown.status,502);assert.equal(unknown.headers.get('X-Resonate-Mail-Transport'),'uncertain');
   assert.equal(unknown.headers.get('X-Resonate-Mail-Not-Started'),null);
+});
+test('segmented HTTPS transport keeps credentials off argv and preserves exact UTF-8 body',async()=>{
+  const mock=fakeTransport({reply:JSON.stringify({status:429,headers:[['Retry-After','60']],body:Buffer.from('{"error":"limited"}').toString('base64')})});
+  const body=JSON.stringify({text:'中文\n"$(not-a-shell)"'});
+  const response=await pythonMailRequest(new Request('https://graph.microsoft.com/v1.0/me/sendMail',{method:'POST',headers:{Authorization:'Bearer private-token','Content-Type':'application/json','Content-Length':'999'},body}),mock.launch);
+  assert.equal(response.status,429);assert.equal(response.headers.get('retry-after'),'60');assert.deepEqual(await response.json(),{error:'limited'});
+  const call=mock.calls[0],input=JSON.parse(call.input());assert.equal(call.command,'python3');assert.equal(call.options.shell,undefined);assert.equal(call.args.length,1);assert.match(call.args[0],/campus-mail-http.py$/);
+  assert.doesNotMatch(JSON.stringify(call.args),/private-token|中文/);assert.ok(input.headers.some(([k,v])=>k==='authorization'&&v==='Bearer private-token'));
+  assert.ok(!input.headers.some(([k])=>k==='content-length'));assert.equal(Buffer.from(input.body,'base64').toString(),body);
+});
+test('segmented HTTPS transport rejects other hosts or ports and never retries unknown writes',async()=>{
+  const blocked=fakeTransport();for(const url of ['https://example.test/','https://graph.microsoft.com:444/'])assert.equal((await pythonMailRequest(new Request(url),blocked.launch)).status,403);assert.equal(blocked.calls.length,0);
+  for(const safe of [true,false]){
+    const mock=fakeTransport({reply:JSON.stringify({error:'TimeoutError',beforeRequest:safe,total:45}),exit:1});
+    await assert.rejects(pythonMailRequest(new Request('https://graph.microsoft.com/v1.0/me/sendMail',{method:'POST',body:'{}'}),mock.launch),e=>e.beforeRequest===safe);assert.equal(mock.calls.length,1);
+  }
 });
 test('mail credentials and JSON body travel only on stdin without a shell',async()=>{
   const mock=fakeTransport(),r=await curlMailRequest(new Request('https://graph.microsoft.com/v1.0/me/sendMail',{method:'POST',headers:{Authorization:'Bearer test-secret-token','Content-Type':'application/json'},body:JSON.stringify({message:'中文\n"$(not-a-shell)"'})}),mock.launch);
