@@ -1,0 +1,8 @@
+'use client';
+import {useEffect,useRef,useState} from 'react';
+const email='resonate_ic@outlook.com';
+export default function SiteFeedback(){
+ const [open,setOpen]=useState(false),[text,setText]=useState(''),[message,setMessage]=useState('');const dialog=useRef<HTMLDialogElement>(null);
+ useEffect(()=>{if(open)dialog.current?.showModal();else dialog.current?.close();},[open]);
+ return <><button type="button" className="site-feedback-button" onClick={()=>{setMessage('');setOpen(true);}} aria-haspopup="dialog">意见反馈</button><dialog ref={dialog} className="report-dialog feedback-dialog" aria-labelledby="site-feedback-title" onCancel={()=>setOpen(false)} onClick={e=>{if(e.target===e.currentTarget)setOpen(false);}}><div className="dialog-heading"><h2 id="site-feedback-title">给共振提意见</h2><button type="button" aria-label="关闭意见反馈" onClick={()=>setOpen(false)}>×</button></div><p>发现网站问题，或希望增加、改进某个功能？欢迎给维护者写信。</p><p>联系邮箱：<a href={'mailto:'+email}>{email}</a></p><label>想说的话（可选）<textarea rows={5} maxLength={3000} value={text} onChange={e=>setText(e.target.value)} placeholder="例如问题出现在哪个页面、操作步骤，以及你希望怎样改进。"/></label><small>请勿填写密码、验证码或 API 密钥。下方按钮会打开你的邮件应用，需要你确认发送；本窗口不会直接提交内容。</small><div className="dialog-actions"><button type="button" className="button outline" onClick={async()=>{try{await navigator.clipboard.writeText(email);setMessage('邮箱地址已复制');}catch{setMessage('请手动复制邮箱地址：'+email);}}}>复制邮箱</button><a className="button dark" href={'mailto:'+email+'?subject='+encodeURIComponent('共振网站意见反馈')+'&body='+encodeURIComponent(text.trim())}>打开邮箱写信</a></div>{message&&<p role="status">{message}</p>}</dialog></>;
+}

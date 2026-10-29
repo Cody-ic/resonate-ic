@@ -38,7 +38,7 @@ export async function createResourceOffer(review:any,result:any,info:any,readNam
     db.prepare("INSERT INTO revisions(id,project_id,number,snapshot,digest,status,created_at) VALUES(?,?,1,?,?,'draft',?) ON CONFLICT(id) DO NOTHING").bind(revisionId,projectId,pack.snapshot,await digest(pack.snapshot),now),
     db.prepare('INSERT INTO resource_offers(project_id,source_project_id,source_review_id,owner_id,payload,created_at) VALUES(?,?,?,?,?,?) ON CONFLICT(source_review_id) DO NOTHING').bind(projectId,info.projectId,review.id,review.ownerId,JSON.stringify(draft),now)
   ]);
-  await notify(review.ownerId,'resource-offer:'+review.id,{title:'已为你整理一份可投稿的组件',body:`已从《${info.snapshot.title}》整理好“${draft.title}”的源码、使用说明和资源包。你可以直接同意投稿或拒绝，也可以现在或以后修改。同意后仍须经过独立的资源可靠性与内容审核，通过后才公开；未审核的资源不会上架。许可与署名沿用原项目，请在预览中核对。`},{href:'/resource-drafts?offer='+projectId,email:false,kind:'resource_offer'});
+  await notify(review.ownerId,'resource-offer:'+review.id,{title:'已为你整理一份可投稿的组件',body:`已从《${info.snapshot.title}》整理好“${draft.title}”的源码、使用说明和资源包。你可以直接同意投稿或拒绝，也可以现在或以后修改。同意后仍须经过独立的资源可靠性与内容审核，通过后才公开；未审核的资源不会上架。许可与署名沿用原项目，请在预览中核对。`},{href:'/resource-drafts?offer='+projectId,kind:'resource_offer'});
 }
 export async function resourceOffersApi(request:Request,path:string[],user:any,submit:(projectId:string)=>Promise<Response>){
   if(path[0]!=='resource-offers')return null;

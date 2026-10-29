@@ -42,7 +42,7 @@ export async function resolveFeatured(review:any,result:any,actorId?:string){
   const applied=await sql.batch(statements);
   if(!applied[applied.length-1].meta.changes)throw new HTTPError(409,"精选提名已取消、版本已变化或作品已下架，本次不入选");
   const notice=result.authorNotice??{title:result.decision==='qualify'?'作品通过精选评估':result.decision==='disputed'?'精选评估待人工复核':'本次暂未入选精选',body:result.summary};
-  for(const recipient of new Set<string>([review.ownerId??review.owner_id,context.requestedBy].filter(Boolean)))await notify(recipient,`featured:${review.id}:${recipient}`,notice,{reviewId:review.id,href:`/projects/${context.projectId}`,email:true});
+  for(const recipient of new Set<string>([review.ownerId??review.owner_id,context.requestedBy].filter(Boolean)))await notify(recipient,`featured:${review.id}:${recipient}`,notice,{reviewId:review.id,href:`/projects/${context.projectId}`});
 }
 export async function cancelFeatured(projectId:string){
   const sql=env.DB!,now=Date.now();

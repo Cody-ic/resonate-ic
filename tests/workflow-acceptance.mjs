@@ -81,6 +81,13 @@ try{
  adminId=(await admin.ok('GET','me')).user.id;memberId=(await member.ok('GET','me')).user.id;
  bindings.ADMIN_USER_IDS=adminId;await mf.setOptions({...options,bindings});await mf.ready;db=await mf.getD1Database('DB');
  await db.prepare('UPDATE auth_user SET email_verified=1').run();
+ check('member email notifications start enabled',(await member.ok('GET','me/notification-preferences')).emailEnabled===true);
+ await member.ok('PATCH','me/notification-preferences',{emailEnabled:false});
+ check('member can save and reload disabled mail preference',(await member.ok('GET','me/notification-preferences')).emailEnabled===false);
+ check('anonymous cannot change mail preferences',(await anon.call('PATCH','me/notification-preferences',{emailEnabled:false})).status===401);
+ check('mail preference cannot target another member',(await member.call('PATCH','me/notification-preferences',{emailEnabled:false,userId:adminId})).status===422);
+ check('administrator cannot suppress work notification email',(await admin.call('PATCH','me/notification-preferences',{emailEnabled:false})).status===422);
+ await member.ok('PATCH','me/notification-preferences',{emailEnabled:true});
  check('anonymous cannot access admin or notifications',(await anon.call('GET','admin/workflows')).status===403&&(await anon.call('GET','notifications')).status===401);
  check('independent forum cannot accept new topics',(await member.call('POST','topics',{title:'独立论坛',body:'没有关联项目的内容应被拒绝',board:'经验交流'})).status===422);
  const p=await admin.ok('POST','projects',draft);projectId=p.id;
@@ -104,7 +111,7 @@ try{
  check('normal comment creates email for verified project author',!!await db.prepare('SELECT id FROM email_outbox WHERE notification_id=?').bind(activity.id).first());
  const reply=await admin.ok('POST',`topics/${topicId}/replies`,{body:'感谢反馈，我们可以进一步讨论显示刷新的实现方式。'});await waitReview(reply.reviewId);
  const replyNotice=await waitFor(()=>db.prepare("SELECT * FROM notifications WHERE review_id=? AND kind='reply'").bind(reply.reviewId).first());
- check('reply only notifies the comment author in site inbox',replyNotice.recipient_id===memberId&&replyNotice.email_enabled===0&&!await db.prepare('SELECT id FROM email_outbox WHERE notification_id=?').bind(replyNotice.id).first());
+ check('reply notifies the comment author through inbox and email',replyNotice.recipient_id===memberId&&replyNotice.email_enabled===1&&!!await db.prepare('SELECT id FROM email_outbox WHERE notification_id=?').bind(replyNotice.id).first());
  await db.prepare('DELETE FROM limits WHERE key LIKE ?').bind(memberId+':%').run();
  const d=await member.ok('POST','topics',{title:'争议评论',body:'这是一条争议评论，现有语境需要进一步核对。',board:'经验交流',projectId});await waitReview(d.reviewId);
  check('disputed comment remains hidden from visitors',(await anon.call('GET',`topics/${d.id}`)).status===404);
@@ -113,6 +120,8 @@ try{
  const edited=await member.ok('PATCH',`topics/${topicId}`,{title:'修改后标题',board:'经验交流',body:'纯谩骂，审核不通过，旧公开正文必须保留。',editToken:ownerBefore.editToken});
  await waitFor(()=>db.prepare("SELECT id FROM reviews WHERE entity_id=? AND state='needs_changes'").bind(edited.editId).first());
  check('rejected edit keeps the old public comment',(await anon.ok('GET',`topics/${topicId}`)).topic.body.includes('结构很清晰'));
+ const rejectedNotice=await db.prepare("SELECT n.* FROM notifications n JOIN reviews r ON r.id=n.review_id WHERE r.entity_id=? AND n.kind='review'").bind(edited.editId).first();
+ check('revise result invites member to contact maintainer through both channels',rejectedNotice.body.includes('resonate_ic@outlook.com')&&!!await db.prepare('SELECT id FROM email_outbox WHERE notification_id=?').bind(rejectedNotice.id).first());
  await db.prepare('DELETE FROM limits WHERE key LIKE ?').bind(memberId+':%').run();
  const tech=await member.ok('POST','topics',{title:'反馈编译问题',body:'这个工程在我的环境中编译失败，暂时无法提供完整日志。',board:'项目求助',projectId});await waitReview(tech.reviewId);
  const feedback=await waitFor(()=>db.prepare('SELECT * FROM technical_feedback WHERE source_review_id=?').bind(tech.reviewId).first());await waitReview(feedback.review_id);
@@ -129,7 +138,7 @@ try{
  const rf=await waitFor(()=>db.prepare('SELECT * FROM technical_feedback WHERE source_review_id=?').bind(techReply.reviewId).first());await waitReview(rf.review_id);
  const rn=await waitFor(()=>db.prepare("SELECT * FROM notifications WHERE review_id=? AND kind='unverified_feedback'").bind(rf.review_id).first());
  await admin.ok('POST',`admin/notices/${rn.id}/approve`,{title:rn.title,body:rn.body});
- check('reply-origin author feedback stays site-only after human approval',rn.email_enabled===0&&!await db.prepare('SELECT id FROM email_outbox WHERE notification_id=?').bind(rn.id).first());
+ check('reply-origin author feedback creates email after human approval',rn.email_enabled===1&&!!await db.prepare('SELECT id FROM email_outbox WHERE notification_id=?').bind(rn.id).first());
  const votes=[];for(let i=0;i<20;i++){const uid='vote-'+i+'-'+stamp;await db.prepare('INSERT INTO users(id,name,created_at,bio) VALUES(?,?,?,?)').bind(uid,'验收投票'+i,Date.now(),'').run();await db.prepare('INSERT INTO quality_votes(topic_id,user_id,created_at) VALUES(?,?,?)').bind(topicId,uid,Date.now()).run();votes.push(uid);}
  check('exactly 20 recommendations do not qualify discussion',(await db.prepare('SELECT quality_status FROM topics WHERE id=?').bind(topicId).first()).quality_status==='none');
  await member.ok('POST',`topics/${topicId}/recommend`,{});

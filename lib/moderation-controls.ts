@@ -20,6 +20,6 @@ export async function moderateContent(type:string,id:string,actor:string,reason:
   const result=await env.DB!.prepare(`UPDATE ${table} SET admin_lock_at=?,admin_reason=? WHERE id=?${versionGuard}${lockGuard}${restore?"":" AND admin_lock_at IS NULL"} RETURNING id`).bind(restore?null:now,restore?null:reason,id,...guardArgs).first();
   if(!result)return false;
   await env.DB!.prepare("INSERT INTO moderation_actions(id,entity_type,entity_id,actor_id,action,reason,created_at) VALUES(?,?,?,?,?,?,?)").bind(crypto.randomUUID(),type,id,actor,restore?"unlock":"take_down",reason,now).run();
-  await notify(row.owner_id,`moderation:${type}:${id}:${now}`,{title:restore?"管理员已解除内容下架":"内容已下架",body:restore?`管理员已解除下架限制。理由：${reason}。后续修改仍按正常审核流程处理。`:`你的内容已下架。理由：${reason}。如有异议，可点击本通知或内容管理中的“提交申诉”，由管理员复核。`},{href:table==='projects'?`/${row.kind==='course'?'courses':'projects'}/${id}`:row.project_id?`/projects/${row.project_id}#discussion-${id}`:'/dashboard',kind:"moderation",email:type!=="reply"});
+  await notify(row.owner_id,`moderation:${type}:${id}:${now}`,{title:restore?"管理员已解除内容下架":"内容已下架",body:restore?`管理员已解除下架限制。理由：${reason}。后续修改仍按正常审核流程处理。`:`你的内容已下架。理由：${reason}。如有异议，可点击本通知或内容管理中的“提交申诉”，由管理员复核。`},{href:table==='projects'?`/${row.kind==='course'?'courses':'projects'}/${id}`:row.project_id?`/projects/${row.project_id}#discussion-${id}`:'/dashboard',kind:"moderation"});
   return true;
 }

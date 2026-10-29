@@ -193,6 +193,7 @@ async function completeReview(review:any,result:any,info:any,policy:any,readName
     const held=review.entityType==="revision"&&config().PROJECT_PUBLICATION_ENABLED==="false"&&["pass","disputed"].includes(result.decision);
     const invitation=info.kind==='project'&&result.decision==='pass'?result.featuredInvitation:null;
     let originalNotice=review.entityType==="revision"?result.authorNotice:result.commenterNotice;
+    if(!originalNotice&&result.decision==='revise')originalNotice={title:'内容需要修改后再发布',body:result.summary};
     if(resourcePending)originalNotice={title:'资源检查尚未完成',body:'当前版本暂未公开。以下事项尚不能确认，不是已发现缺陷或认定资源不合格。\n\n'+originalNotice.body.slice(0,5600)};
     if(info.kind==='resource'&&result.resourceReliability){
       const r=result.resourceReliability,proof=r.confirmedIssues.map((p:any)=>`${p.source}\n原文：${p.quote}\n判断依据：${p.basisQuote}\n说明：${p.reasoning}\n影响：${p.impact}\n涉及范围：${p.affectedScope}`).join('\n\n');
@@ -202,13 +203,13 @@ async function completeReview(review:any,result:any,info:any,policy:any,readName
     if(invitation){
       const extra=`\n\n这个作品在${invitation.criteria.map((c:string)=>({competition:'竞赛复用',teaching:'教学意义',depth:'技术深度',creativity:'创意'} as Record<string,string>)[c]).join('、')}方面展现了精选潜力：${invitation.reason}\n如果你愿意，可以在作品详情页点击“申请精选评估”。这只是申请建议，是否入选仍需独立评估。`;
       if(originalNotice.body.length+extra.length<=6000)originalNotice={...originalNotice,body:originalNotice.body+extra};
-      else await notify(review.ownerId,`featured-invitation:${review.id}`,{title:'可以考虑申请精选评估',body:extra.trim()},{href:info.href,reviewId:review.id,email:true,kind:'featured_invitation'});
+      else await notify(review.ownerId,`featured-invitation:${review.id}`,{title:'可以考虑申请精选评估',body:extra.trim()},{href:info.href,reviewId:review.id,kind:'featured_invitation'});
     }
     const notice=held&&originalNotice?{title:result.decision==="pass"?"作品审核通过，尚未上架":"作品待人工复核，尚未上架",body:"审核流程已完成本阶段处理。平台当前暂停作品上架，本次未更改作品的公开版本。\n\n"+originalNotice.body.slice(0,5800)}:originalNotice;
     const draft=result.decision==="disputed"||(result.improvements?.length??0)>0;
-    if(notice)await notify(review.ownerId,`review:${review.id}`,notice,{reviewId:review.id,href:info.href,draft,email:info.type!=="reply"});
-    if(draft&&resourcePending)await notify(review.ownerId,`resource-review-status:${review.id}`,{title:"资源检查尚未完成",body:"资源当前版本暂未公开。本次检查有尚不能确认的事项，不是缺陷或不合格结论。具体说明文案待确认后通知。"},{reviewId:review.id,href:info.href,email:true});
-    else if(draft)await notify(review.ownerId,`review-status:${review.id}`,{title:review.entityType==="revision"&&result.decision==="disputed"?(held?"作品待人工复核，尚未上架":"作品已发布，待人工复核"):result.decision==="pass"?"作品审核通过":result.decision==="revise"?"作品暂未通过审核":"评论暂缓发布",body:held?"平台当前暂停作品上架，审核结果已保存。需要人工确认的事项仍按正常流程处理。":review.entityType==="revision"&&result.decision==="disputed"?"本次审核存在待核对事项，作品已先行发布，管理员将进一步审阅。详细说明文案待确认后通知。":result.decision==="pass"?"本次审核通过。详细完善建议文案待确认后通知，不影响发布。":result.decision==="revise"?"本次审核存在需要修改的内容，当前版本尚未发布。可在审核记录中查看原因。":"评论暂不公开，等待进一步核对。"},{reviewId:review.id,href:info.href,email:info.type!=="reply"});
+    if(notice)await notify(review.ownerId,`review:${review.id}`,notice,{reviewId:review.id,href:info.href,draft,revise:result.decision==='revise'});
+    if(draft&&resourcePending)await notify(review.ownerId,`resource-review-status:${review.id}`,{title:"资源检查尚未完成",body:"资源当前版本暂未公开。本次检查有尚不能确认的事项，不是缺陷或不合格结论。具体说明文案待确认后通知。"},{reviewId:review.id,href:info.href});
+    else if(draft)await notify(review.ownerId,`review-status:${review.id}`,{title:review.entityType==="revision"&&result.decision==="disputed"?(held?"作品待人工复核，尚未上架":"作品已发布，待人工复核"):result.decision==="pass"?"作品审核通过":result.decision==="revise"?"作品暂未通过审核":"评论暂缓发布",body:held?"平台当前暂停作品上架，审核结果已保存。需要人工确认的事项仍按正常流程处理。":review.entityType==="revision"&&result.decision==="disputed"?"本次审核存在待核对事项，作品已先行发布，管理员将进一步审阅。详细说明文案待确认后通知。":result.decision==="pass"?"本次审核通过。详细完善建议文案待确认后通知，不影响发布。":result.decision==="revise"?"本次审核存在需要修改的内容，当前版本尚未发布。可在审核记录中查看原因。":"评论暂不公开，等待进一步核对。"},{reviewId:review.id,href:info.href,revise:result.decision==='revise'});
     if(result.decision==="pass"&&["topic","reply"].includes(review.entityType))await notifyDiscussionPublished(review.entityType,review.entityId,review.id);
     await queueTechnical(review,result,info);
   }else if(review.task==="featured"){
@@ -220,8 +221,8 @@ async function completeReview(review:any,result:any,info:any,policy:any,readName
       await moderateContent(review.entityType,review.entityId,"ai:report",result.summary,false,review.digest);
     }
     const reporters=await sql.prepare("SELECT reporter_id FROM reports WHERE review_id=?").bind(review.id).all<{reporter_id:string}>();
-    for(const row of reporters.results)await notify(row.reporter_id,`report:${review.id}:${row.reporter_id}`,{title:"举报处理结果",body:result.summary},{reviewId:review.id,href:info.href,email:info.type!=="reply"});
-    if(result.decision!=="take_down")await notify(review.ownerId,`reported:${review.id}`,{title:"内容复核结果",body:result.summary},{reviewId:review.id,href:info.href,email:info.type!=="reply",draft:result.decision==="disputed"});
+    for(const row of reporters.results)await notify(row.reporter_id,`report:${review.id}:${row.reporter_id}`,{title:"举报处理结果",body:result.summary},{reviewId:review.id,href:info.href});
+    if(result.decision!=="take_down")await notify(review.ownerId,`reported:${review.id}`,{title:"内容复核结果",body:result.summary},{reviewId:review.id,href:info.href,draft:result.decision==="disputed"});
     await queueTechnical(review,result,info);
     await sql.prepare("UPDATE reviews SET state=?,result=?,updated_at=? WHERE id=?").bind(result.decision==="disputed"?"disputed":"approved",JSON.stringify(metadata),now,review.id).run();
   }else if(review.task==="quality"){
@@ -229,8 +230,8 @@ async function completeReview(review:any,result:any,info:any,policy:any,readName
     await sql.prepare("UPDATE reviews SET state=?,result=?,updated_at=? WHERE id=?").bind(result.decision==="disputed"?"disputed":"approved",JSON.stringify(metadata),now,review.id).run();
   }else{
     const feedback=await sql.prepare("SELECT * FROM technical_feedback WHERE review_id=?").bind(review.id).all<any>();
-    for(const f of feedback.results)if(result.commenterNotice)await notify(f.commenter_id,`technical:${review.id}:${f.commenter_id}`,result.commenterNotice,{reviewId:review.id,href:`/feedback?id=${f.id}`,email:!f.reply_origin,draft:false,kind:"technical"});
-    if(result.authorNotice)await notify(info.ownerId,`technical-author:${info.projectId}:${info.revisionId}:${await digest(JSON.stringify(result.authorNotice))}`,result.authorNotice,{reviewId:review.id,href:info.href,email:feedback.results.some(f=>!f.reply_origin),draft:true,kind:result.authorNotice.kind});
+    for(const f of feedback.results)if(result.commenterNotice)await notify(f.commenter_id,`technical:${review.id}:${f.commenter_id}`,result.commenterNotice,{reviewId:review.id,href:`/feedback?id=${f.id}`,draft:false,kind:"technical"});
+    if(result.authorNotice)await notify(info.ownerId,`technical-author:${info.projectId}:${info.revisionId}:${await digest(JSON.stringify(result.authorNotice))}`,result.authorNotice,{reviewId:review.id,href:info.href,draft:true,kind:result.authorNotice.kind});
     await sql.prepare("UPDATE reviews SET state=?,result=?,updated_at=? WHERE id=?").bind(result.status==="needs_manual"?"disputed":"approved",JSON.stringify(metadata),now,review.id).run();
   }
   if(result.resourceDraft&&info.kind==='project'){
@@ -358,7 +359,7 @@ export async function runReview(id:string,options:{forceProject?:boolean;executi
     const progress=previousProgress?.result?JSON.parse(previousProgress.result):{};
     const failureUpdate=await sql.prepare("UPDATE reviews SET state=?,result=?,updated_at=?,next_attempt_at=? WHERE id=? AND state='running' AND execution_owner=?").bind(waiting?"queued":"disputed",JSON.stringify({...progress,summary:message,failureKind,policy:policy.id,policyVersion:policy.version}),Date.now(),failureKind==='budget_wait'?budgetMonth().end:waiting?Date.now()+300000:0,id,owner).run();
     const userMessage=task==='featured'?'精选评估流程尚未完成，当前未入选精选。管理员会进一步处理，这不是对作品违规或质量不合格的判定。':'审核流程尚未完成，当前公开状态保持不变。管理员会进一步处理，这不是内容违规结论。';
-    if(!waiting&&failureUpdate.meta.changes){await notify(review.ownerId,`review-failure:${id}`,{title:"审核需要进一步处理",body:userMessage},{href:"/dashboard",reviewId:id,email:!review.entityType.startsWith("reply")});await alertAdmins(`review-failure:${id}`,"自动审核需要人工复核",`审核编号：${id}\n${message}`,id);}
+    if(!waiting&&failureUpdate.meta.changes){await notify(review.ownerId,`review-failure:${id}`,{title:"审核需要进一步处理",body:userMessage},{href:"/dashboard",reviewId:id});await alertAdmins(`review-failure:${id}`,"自动审核需要人工复核",`审核编号：${id}\n${message}`,id);}
     throw error instanceof HTTPError?error:new HTTPError(502,message);
   }
 }

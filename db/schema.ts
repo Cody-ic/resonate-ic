@@ -4,6 +4,10 @@ export const users = sqliteTable("users", {
   id: text("id").primaryKey(), name: text("name").notNull(),
   createdAt: integer("created_at").notNull(), bio:text("bio").notNull().default(""),
 });
+export const notificationPreferences=sqliteTable('notification_preferences',{
+  userId:text('user_id').primaryKey().references(()=>users.id,{onDelete:'cascade'}),
+  emailEnabled:integer('email_enabled').notNull().default(1),updatedAt:integer('updated_at').notNull(),
+});
 export const projects = sqliteTable("projects", {
   id: text("id").primaryKey(), ownerId: text("owner_id").notNull().references(() => users.id),
   deletedAt:integer("deleted_at"), adminLockAt:integer("admin_lock_at"),adminReason:text("admin_reason"),kind: text("kind").notNull(), headId: text("head_id"), publishedId: text("published_id"),

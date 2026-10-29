@@ -6,10 +6,20 @@ import {notify,approveNotice,mailConfigured,mailDeliveryEnabled,mailMode,mailHea
 import {submitContentAppeal,resolveContentAppeal} from "./appeals";
 import {resolveFeatured} from "./featured";
 import {moderateContent} from "./moderation-controls";
+import {notificationPreferences,saveNotificationPreferences} from './notification-policy';
 type Actor={id:string;admin:boolean};
 async function body(request:Request){const text=await request.text();if(text.length>16000)throw new HTTPError(413,"请求过长");return JSON.parse(text);}
 export async function workflowApi(request:Request,path:string[],user:Actor|null){
   const [root,key,id,operation]=path,sql=env.DB!,method=request.method;
+  if(root==='me'&&key==='notification-preferences'){
+    if(!user)throw new HTTPError(401,'请先登录');
+    if(method==='GET')return json(await notificationPreferences(user.id));
+    if(method==='PATCH'){
+      const input=z.object({emailEnabled:z.boolean()}).strict().parse(await body(request));
+      if(user.admin&&!input.emailEnabled)throw new HTTPError(422,'管理员工作通知须保留邮件和站内双渠道');
+      return json({...await saveNotificationPreferences(user.id,input.emailEnabled),message:'通知设置已保存'});
+    }
+  }
   if(root==="appeals"&&method==="POST")return submitContentAppeal(request,user);
   if(root==="technical-feedback"&&method==="GET"){
     if(!user)throw new HTTPError(401,"请先登录");
@@ -107,13 +117,13 @@ export async function workflowApi(request:Request,path:string[],user:Actor|null)
         if(!await moderateContent(type,targetId,user.id,input.reason,false,row.digest))throw new HTTPError(409,'内容状态已变化，请重新核对');
       }
       const reporters=await sql.prepare("SELECT reporter_id FROM reports WHERE review_id=?").bind(id).all<{reporter_id:string}>();
-      for(const r of reporters.results)await notify(r.reporter_id,`manual-report:${id}:${r.reporter_id}`,{title:"举报人工复核结果",body:input.reason},{reviewId:id,email:row.entity_type!=="reply"});
+      for(const r of reporters.results)await notify(r.reporter_id,`manual-report:${id}:${r.reporter_id}`,{title:"举报人工复核结果",body:input.reason},{reviewId:id});
     }else if(row.task==="quality"){
       if(!["qualify","not_qualify"].includes(input.decision))throw new HTTPError(422,"请选择优质核验结果");
       await sql.prepare("UPDATE topics SET quality_status=? WHERE id=? AND digest=? AND admin_lock_at IS NULL AND deleted_at IS NULL AND (SELECT COUNT(*) FROM quality_votes WHERE topic_id=topics.id)>20").bind(input.decision==="qualify"?"qualified":"not_qualified",row.entity_id,row.digest).run();
     }else if(row.task==="technical_check"){
       const f=await sql.prepare("SELECT commenter_id,reply_origin FROM technical_feedback WHERE review_id=?").bind(id).all<{commenter_id:string;reply_origin:number}>();
-      for(const r of f.results)await notify(r.commenter_id,`manual-technical:${id}:${r.commenter_id}`,{title:"技术反馈人工处理说明",body:input.reason},{reviewId:id,email:!r.reply_origin});
+      for(const r of f.results)await notify(r.commenter_id,`manual-technical:${id}:${r.commenter_id}`,{title:"技术反馈人工处理说明",body:input.reason},{reviewId:id});
     }
     if(!["featured","appeal"].includes(row.task))await sql.prepare("UPDATE reviews SET state='approved',result=?,updated_at=? WHERE id=?").bind(JSON.stringify({summary:input.reason,decision:input.decision,method:"human"}),Date.now(),id).run();
     await sql.prepare("INSERT INTO moderation_actions(id,entity_type,entity_id,actor_id,action,reason,created_at) VALUES(?,'review',?,?,?,?,?)").bind(crypto.randomUUID(),id,user.id,input.decision,input.reason,Date.now()).run();
@@ -134,7 +144,7 @@ export async function workflowApi(request:Request,path:string[],user:Actor|null)
   }
   if(key==="notices"&&id&&method==="POST"){
     if(operation==="approve"){
-      const input=z.object({title:z.string().min(1).max(160),body:z.string().min(1).max(6000)}).optional().parse(await body(request));
+      const input=z.object({title:z.string().min(1).max(160),body:z.string().min(1).max(6400)}).optional().parse(await body(request));
       if(!await approveNotice(id,user.id,input))throw new HTTPError(409,"文案状态已变化");return json({message:"文案已确认并发布站内通知；邮件按配置排队发送"});
     }
     if(operation==="reject"){const input=z.object({reason:z.string().min(2).max(500)}).parse(await body(request));await sql.prepare("UPDATE notifications SET state='rejected',approved_by=? WHERE id=? AND state='draft'").bind(user.id,id).run();await sql.prepare("INSERT INTO moderation_actions(id,entity_type,entity_id,actor_id,action,reason,created_at) VALUES(?,'notice',?,?,'reject',?,?)").bind(crypto.randomUUID(),id,user.id,input.reason,Date.now()).run();return json({message:"文案已撤回，未通知作者"});}

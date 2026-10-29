@@ -1,5 +1,6 @@
 import {env} from 'cloudflare:workers';
 import {timeouts} from './timeouts';
+import {notificationEmailEnabled,notificationEmail,adminIds,adminEmails,supportEmail} from './notification-policy';
 type MailSettings={MAIL_PROVIDER?:string;MAIL_FROM?:string;MAIL_GRAPH_CLIENT_ID?:string;MAIL_GRAPH_CLIENT_SECRET?:string;MAIL_GRAPH_REFRESH_TOKEN?:string;MAIL_DELIVERY_MODE?:string;MAIL_TEST_RECIPIENTS?:string;MAIL_REQUIRE_EMAIL_VERIFICATION?:string;ADMIN_USER_IDS?:string;ADMIN_EMAILS?:string;BETTER_AUTH_SECRET?:string};
 export const mailSettings=()=>env as typeof env & MailSettings;
 export const mailMode=()=>['test','live'].includes(mailSettings().MAIL_DELIVERY_MODE??'')?mailSettings().MAIL_DELIVERY_MODE as 'test'|'live':'off';
@@ -27,12 +28,12 @@ async function hash(text:string){return Array.from(new Uint8Array(await crypto.s
 async function cipherKey(){const secret=mailSettings().BETTER_AUTH_SECRET;if(!secret||secret.length<32)throw Error('邮件加密配置不可用');return crypto.subtle.importKey('raw',await crypto.subtle.digest('SHA-256',new TextEncoder().encode(secret)),'AES-GCM',false,['encrypt','decrypt']);}
 export async function encryptMailValue(text:string){const iv=crypto.getRandomValues(new Uint8Array(12)),data=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM',iv},await cipherKey(),new TextEncoder().encode(text)));return 'encrypted:'+btoa(String.fromCharCode(...iv))+':'+btoa(String.fromCharCode(...data));}
 export async function decryptMailValue(text:string){if(!text.startsWith('encrypted:'))return text;const [,iv,data]=text.split(':');return new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:Uint8Array.from(atob(iv),c=>c.charCodeAt(0))},await cipherKey(),Uint8Array.from(atob(data),c=>c.charCodeAt(0))));}
-export async function queueEmail(key:string,to:string,title:string,body:string,options:{purpose?:string;notificationId?:string;expiresAt?:number}={}){
+export async function queueEmail(key:string,to:string,title:string,body:string,options:{purpose?:string;notificationId?:string;expiresAt?:number;wake?:boolean}={}){
   if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to)||/[\r\n]/.test(to))return null;
   const id=crypto.randomUUID();
   const row=await env.DB!.prepare("INSERT INTO email_outbox(id,event_key,recipient,subject,body,state,purpose,notification_id,created_at,expires_at) VALUES(?,?,?,?,?,'queued',?,?,?,?) ON CONFLICT(event_key) DO NOTHING RETURNING id")
     .bind(id,key,to.trim(),title.replace(/[\r\n]/g,' ').slice(0,160),options.purpose==='verification'?await encryptMailValue(body):body,options.purpose??'notification',options.notificationId??null,Date.now(),options.expiresAt??null).first<{id:string}>();
-  try{await kickMailQueue();}catch{/* Persistent queued rows remain recoverable by the periodic kick. */}
+  if(options.wake!==false)try{await kickMailQueue();}catch{/* Persistent queued rows remain recoverable by the periodic kick. */}
   return row?.id??(await env.DB!.prepare('SELECT id FROM email_outbox WHERE event_key=?').bind(key).first<{id:string}>())?.id??null;
 }
 export async function mailHealth(){
@@ -40,10 +41,26 @@ export async function mailHealth(){
   return {configured:mailConfigured(),mode:mailMode(),enabled:mailDeliveryEnabled(),sender:c.MAIL_FROM??null,testRecipientCount:recipients().length,verificationRequired:mailVerificationRequired(),authState:row?.auth_state??'not_checked',error:row?.error??null,retryAfterAt:row?.retry_after_at??0};
 }
 async function authAlert(key:string,reason:string){
-  for(const uid of (mailSettings().ADMIN_USER_IDS??'').split(',').map(s=>s.trim()).filter(Boolean)){
-    await env.DB!.prepare("INSERT INTO notifications(id,event_key,recipient_id,title,body,href,state,kind,created_at,email_enabled) SELECT ?,?,?,? ,?,'/admin','ready','admin',?,0 WHERE EXISTS(SELECT 1 FROM users WHERE id=?) ON CONFLICT(event_key) DO NOTHING")
-      .bind(crypto.randomUUID(),'mail-auth:'+key+':'+uid,uid,'邮件服务需要处理',reason+'。站内通知继续可用，请在管理员工作台查看邮件状态并处理授权。',Date.now(),uid).run();
+  const title='邮件服务需要处理',body=reason+'。站内通知继续可用，请在管理员工作台查看邮件状态并处理授权。邮件提醒会在服务恢复后投递。',covered=new Set<string>();
+  // Keep this lower-level path independent of notifications.ts and do not call
+  // back into the mail coordinator while its dispatch lock is held.
+  for(const uid of adminIds()){
+    if(!await env.DB!.prepare('SELECT id FROM users WHERE id=?').bind(uid).first())continue;
+    const event='mail-auth:'+key+':'+uid;
+    await env.DB!.prepare("INSERT INTO notifications(id,event_key,recipient_id,title,body,href,state,kind,created_at,email_enabled) VALUES(?,?,?,?,?,'/admin','ready','admin',?,1) ON CONFLICT(event_key) DO NOTHING").bind(crypto.randomUUID(),event,uid,title,body,Date.now()).run();
+    const notice=await env.DB!.prepare('SELECT id FROM notifications WHERE event_key=?').bind(event).first<{id:string}>(),email=await notificationEmail(uid);
+    if(email&&notice){await queueEmail('mail-auth:'+key+':email:'+email,email,title,body,{notificationId:notice.id,wake:false});covered.add(email);}
   }
+  for(const email of adminEmails())if(!covered.has(email))await queueEmail('mail-auth:'+key+':email:'+email,email,title,body,{wake:false});
+}
+async function deliveryAlert(row:any,state:string){
+  if(!['failed','uncertain'].includes(state)||row.purpose==='connection-test')return;
+  const owner=row.notification_id?await env.DB!.prepare('SELECT recipient_id FROM notifications WHERE id=?').bind(row.notification_id).first<{recipient_id:string}>():await env.DB!.prepare('SELECT p.id recipient_id FROM auth_user u LEFT JOIN account_links l ON l.auth_user_id=u.id JOIN users p ON p.id=COALESCE(l.profile_id,u.id) WHERE lower(u.email)=lower(?) LIMIT 1').bind(row.recipient).first<{recipient_id:string}>();
+  if(!owner)return;
+  const message=state==='uncertain'?'邮件投递结果尚未确认，系统没有自动重发。':'邮件投递失败。';
+  const body=`《${String(row.subject).slice(0,160)}》的${message}原有站内消息仍可查看。请检查邮箱地址及垃圾邮件夹；你也可以在通知设置中关闭邮件通知，站内消息会继续保留。\n\n如需维护者协助，欢迎发邮件至 ${supportEmail}，请说明相关内容和发生时间。`;
+  // A delivery-failure reminder must stay in the inbox, avoiding a mail loop.
+  await env.DB!.prepare("INSERT INTO notifications(id,event_key,recipient_id,title,body,href,state,kind,created_at,email_enabled) VALUES(?,?,?,?,?,?,'ready','mail_delivery',?,0) ON CONFLICT(event_key) DO NOTHING").bind(crypto.randomUUID(),'mail-delivery:'+row.id,owner.recipient_id,state==='uncertain'?'邮件投递结果待确认':'邮件投递未成功',body,'/dashboard?settings=notifications',Date.now()).run();
 }
 export function retryDelay(header:string|null,attempt:number,now=Date.now()){
   const seconds=header===null?NaN:Number(header),date=header?Date.parse(header):NaN;
@@ -60,7 +77,8 @@ export async function dispatchMail(limit=5,options:{onlyId?:string}={}){
   let credential:any;
   const own=()=>db.prepare('UPDATE mail_dispatch_locks SET expires_at=? WHERE id=? AND owner=? RETURNING owner').bind(Date.now()+timeouts.mailLease,id,owner).first();
   try{
-    await db.prepare("UPDATE email_outbox SET state='uncertain',error='发送任务中断，需核对发件箱后重试',execution_owner=NULL WHERE state='sending' AND (started_at IS NULL OR started_at<?)").bind(Date.now()-timeouts.mailLease).run();
+    const interrupted=await db.prepare("UPDATE email_outbox SET state='uncertain',error='发送任务中断，需核对发件箱后重试',execution_owner=NULL WHERE state='sending' AND (started_at IS NULL OR started_at<?) RETURNING *").bind(Date.now()-timeouts.mailLease).all<any>();
+    for(const row of interrupted.results)await deliveryAlert(row,row.state);
     await db.prepare("UPDATE email_outbox SET state='expired',body='' WHERE expires_at IS NOT NULL AND expires_at<=? AND state='queued'").bind(Date.now()).run();
     const allowed=mode==='test'?recipients():[],where=mode==='test'?` AND lower(recipient) IN (${allowed.map(()=>'?').join(',')})`:'';
     const {results}=await db.prepare(`SELECT * FROM email_outbox WHERE state='queued' AND next_attempt_at<=? AND attempts<5${where}${options.onlyId?' AND id=?':''} ORDER BY CASE purpose WHEN 'verification' THEN 0 ELSE 1 END,created_at LIMIT ?`)
@@ -106,11 +124,21 @@ export async function dispatchMail(limit=5,options:{onlyId?:string}={}){
     }
     for(const row of results){
       if(!canSendMailTo(row.recipient)||!await own())break;
+      if(row.purpose==='notification'&&row.notification_id){
+        const notice=await db.prepare('SELECT recipient_id,kind FROM notifications WHERE id=?').bind(row.notification_id).first<{recipient_id:string;kind:string}>();
+        if(notice&&notice.kind!=='admin'&&!await notificationEmailEnabled(notice.recipient_id)){
+          await db.prepare("UPDATE email_outbox SET state='cancelled',error='成员已关闭邮件通知' WHERE id=? AND state='queued'").bind(row.id).run();continue;
+        }
+      }
       const startedAt=Date.now(),executionOwner=crypto.randomUUID();
       const claim=await db.prepare("UPDATE email_outbox SET state='sending',started_at=?,execution_owner=?,attempts=attempts+1,error=NULL WHERE id=? AND state='queued' AND next_attempt_at<=? AND attempts<5 AND (expires_at IS NULL OR expires_at>?) RETURNING attempts").bind(startedAt,executionOwner,row.id,startedAt,startedAt).first<{attempts:number}>();
       if(!claim)continue;
-      const finish=async(state:string,error:string|null,next=0)=>db.prepare("UPDATE email_outbox SET state=?,error=?,next_attempt_at=?,accepted_at=?,execution_owner=NULL,body=CASE WHEN purpose='verification' AND ? IN ('accepted','expired') THEN '' ELSE body END WHERE id=? AND state='sending' AND execution_owner=?")
-        .bind(state,error,next,state==='accepted'?Date.now():null,state,row.id,executionOwner).run();
+      const finish=async(state:string,error:string|null,next=0)=>{
+        const updated=await db.prepare("UPDATE email_outbox SET state=?,error=?,next_attempt_at=?,accepted_at=?,execution_owner=NULL,body=CASE WHEN purpose='verification' AND ? IN ('accepted','expired') THEN '' ELSE body END WHERE id=? AND state='sending' AND execution_owner=?")
+          .bind(state,error,next,state==='accepted'?Date.now():null,state,row.id,executionOwner).run();
+        if(updated.meta.changes)await deliveryAlert(row,state);
+        return updated;
+      };
       let body:string;try{body=await decryptMailValue(row.body);}catch{await finish('failed','邮件内容无法解密，需要管理员检查配置');continue;}
       let response:Response;
       try{response=await fetch('https://graph.microsoft.com/v1.0/me/sendMail',{method:'POST',headers:{Authorization:`Bearer ${access}`,'Content-Type':'application/json'},body:JSON.stringify({message:{subject:row.subject,...(c.MAIL_FROM?{from:{emailAddress:{address:c.MAIL_FROM}}}:{}),body:{contentType:'Text',content:body},toRecipients:[{emailAddress:{address:row.recipient}}]},saveToSentItems:true}),signal:AbortSignal.timeout(timeouts.mailRequest)});}catch{await finish('uncertain','发送结果不确定，需核对发件箱后再决定重试');continue;}

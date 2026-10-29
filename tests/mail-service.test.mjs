@@ -2,13 +2,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {DatabaseSync} from 'node:sqlite';
-import {readFileSync} from 'node:fs';
+import {readFileSync,readdirSync} from 'node:fs';
 import {build} from 'esbuild';
 const bundled=await build({entryPoints:['lib/mail-service.ts'],bundle:true,platform:'node',format:'esm',write:false,plugins:[{name:'env',setup(b){b.onResolve({filter:/^cloudflare:workers$/},()=>({path:'env',namespace:'env'}));b.onLoad({filter:/.*/,namespace:'env'},()=>({contents:'export const env=globalThis.__mailServiceTestEnv;'}));}}]});
 async function scenario(run,{mode='live',outbound,failPersistence=false}={}){
  const db=new DatabaseSync(':memory:');
- db.exec("CREATE TABLE email_outbox(id TEXT PRIMARY KEY,event_key TEXT UNIQUE,recipient TEXT,subject TEXT,body TEXT,state TEXT,purpose TEXT,notification_id TEXT,created_at INTEGER,sent_at INTEGER,error TEXT,expires_at INTEGER);CREATE TABLE users(id TEXT PRIMARY KEY);INSERT INTO users VALUES('admin');CREATE TABLE notifications(id TEXT,event_key TEXT UNIQUE,recipient_id TEXT,title TEXT,body TEXT,href TEXT,state TEXT,kind TEXT,created_at INTEGER,email_enabled INTEGER);");
- db.exec(readFileSync('drizzle/0010_mail_delivery.sql','utf8'));
+ for(const f of readdirSync('drizzle').filter(f=>f.endsWith('.sql')).sort())db.exec(readFileSync('drizzle/'+f,'utf8'));
+ db.exec("INSERT INTO users(id,name,created_at) VALUES('admin','隔离管理员',1)");
  const sql={prepare(query){return {bind(...args){return {async first(){if(failPersistence&&query.startsWith('UPDATE mail_credentials SET refresh_cipher='))throw Error('simulated persistence failure');return db.prepare(query).get(...args)??null;},async all(){return {results:db.prepare(query).all(...args)};},async run(){return {meta:{changes:Number(db.prepare(query).run(...args).changes)}};}};}};}};
  const env={DB:sql,MAIL_PROVIDER:'graph',MAIL_GRAPH_CLIENT_ID:'test-client',MAIL_GRAPH_REFRESH_TOKEN:'test-refresh-seed',BETTER_AUTH_SECRET:'test-encryption-key-for-isolated-tests-only',ADMIN_USER_IDS:'admin',MAIL_DELIVERY_MODE:mode,MAIL_TEST_RECIPIENTS:'allowed@example.test'};
  globalThis.__mailServiceTestEnv=env;

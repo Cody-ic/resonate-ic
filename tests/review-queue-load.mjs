@@ -69,8 +69,8 @@ try{
   if(i%5===0){
    if(activity)throw Error('Rejected reply leaked as activity');
    const outcome=await db.prepare("SELECT recipient_id,email_enabled,state FROM notifications WHERE review_id=? AND kind='review'").bind(replySubmissions[i].value.reviewId).first();
-   if(!outcome||outcome.recipient_id!==ids[51+i]||outcome.email_enabled!==0||outcome.state!=='ready')throw Error('Rejected reply notice missing');
-  }else if(!activity||activity.recipient_id!==ids[1+i]||activity.email_enabled!==0||await db.prepare('SELECT id FROM email_outbox WHERE notification_id=?').bind(activity.id).first())throw Error('Reply notification recipients or mail isolation incorrect');
+   if(!outcome||outcome.recipient_id!==ids[51+i]||outcome.email_enabled!==1||outcome.state!=='ready')throw Error('Rejected reply notice missing');
+  }else if(!activity||activity.recipient_id!==ids[1+i]||activity.email_enabled!==1||!await db.prepare('SELECT id FROM email_outbox WHERE notification_id=?').bind(activity.id).first())throw Error('Reply notification recipients or mail delivery missing');
  }
  report.contextChecks=50;report.expectedBlockedReplies=10;report.notificationChecks=50;save();
  const projects=await scenario('5-users-create-projects-at-once',clients.slice(101,106).map((c,i)=>()=>c.request('POST','/api/projects',draft(i))));

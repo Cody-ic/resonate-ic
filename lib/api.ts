@@ -335,7 +335,7 @@ export async function api(request:Request) {
         const job=prior??await enqueueReview(body.entityType,body.entityId,target.ownerId,JSON.stringify({task:"report",target:JSON.parse(target.snapshot),reportReason:body.reason}),target.digest,{task:"report",lane:"discussion"});
         await db.insert(s.reports).values({id:id(),reporterId:user.id,...body,reviewId:job.id,createdAt:Date.now()});
       }
-      await notify(user.id,`report-received:${body.entityType}:${body.entityId}:${user.id}`,{title:"举报已受理",body:"你的举报已保存，核验期间内容不会仅因举报而下架。可在“我的举报”查看进度，处理结果会通过站内消息通知。"},{href:"/reports",email:false});
+      await notify(user.id,`report-received:${body.entityType}:${body.entityId}:${user.id}`,{title:"举报已受理",body:"你的举报已保存，核验期间内容不会仅因举报而下架。可在“我的举报”查看进度，处理结果会通过站内消息和默认开启的邮件通知反馈。"},{href:"/reports"});
       return json({message:"举报已受理，可在“我的举报”查看进度；核实后才会处理内容"},201);
     }
     if(root==="reviews"&&method==="POST"&&action==="appeal") {
@@ -377,7 +377,7 @@ export async function api(request:Request) {
           if(row.task!=="publish")throw new HTTPError(422,"请使用该任务的专用人工处理表单");
           if(row.entityType==="revision"&&body.decision==="revise"){const target=await env.DB!.prepare("SELECT p.id FROM projects p WHERE p.published_id=?").bind(row.entityId).first<{id:string}>();if(target){const {moderateContent}=await import("./moderation-controls");await moderateContent("project",target.id,user.id,body.reason);}}
           await applyDecision(row,body.decision,{taxonomy:body.taxonomy,actorId:user.id,reason:body.reason,humanReason:body.reason});
-          await notify(row.ownerId,`human-review:${row.id}:${Date.now()}`,{title:body.decision==="pass"?"作品人工复核通过":body.decision==="revise"?"内容人工复核未通过":"审核待进一步核对",body:body.reason},{href:"/dashboard",reviewId:row.id,email:!row.entityType.startsWith("reply")});
+          await notify(row.ownerId,`human-review:${row.id}:${Date.now()}`,{title:body.decision==="pass"?"作品人工复核通过":body.decision==="revise"?"内容人工复核未通过":"审核待进一步核对",body:body.reason},{href:"/dashboard",reviewId:row.id,revise:body.decision==="revise"});
         }
         catch(error){await db.update(s.reviews).set({state:row.state,updatedAt:Date.now()}).where(and(eq(s.reviews.id,row.id),eq(s.reviews.state,"running")));throw error;}
         return json({message:"审核决定已记录"});
