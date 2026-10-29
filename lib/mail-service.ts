@@ -145,7 +145,9 @@ export async function dispatchMail(limit=5,options:{onlyId?:string}={}){
       let body:string;try{body=await decryptMailValue(row.body);}catch{await finish('failed','邮件内容无法解密，需要管理员检查配置');continue;}
       let response:Response;
       try{response=await fetch('https://graph.microsoft.com/v1.0/me/sendMail',{method:'POST',headers:{Authorization:`Bearer ${access}`,'Content-Type':'application/json'},body:JSON.stringify({message:{subject:row.subject,...(c.MAIL_FROM?{from:{emailAddress:{address:c.MAIL_FROM}}}:{}),body:{contentType:'Text',content:body},toRecipients:[{emailAddress:{address:row.recipient}}]},saveToSentItems:true}),signal:AbortSignal.timeout(timeouts.mailRequest)});}catch{await finish('uncertain','发送结果不确定，需核对发件箱后再决定重试');continue;}
-      if(response.status===202){await finish('accepted',null);report.accepted++;}
+      if(response.status===503&&response.headers.get('X-Resonate-Mail-Not-Started')==='1'){
+        await finish(claim.attempts<5?'queued':'failed','连接未建立，尚未向邮件服务发送请求',Date.now()+3000);
+      }else if(response.status===202){await finish('accepted',null);report.accepted++;}
       else if(response.status===429){
         const next=Date.now()+retryDelay(response.headers.get('Retry-After'),claim.attempts);
         await finish(claim.attempts<5?'queued':'failed',claim.attempts<5?'发信服务限流，等待后重试':'多次限流，自动重试已停止',next);

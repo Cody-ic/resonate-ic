@@ -1,22 +1,32 @@
 import {spawn} from 'node:child_process';
+import {lookup} from 'node:dns/promises';
 const quote=value=>'"'+value.replaceAll('\\','\\\\').replaceAll('"','\\"').replaceAll('\r','\\r').replaceAll('\n','\\n')+'"';
 // This campus host reliably reaches Microsoft with curl IPv4/HTTP1.1, while
 // direct workerd and Node sockets intermittently time out. Credentials and body
 // go only through child stdin, never argv, shell commands, files or logs.
-export async function curlMailRequest(request,launch=spawn){
+export async function curlMailRequest(request,launch=spawn,options={}){
   const url=new URL(request.url);
   if(url.protocol!=='https:'||url.username||url.password||!['graph.microsoft.com','login.microsoftonline.com'].includes(url.hostname))return new Response(null,{status:403});
-  const lines=['silent','show-error','ipv4','http1.1','compressed','include','connect-timeout = 20','max-time = 55','url = '+quote(url.href),'request = '+quote(request.method)];
+  const lines=['silent','show-error','ipv4','http1.1','compressed','include','noproxy = "*"','connect-timeout = 10','max-time = 45','write-out = "\\n__RESONATE_TRANSFER__%{json}"','url = '+quote(url.href),'request = '+quote(request.method)];
+  if(options.ip){if(!/^(?:\d{1,3}\.){3}\d{1,3}$/.test(options.ip))throw Error('Invalid mail route');lines.push('resolve = '+quote(url.hostname+':443:'+options.ip));}
+  if(options.probe)lines.push('connect-timeout = 2','max-time = 4');
   for(const [name,value] of request.headers)if(!/^(host|content-length|transfer-encoding|connection|accept-encoding)$/i.test(name))lines.push('header = '+quote(name+': '+value));
   if(!['GET','HEAD'].includes(request.method))lines.push('data-binary = '+quote(await request.text()));
   const bytes=await new Promise((resolve,reject)=>{
-    const child=launch('curl',['--config','-'],{stdio:['pipe','pipe','pipe'],signal:request.signal});
+    const child=launch('curl',['--disable','--config','-'],{stdio:['pipe','pipe','pipe'],signal:request.signal});
     const chunks=[];let size=0;
     child.stdout.on('data',data=>{size+=data.length;if(size>2*1024*1024){child.kill();reject(Error('Mail response too large'));}else chunks.push(data);});
     // Provider stderr can contain request context; never forward it to logs.
     child.stderr.on('data',()=>{});
     child.on('error',()=>reject(Error('Mail HTTPS transport unavailable')));
-    child.on('close',code=>code===0?resolve(Buffer.concat(chunks)):reject(Error('Mail HTTPS transport failed')));
+    child.on('close',code=>{
+      const output=Buffer.concat(chunks),text=output.toString('utf8'),marker='\n__RESONATE_TRANSFER__',at=text.lastIndexOf(marker);let stats;
+      try{if(at>=0)stats=JSON.parse(text.slice(at+marker.length));}catch{}
+      if(code===0)return resolve(at>=0?Buffer.from(text.slice(0,at)):output);
+      const beforeRequest=!!stats&&Number(stats.time_pretransfer)===0&&Number(stats.size_upload)===0&&[6,7,28,35].includes(code);
+      if(!options.probe)console.error('Mail connection result',JSON.stringify({exit:code,beforeRequest,ip:stats?.remote_ip,connect:stats?.time_connect,tls:stats?.time_appconnect,firstByte:stats?.time_starttransfer,total:stats?.time_total}));
+      reject(Object.assign(Error('Mail HTTPS transport failed'),{beforeRequest}));
+    });
     child.stdin.on('error',()=>{});child.stdin.end(lines.join('\n')+'\n');
   });
   let text=bytes.toString('utf8'),status,headers;
@@ -29,9 +39,34 @@ export async function curlMailRequest(request,launch=spawn){
   if(!Number.isInteger(status)||status<200||status>599)throw Error('Invalid mail HTTPS status');
   return new Response([204,205,304].includes(status)?null:text,{status,headers});
 }
-export function campusMailTransport(){return {
+export function campusMailTransport(){
+let route=null,selecting=null;
+async function graphRoute(request){
+  if(route&&route.until>Date.now())return route.ip;
+  if(selecting)return selecting;
+  selecting=(async()=>{
+    const addresses=await lookup('graph.microsoft.com',{family:4,all:true});
+    const ips=[...new Set(addresses.map(x=>x.address))].slice(0,8),abort=new AbortController();
+    try{
+      const ip=await Promise.any(ips.map(async ip=>{
+        // An empty recipient list can never send email. Probe before placing any
+        // real message on a route, preserving at-most-once handling of writes.
+        const probe=new Request('https://graph.microsoft.com/v1.0/me/sendMail',{method:'POST',headers:{Authorization:request.headers.get('Authorization')??'','Content-Type':'application/json'},body:JSON.stringify({message:{subject:'Transport validation without recipients',body:{contentType:'Text',content:'No email should be sent.'},toRecipients:[]},saveToSentItems:false}),signal:abort.signal});
+        const response=await curlMailRequest(probe,spawn,{ip,probe:true});
+        await response.arrayBuffer();if(![400,401,403].includes(response.status))throw Error('Unhealthy mail route');return ip;
+      }));
+      route={ip,until:Date.now()+300000};return ip;
+    }finally{abort.abort();}
+  })().finally(()=>{selecting=null;});
+  return selecting;
+}
+return {
   worker:{name:'campus-mail-router',modules:true,compatibilityDate:'2026-05-15',
     script:`export default {fetch(request,env){const url=new URL(request.url);return url.protocol==='https:'&&['graph.microsoft.com','login.microsoftonline.com'].includes(url.hostname)?env.MAIL_HTTP.fetch(request):fetch(request);}}`,
-    serviceBindings:{MAIL_HTTP:async request=>{try{return await curlMailRequest(request);}catch(error){console.error('Mail HTTPS transport failed',error?.name);throw Error('Mail transport unavailable');}}}},
+    serviceBindings:{MAIL_HTTP:async request=>{
+      let ip;const url=new URL(request.url);
+      if(url.hostname==='graph.microsoft.com'&&url.pathname==='/v1.0/me/sendMail')try{ip=await graphRoute(request);}catch{return new Response(null,{status:503,headers:{'X-Resonate-Mail-Not-Started':'1'}});}
+      try{return await curlMailRequest(request,spawn,{ip});}catch(error){route=null;if(error?.beforeRequest)return new Response(null,{status:503,headers:{'X-Resonate-Mail-Not-Started':'1'}});console.error('Mail HTTPS transport failed',error?.name);throw Error('Mail transport unavailable');}
+    }}},
   close:async()=>{},
 };}

@@ -71,6 +71,9 @@ test('429 obeys Retry-After and does not hammer other messages',()=>scenario(asy
 test('repeated throttling stops after five attempts',()=>scenario(async({api,db,queue,advance,calls})=>{
  await queue('bounded');for(let i=0;i<6;i++){await api.dispatchMail();advance(60001);}assert.equal(db.prepare('SELECT state FROM email_outbox').get().state,'failed');assert.equal(calls.filter(c=>c.url.includes('/sendMail')).length,5);
 },{outbound:async(call)=>call.url.includes('/token')?Response.json({access_token:'access'}):new Response(null,{status:429,headers:{'Retry-After':'1'}})}));
+test('explicit gateway pre-request failures retry without treating provider 503 as safe',()=>scenario(async({api,db,queue,calls,advance})=>{
+ await queue('not-started');await api.dispatchMail();assert.equal(db.prepare('SELECT state FROM email_outbox').get().state,'queued');advance(3001);await api.dispatchMail();assert.equal(db.prepare('SELECT state FROM email_outbox').get().state,'accepted');
+},{outbound:async(call,{calls})=>call.url.includes('/token')?Response.json({access_token:'access'}):calls.filter(c=>c.url.includes('/sendMail')).length===1?new Response(null,{status:503,headers:{'X-Resonate-Mail-Not-Started':'1'}}):new Response(null,{status:202})}));
 test('unknown network outcomes and server errors never auto resend',()=>scenario(async({api,db,queue,calls})=>{
  await queue('network');await api.dispatchMail();await api.dispatchMail();assert.equal(db.prepare('SELECT state FROM email_outbox').get().state,'uncertain');assert.equal(calls.filter(c=>c.url.includes('/sendMail')).length,1);
 },{outbound:async(call)=>{if(call.url.includes('/token'))return Response.json({access_token:'access'});throw Error('timeout with secret payload');}}));

@@ -49,6 +49,18 @@ try{
  check('old password stops working after OTP reset',(await allowed.call('POST','auth/sign-in/email',{email:'allowed@example.test',password})).status>=400);
  await allowed.ok('POST','auth/sign-in/email',{email:'allowed@example.test',password:newPassword});check('password reset resumes verified login',!!(await allowed.ok('GET','me')).user);
  check('recipient send limit prevents a third OTP in the same minute',(await allowed.call('POST','auth/email-otp/send-verification-otp',{email:'allowed@example.test',type:'email-verification'})).status===429);
+ {
+   const c=client(),email='resend-reuses@example.test',before=mailRequests.length;
+   await c.ok('POST','account/register',{name:'验证码重发验收',email,password});await wait(()=>mailRequests.length===before+1);
+   const original=mailRequests.at(-1).message.body.content.match(/\b\d{6}\b/)[0];
+   check('OTP mail describes the ten-minute validity window',mailRequests.at(-1).message.body.content.includes('10分钟'));
+   const wrong=original==='000000'?'111111':'000000';await c.call('POST','auth/email-otp/verify-email',{email,otp:wrong});
+   await c.ok('POST','auth/email-otp/send-verification-otp',{email,type:'email-verification'});await wait(()=>mailRequests.length===before+2);
+   check('resending a valid OTP does not invalidate the already received code',mailRequests.at(-1).message.body.content.match(/\b\d{6}\b/)[0]===original);
+   const value=await db.prepare('SELECT value,expires_at FROM auth_verification WHERE identifier LIKE ?').bind('%'+email+'%').first();
+   check('resend preserves failed-attempt count and encrypted OTP storage',value.value.endsWith(':1')&&!value.value.startsWith(original+':')&&value.expires_at>Date.now()+590000);
+   await c.ok('POST','auth/email-otp/verify-email',{email,otp:original});check('original code still verifies after a resend',!!(await db.prepare('SELECT email_verified FROM auth_user WHERE email=?').bind(email).first()).email_verified);
+ }
  for(const kind of ['expired','attempts']){
    const testClient=client(),email=kind+'@example.test',before=mailRequests.length;
    await testClient.ok('POST','account/register',{name:'验证码边界验收',email,password});await wait(()=>mailRequests.length===before+1);const code=mailRequests.at(-1).message.body.content.match(/\b\d{6}\b/)[0];

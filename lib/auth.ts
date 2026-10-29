@@ -35,10 +35,10 @@ function createSiteAuth(origin:string,cfg:typeof env & Settings){
     appName:"共振",baseURL:origin,basePath:"/api/auth",secret:cfg.BETTER_AUTH_SECRET,
     database:drizzleAdapter(getDb(),{provider:"sqlite",transaction:false,schema:{user:s.authUser,session:s.authSession,account:s.authAccount,verification:s.authVerification}}),
     emailAndPassword:{enabled:true,minPasswordLength:12,maxPasswordLength:128,requireEmailVerification:mailVerificationRequired()},
-    plugins:[emailOTP({otpLength:6,expiresIn:300,allowedAttempts:3,storeOTP:"hashed",sendVerificationOnSignUp:mailVerificationAvailable(),overrideDefaultEmailVerification:true,disableSignUp:true,rateLimit:{window:60,max:2},sendVerificationOTP:async({email,otp,type})=>{
+    plugins:[emailOTP({otpLength:6,expiresIn:600,allowedAttempts:3,storeOTP:"encrypted",resendStrategy:'reuse',sendVerificationOnSignUp:mailVerificationAvailable(),overrideDefaultEmailVerification:true,disableSignUp:true,rateLimit:{window:60,max:2},sendVerificationOTP:async({email,otp,type})=>{
       if(!canSendMailTo(email))throw new APIError('SERVICE_UNAVAILABLE',{message:'邮箱发送服务尚未启用，或当前收件人不在联调范围内'});
       if((await mailHealth()).authState==='account_verification_required')throw new APIError('SERVICE_UNAVAILABLE',{message:'邮件服务暂时需要维护者完成微软账号验证，请稍后再试'});
-      await queueEmail(`verification:${crypto.randomUUID()}`,email,type==="forget-password"?"共振账号密码重置验证码":"共振账号邮箱验证码",`你的验证码是 ${otp}，5分钟内有效。请勿将验证码告知他人。若非本人操作，可忽略此邮件。`,{purpose:"verification",expiresAt:Date.now()+300000});
+      await queueEmail(`verification:${crypto.randomUUID()}`,email,type==="forget-password"?"共振账号密码重置验证码":"共振账号邮箱验证码",`你的验证码是 ${otp}，10分钟内有效。有效期内重新申请会复用同一个验证码。请勿将验证码告知他人。若非本人操作，可忽略此邮件。`,{purpose:"verification",expiresAt:Date.now()+600000});
     }})],
     session:{expiresIn:60*60*24*7,updateAge:60*60*24},
     advanced:{ipAddress:{ipAddressHeaders:["cf-connecting-ip"]},cookiePrefix:"gongzhen"},
