@@ -1,6 +1,6 @@
 import test from 'node:test';import assert from 'node:assert/strict';
 import {EventEmitter} from 'node:events';import {PassThrough,Writable} from 'node:stream';
-import {curlMailRequest} from '../scripts/campus-mail-transport.mjs';
+import {curlMailRequest,mailTransportFailure} from '../scripts/campus-mail-transport.mjs';
 function fakeTransport({reply='HTTP/1.1 202 Accepted\r\nContent-Length: 0\r\n\r\n',exit=0}={}){
   const calls=[];return {calls,launch(command,args,options){
     const child=new EventEmitter();child.stdout=new PassThrough();child.stderr=new PassThrough();child.kill=()=>{};let input='';
@@ -9,6 +9,13 @@ function fakeTransport({reply='HTTP/1.1 202 Accepted\r\nContent-Length: 0\r\n\r\
     child.stdin.on('finish',()=>setImmediate(()=>{child.stdout.emit('data',Buffer.from(reply));child.emit('close',exit);}));return child;
   }};
 }
+test('local transport failures distinguish safe unsent requests from uncertain writes',()=>{
+  const safe=mailTransportFailure({beforeRequest:true});
+  assert.equal(safe.status,503);assert.equal(safe.headers.get('X-Resonate-Mail-Not-Started'),'1');
+  const unknown=mailTransportFailure(new Error('timeout'));
+  assert.equal(unknown.status,502);assert.equal(unknown.headers.get('X-Resonate-Mail-Transport'),'uncertain');
+  assert.equal(unknown.headers.get('X-Resonate-Mail-Not-Started'),null);
+});
 test('mail credentials and JSON body travel only on stdin without a shell',async()=>{
   const mock=fakeTransport(),r=await curlMailRequest(new Request('https://graph.microsoft.com/v1.0/me/sendMail',{method:'POST',headers:{Authorization:'Bearer test-secret-token','Content-Type':'application/json'},body:JSON.stringify({message:'中文\n"$(not-a-shell)"'})}),mock.launch);
   assert.equal(r.status,202);assert.equal(mock.calls.length,1);const c=mock.calls[0];assert.deepEqual(c.args,['--disable','--config','-']);assert.equal(c.command,'curl');assert.equal(c.options.shell,undefined);assert.match(c.input(),/noproxy = "\*"/);assert.match(c.input(),/test-secret-token/);assert.match(c.input(),/data-binary/);assert.match(c.input(),/http1\.1/);assert.doesNotMatch(JSON.stringify(c.args),/test-secret-token/);

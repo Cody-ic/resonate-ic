@@ -74,6 +74,12 @@ test('repeated throttling stops after five attempts',()=>scenario(async({api,db,
 test('explicit gateway pre-request failures retry without treating provider 503 as safe',()=>scenario(async({api,db,queue,calls,advance})=>{
  await queue('not-started');await api.dispatchMail();assert.equal(db.prepare('SELECT state FROM email_outbox').get().state,'queued');advance(3001);await api.dispatchMail();assert.equal(db.prepare('SELECT state FROM email_outbox').get().state,'accepted');
 },{outbound:async(call,{calls})=>call.url.includes('/token')?Response.json({access_token:'access'}):calls.filter(c=>c.url.includes('/sendMail')).length===1?new Response(null,{status:503,headers:{'X-Resonate-Mail-Not-Started':'1'}}):new Response(null,{status:202})}));
+test('local transport timeout is not attributed to a Microsoft HTTP error and is never replayed',()=>scenario(async({api,db,queue,calls})=>{
+ await queue('transport-timeout');await api.dispatchMail();await api.dispatchMail();
+ const row=db.prepare('SELECT state,error FROM email_outbox').get();
+ assert.equal(row.state,'uncertain');assert.match(row.error,/网站服务器未收到微软发信响应/);assert.doesNotMatch(row.error,/响应 502/);
+ assert.equal(calls.filter(c=>c.url.includes('/sendMail')).length,1);
+},{outbound:async(call)=>call.url.includes('/token')?Response.json({access_token:'access'}):new Response(null,{status:502,headers:{'X-Resonate-Mail-Transport':'uncertain'}})}));
 test('unknown network outcomes and server errors never auto resend',()=>scenario(async({api,db,queue,calls})=>{
  await queue('network');await api.dispatchMail();await api.dispatchMail();assert.equal(db.prepare('SELECT state FROM email_outbox').get().state,'uncertain');assert.equal(calls.filter(c=>c.url.includes('/sendMail')).length,1);
 },{outbound:async(call)=>{if(call.url.includes('/token'))return Response.json({access_token:'access'});throw Error('timeout with secret payload');}}));

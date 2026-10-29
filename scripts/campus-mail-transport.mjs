@@ -24,7 +24,7 @@ export async function curlMailRequest(request,launch=spawn,options={}){
       try{if(at>=0)stats=JSON.parse(text.slice(at+marker.length));}catch{}
       if(code===0)return resolve(at>=0?Buffer.from(text.slice(0,at)):output);
       const beforeRequest=!!stats&&Number(stats.time_pretransfer)===0&&Number(stats.size_upload)===0&&[6,7,28,35].includes(code);
-      if(!options.probe)console.error('Mail connection result',JSON.stringify({exit:code,beforeRequest,ip:stats?.remote_ip,connect:stats?.time_connect,tls:stats?.time_appconnect,firstByte:stats?.time_starttransfer,total:stats?.time_total}));
+      if(!options.probe)console.error('Mail connection result',JSON.stringify({exit:code,beforeRequest,ip:stats?.remote_ip,connect:stats?.time_connect,tls:stats?.time_appconnect,pretransfer:stats?.time_pretransfer,uploaded:stats?.size_upload,requestBytes:stats?.request_size,firstByte:stats?.time_starttransfer,total:stats?.time_total}));
       reject(Object.assign(Error('Mail HTTPS transport failed'),{beforeRequest}));
     });
     child.stdin.on('error',()=>{});child.stdin.end(lines.join('\n')+'\n');
@@ -38,6 +38,13 @@ export async function curlMailRequest(request,launch=spawn,options={}){
   }while(status<200||text.startsWith('HTTP/'));
   if(!Number.isInteger(status)||status<200||status>599)throw Error('Invalid mail HTTPS status');
   return new Response([204,205,304].includes(status)?null:text,{status,headers});
+}
+export function mailTransportFailure(error){
+  // This response is generated locally, not by Microsoft. A request that may
+  // have reached the provider remains uncertain and must never be replayed.
+  return error?.beforeRequest
+    ?new Response(null,{status:503,headers:{'X-Resonate-Mail-Not-Started':'1'}})
+    :new Response(null,{status:502,headers:{'X-Resonate-Mail-Transport':'uncertain'}});
 }
 export function campusMailTransport(){
 let route=null,selecting=null;
@@ -66,7 +73,7 @@ return {
     serviceBindings:{MAIL_HTTP:async request=>{
       let ip;const url=new URL(request.url);
       if(url.hostname==='graph.microsoft.com'&&url.pathname==='/v1.0/me/sendMail')try{ip=await graphRoute(request);}catch{return new Response(null,{status:503,headers:{'X-Resonate-Mail-Not-Started':'1'}});}
-      try{return await curlMailRequest(request,spawn,{ip});}catch(error){route=null;if(error?.beforeRequest)return new Response(null,{status:503,headers:{'X-Resonate-Mail-Not-Started':'1'}});console.error('Mail HTTPS transport failed',error?.name);throw Error('Mail transport unavailable');}
+      try{return await curlMailRequest(request,spawn,{ip});}catch(error){route=null;console.error('Mail HTTPS transport failed',error?.name);return mailTransportFailure(error);}
     }}},
   close:async()=>{},
 };}
