@@ -8,7 +8,8 @@ export function checkProduction(c){
   if((c.BETTER_AUTH_SECRET??'').length<32)issues.push('BETTER_AUTH_SECRET: at least 32 characters required');
   if(c.PLATFORM_AUTH_ENABLED!=='false')issues.push('PLATFORM_AUTH_ENABLED: disable independent-host platform login');
   if((c.ADMIN_USER_IDS??'').split(',').some(v=>/^local_|YOUR|example/i.test(v.trim())))issues.push('ADMIN_USER_IDS: use verified production profile IDs');
-  if(c.MAIL_PROVIDER!=='graph'||c.MAIL_DELIVERY_MODE!=='live'||c.MAIL_REQUIRE_EMAIL_VERIFICATION!=='true')issues.push('MAIL: verified live delivery must be configured');
+  if(c.MAIL_PROVIDER!=='graph'||c.MAIL_DELIVERY_MODE!=='live')issues.push('MAIL: live delivery must be configured');
+  if(!['true','false'].includes(c.MAIL_REQUIRE_EMAIL_VERIFICATION))issues.push('MAIL_REQUIRE_EMAIL_VERIFICATION: explicit true or false required');
   for(const k of ['MAIL_FROM','ADMIN_EMAILS'])if(!(c[k]??'').split(',').every(v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim())))issues.push(k+': valid address required');
   for(const k of ['PROJECT_AI_MONTHLY_BUDGET_MICROS','DISCUSSION_AI_MONTHLY_BUDGET_MICROS','AI_TOTAL_MONTHLY_BUDGET_MICROS','PROJECT_AI_MONTHLY_MAX_CALLS','DISCUSSION_AI_MONTHLY_MAX_CALLS'])if(!/^\d+$/.test(c[k]??'')||Number(c[k])<=0)issues.push(k+': positive integer required');
   return issues;

@@ -17,7 +17,7 @@ if(!owner)throw Error('Owner account must exist; no administrator is fabricated'
 const cfg={...parseEnv(readFileSync('config/production.env.example','utf8')),...local,
   BETTER_AUTH_URL:origin.origin,BETTER_AUTH_SECRET:crypto.randomBytes(48).toString('base64url'),
   PLATFORM_AUTH_ENABLED:'false',ADMIN_USER_IDS:owner.id,ADMIN_EMAILS:owner.email,
-  MAIL_DELIVERY_MODE:'live',MAIL_REQUIRE_EMAIL_VERIFICATION:'true',SEU_LOGIN_TRUSTED_CIDRS:'',
+  MAIL_DELIVERY_MODE:'live',MAIL_REQUIRE_EMAIL_VERIFICATION:'false',SEU_LOGIN_TRUSTED_CIDRS:'',
   PROJECT_PUBLICATION_ENABLED:'true'};
 delete cfg.MAIL_TEST_RECIPIENTS;
 const sha=s=>crypto.createHash('sha256').update(s).digest();

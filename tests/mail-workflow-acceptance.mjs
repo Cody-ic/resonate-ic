@@ -40,6 +40,14 @@ try{
  check('verification code cannot be reused',(await allowed.call('POST','auth/email-otp/verify-email',{email:'allowed@example.test',otp})).status>=400);
  const health=(await admin.ok('GET','admin/workflows')).mailHealth;check('health exposes no credentials or encrypted token values',health.authState==='active'&&!JSON.stringify(health).includes('refresh')&&!JSON.stringify(health).includes('access_cipher'));
  bindings.MAIL_DELIVERY_MODE='live';bindings.MAIL_REQUIRE_EMAIL_VERIFICATION='false';await reconfigure();await foreign.ok('POST','auth/sign-out',{});await foreign.ok('POST','auth/sign-in/email',{email:'other@example.test',password});check('live delivery alone does not change login requirement',!(await foreign.ok('GET','config')).emailVerificationRequired);
+ {
+  const c=client(),email='optional-verification@example.test',before=mailRequests.length;
+  const registered=await c.ok('POST','account/register',{name:'免验证注册验收',email,password});
+  check('optional verification registration returns a session without requesting mail',registered.emailVerificationRequired===false&&!registered.deliveryTicket&&!!(await c.ok('GET','me')).user&&mailRequests.length===before);
+  check('direct registration does not falsely mark an email as owned',(await db.prepare('SELECT email_verified FROM auth_user WHERE email=?').bind(email).first()).email_verified===0);
+  await c.ok('POST','auth/sign-out',{});await c.ok('POST','auth/sign-in/email',{email,password});
+  check('an unverified member can sign in again without an OTP',!!(await c.ok('GET','me')).user);
+ }
  bindings.MAIL_REQUIRE_EMAIL_VERIFICATION='true';await reconfigure();await foreign.ok('POST','auth/sign-out',{});const required=await foreign.call('POST','auth/sign-in/email',{email:'other@example.test',password});check('mandatory verification is an explicit independent opt-in',required.status===403&&required.value.code==='EMAIL_NOT_VERIFIED');
  await foreign.ok('POST','auth/email-otp/send-verification-otp',{email:'other@example.test',type:'email-verification'});await wait(()=>mailRequests.length===2);const second=mailRequests[1].message.body.content.match(/\b\d{6}\b/)[0];await foreign.ok('POST','auth/email-otp/verify-email',{email:'other@example.test',otp:second});await foreign.ok('POST','auth/sign-in/email',{email:'other@example.test',password});check('existing user can verify and resume login without recreating account',!!(await foreign.ok('GET','me')).user&&(await db.prepare('SELECT email_verified FROM auth_user WHERE email=?').bind('other@example.test').first()).email_verified===1);
  const countBeforeReset=mailRequests.length;
@@ -99,6 +107,10 @@ try{
  bindings.MAIL_DELIVERY_MODE='live';bindings.MAIL_REQUIRE_EMAIL_VERIFICATION='true';await reconfigure();
  await db.prepare("UPDATE mail_credentials SET auth_state='account_verification_required',error='Microsoft verification needed' WHERE id=?").bind('graph:test-client').run();
  check('blocked provider rejects new registration before creating an account',(await client().call('POST','account/register',{name:'验证暂停验收',email:'paused@example.test',password})).status===503&&!(await db.prepare('SELECT id FROM auth_user WHERE email=?').bind('paused@example.test').first()));
+ bindings.MAIL_REQUIRE_EMAIL_VERIFICATION='false';await reconfigure();
+ const mailDown=client(),beforeMailDown=mailRequests.length;
+ await mailDown.ok('POST','account/register',{name:'邮件故障免验证验收',email:'mail-down-direct@example.test',password});
+ check('optional registration remains usable while Microsoft delivery is paused',!!(await mailDown.ok('GET','me')).user&&mailRequests.length===beforeMailDown);
  check('blocked provider returns a clear failure for OTP requests',(await allowed.call('POST','auth/email-otp/send-verification-otp',{email:'allowed@example.test',type:'email-verification'})).status===503);
  check('ordinary users cannot resume a suspended provider',(await foreign.call('POST','admin/mail/resume',{confirmedAccountVerified:true})).status===403);
  check('provider resume requires explicit verification confirmation',(await admin.call('POST','admin/mail/resume',{})).status>=400);

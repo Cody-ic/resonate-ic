@@ -20,6 +20,13 @@ test('all new member notices default to inbox and email and retry does not dupli
  assert.equal((await api.notificationPreferences('member')).emailEnabled,true);const id=await api.notify('member','reply-default',notice,{kind:'reply'});await api.notify('member','reply-default',notice,{kind:'reply'});
  assert.equal(db.prepare('SELECT COUNT(*) n FROM notifications').get().n,1);assert.equal(db.prepare('SELECT COUNT(*) n FROM email_outbox WHERE notification_id=?').get(id).n,1);
 }));
+test('unverified members keep site notifications without sending to an unowned address',()=>scenario(async({api,db,notice})=>{
+ db.prepare("UPDATE auth_user SET email_verified=0 WHERE id='member'").run();
+ assert.equal((await api.notificationPreferences('member')).emailEnabled,true);assert.equal((await api.notificationPreferences('member')).emailAddress,null);
+ await api.notify('member','unverified-inbox',notice);assert.equal(db.prepare('SELECT COUNT(*) n FROM notifications').get().n,1);assert.equal(db.prepare('SELECT COUNT(*) n FROM email_outbox').get().n,0);
+ db.prepare("UPDATE auth_user SET email_verified=1 WHERE id='member'").run();
+ await api.notify('member','verified-mail',notice);assert.equal(db.prepare('SELECT COUNT(*) n FROM email_outbox').get().n,1);
+}));
 test('member opt out persists, cancels pending notifications and keeps verification mail',()=>scenario(async({api,db,notice,calls})=>{
  const id=await api.notify('member','pending',notice);await api.saveNotificationPreferences('member',false);assert.equal((await api.notificationPreferences('member')).emailEnabled,false);assert.equal(db.prepare('SELECT state FROM email_outbox WHERE notification_id=?').get(id).state,'cancelled');
  await api.notify('member','muted',notice);assert.equal(db.prepare('SELECT email_enabled FROM notifications WHERE event_key=?').get('muted').email_enabled,0);assert.equal(db.prepare('SELECT COUNT(*) n FROM email_outbox').get().n,1);

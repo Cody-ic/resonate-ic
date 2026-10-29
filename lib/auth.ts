@@ -35,7 +35,7 @@ function createSiteAuth(origin:string,cfg:typeof env & Settings){
     appName:"共振",baseURL:origin,basePath:"/api/auth",secret:cfg.BETTER_AUTH_SECRET,
     database:drizzleAdapter(getDb(),{provider:"sqlite",transaction:false,schema:{user:s.authUser,session:s.authSession,account:s.authAccount,verification:s.authVerification}}),
     emailAndPassword:{enabled:true,minPasswordLength:12,maxPasswordLength:128,requireEmailVerification:mailVerificationRequired()},
-    plugins:[emailOTP({otpLength:6,expiresIn:600,allowedAttempts:3,storeOTP:"encrypted",resendStrategy:'reuse',sendVerificationOnSignUp:mailVerificationAvailable(),overrideDefaultEmailVerification:true,disableSignUp:true,rateLimit:{window:60,max:2},sendVerificationOTP:async({email,otp,type})=>{
+    plugins:[emailOTP({otpLength:6,expiresIn:600,allowedAttempts:3,storeOTP:"encrypted",resendStrategy:'reuse',sendVerificationOnSignUp:mailVerificationRequired(),overrideDefaultEmailVerification:true,disableSignUp:true,rateLimit:{window:60,max:2},sendVerificationOTP:async({email,otp,type})=>{
       if(!canSendMailTo(email))throw new APIError('SERVICE_UNAVAILABLE',{message:'邮箱发送服务尚未启用，或当前收件人不在联调范围内'});
       if((await mailHealth()).authState==='account_verification_required')throw new APIError('SERVICE_UNAVAILABLE',{message:'邮件服务暂时需要维护者完成微软账号验证，请稍后再试'});
       await queueEmail(`verification:${crypto.randomUUID()}`,email,type==="forget-password"?"共振账号密码重置验证码":"共振账号邮箱验证码",`你的验证码是 ${otp}，10分钟内有效。有效期内重新申请会复用同一个验证码。请勿将验证码告知他人。若非本人操作，可忽略此邮件。`,{purpose:"verification",expiresAt:Date.now()+600000});
@@ -90,6 +90,8 @@ export async function registerAccount(request:Request){
       try{await getDb().insert(s.accountLinks).values({authUserId:result.user.id,profileId:identity.id,createdAt:Date.now()});await getDb().update(s.users).set({name:body.name}).where(eq(s.users.id,identity.id));}
       catch{await getDb().delete(s.authSession).where(eq(s.authSession.userId,result.user.id));throw new HTTPError(409,"该账户的关联状态已变化，请使用新账号重新登录");}
     }
+    const responseHeaders=new Headers(response.headers);responseHeaders.delete('content-length');responseHeaders.set('Cache-Control','no-store');
+    return new Response(JSON.stringify({...result,emailVerificationRequired:mailVerificationRequired()}),{status:response.status,headers:responseHeaders});
   }
   return response;
 }
