@@ -1,9 +1,9 @@
 import {spawn} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 const quote=value=>'"'+value.replaceAll('\\','\\\\').replaceAll('"','\\"').replaceAll('\r','\\r').replaceAll('\n','\\n')+'"';
-// This campus host reliably reaches Microsoft with curl IPv4/HTTP1.1, while
-// direct workerd and Node sockets intermittently time out. Credentials and body
-// go only through child stdin, never argv, shell commands, files or logs.
+// Historical curl adapter retained for diagnostic comparisons. Production
+// uses pythonMailRequest below with a per-socket segment limit. Credentials
+// and body go only through child stdin, never argv, files or logs.
 export async function curlMailRequest(request,launch=spawn,options={}){
   const url=new URL(request.url);
   if(url.protocol!=='https:'||url.username||url.password||!['graph.microsoft.com','login.microsoftonline.com'].includes(url.hostname))return new Response(null,{status:403});
