@@ -8,6 +8,7 @@ import {Readable} from 'node:stream';
 import {pipeline} from 'node:stream/promises';
 import crypto from 'node:crypto';
 import {fileURLToPath} from 'node:url';
+import {execFileSync} from 'node:child_process';
 
 process.umask(0o077);
 const root=fileURLToPath(new URL('../',import.meta.url)),shared=path.resolve(process.env.CAMPUS_SHARED||'campus-private');
@@ -19,6 +20,10 @@ const cfg=JSON.parse(readFileSync(path.join(workerRoot,'wrangler.json'),'utf8'))
 const entry=path.join(workerRoot,'index.js');
 const modules=[entry,...readdirSync(workerRoot,{recursive:true}).filter(p=>/\.(js|mjs)$/.test(p)&&!p.split(/[\\/]/).some(x=>x.startsWith('.'))).map(p=>path.join(workerRoot,p)).filter(p=>p!==entry)].map(p=>({type:'ESModule',path:p}));
 const state=path.join(shared,'state');mkdirSync(state,{recursive:true});
+if(process.argv.includes('--import-course')){
+  const active=execFileSync('systemctl',['--user','show','resonate-campus.service','--property=ActiveState','--value'],{encoding:'utf8'}).trim();
+  if(!['inactive','failed'].includes(active))throw Error('Stop the campus service before opening its persistent state for import');
+}
 const mf=new Miniflare({name:'resonate-campus',host:'127.0.0.1',port:0,cf:false,
   modules,modulesRoot:workerRoot,modulesRules:[{type:'ESModule',include:['**/*.js','**/*.mjs'],fallthrough:true}],
   compatibilityDate:cfg.compatibility_date,compatibilityFlags:cfg.compatibility_flags,bindings,
@@ -38,6 +43,13 @@ for(const name of readdirSync(path.join(root,'drizzle')).filter(x=>x.endsWith('.
   const statements=sql.replace(/--> statement-breakpoint/g,'').split(';').map(x=>x.trim()).filter(Boolean);
   await db.batch([...statements.map(x=>db.prepare(x)),db.prepare('INSERT INTO campus_migrations VALUES(?,?,?)').bind(name,digest,Date.now())]);
   console.log('Applied migration',name);
+}
+if(process.argv.includes('--import-course')){
+  try{
+    const {importCampusCourse}=await import('./campus-import-course.mjs');
+    await importCampusCourse({db,root,bindings,projectId:process.argv[process.argv.indexOf('--project')+1]});
+  }finally{await mf.dispose();}
+  process.exit(0);
 }
 if(process.argv.includes('--bootstrap')){
   if((await db.prepare('SELECT COUNT(*) AS n FROM users').first()).n>0)throw Error('Bootstrap requires an empty database; never re-import into a running beta');

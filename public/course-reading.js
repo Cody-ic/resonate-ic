@@ -1,6 +1,19 @@
 /* Website reading controls. Original course sources and licenses are preserved. */
 (() => {
   'use strict';
+  // A migrated course keeps its immutable lesson assets, but its associated
+  // project may have a different ID on another installation. Resolve the public
+  // association rather than retaining a broken preview-only project URL.
+  const courseLink=document.querySelector('.relay-coursebar a[href^="/courses/"]');
+  const projectLink=document.querySelector('.relay-coursebar a[href^="/projects/"]');
+  const courseId=courseLink?.getAttribute('href')?.match(/^\/courses\/([0-9a-f-]{36})$/i)?.[1];
+  if(courseId&&projectLink){
+    projectLink.href=courseLink.href;
+    fetch(`/api/courses/${courseId}`,{credentials:'omit'})
+      .then(response=>response.ok?response.json():null)
+      .then(value=>{const id=value?.relatedProject?.id;if(/^[0-9a-f-]{36}$/i.test(id??''))projectLink.href=`/projects/${id}`;})
+      .catch(()=>{});
+  }
   const isImage = value => /\.(?:png|jpe?g|webp|gif|svg|bmp)(?:[?#]|$)/i.test(value || '');
   document.querySelectorAll('a[href]').forEach(link => {
     if (!isImage(link.getAttribute('href'))) return;
