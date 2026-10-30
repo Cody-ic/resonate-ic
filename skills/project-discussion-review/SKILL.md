@@ -2,7 +2,7 @@
 name: project-discussion-review
 description: 为共振网站核验项目下讨论与回复的发布、举报及优质讨论资格；区分正常情绪与人身攻击，并提取需交项目审核核查的具体技术问题。
 metadata:
-  policy_version: "2026-10-30.1"
+  policy_version: "2026-10-30.2"
 ---
 
 # 项目讨论审核

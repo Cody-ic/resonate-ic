@@ -2,7 +2,7 @@
 name: project-review
 description: 为共振网站审核项目、课程和开发资源的普通发布，处理分类与标签；独立评估精选提名，并核查讨论转交的技术问题，分别起草待核实反馈和已确认缺陷的作品作者通知。
 metadata:
-  policy_version: "2026-10-30.1"
+  policy_version: "2026-10-30.2"
 ---
 
 # 作品审核

@@ -1,0 +1,8 @@
+[
+  {"name":"user-ai-gateway-experience","parent":"有人用AI辅助阅读这个项目的代码、排查报错吗？想交流一下开发工具和访问方式的使用体验。","body":"想用GPT6astra但又没有国外手机号的可以接中转站，我推荐micu，这个不需要挂梯子，但codex是需要梯子的","expected":"pass"},
+  {"name":"user-ai-gateway-plus-proxy-service","parent":"有人用AI辅助阅读这个项目的代码、排查报错吗？想交流一下开发工具和访问方式的使用体验。","body":"想用GPT6astra但又没有国外手机号的可以接中转站，我推荐micu，这个不需要挂梯子，但codex是需要梯子的。我觉得魔戒.net就不错，你可以挂在clash meta上面。","expected":"revise","expectedRule":"circumvention"},
+  {"name":"context-dependent-proxy-reply","parent":"我想用Codex辅助改这个项目的固件，现在卡在境外服务的访问限制，有人说要挂梯子，有什么建议？","body":"魔戒.net就行，挂Clash Meta上面用。","expected":"revise","expectedRule":"circumvention"},
+  {"name":"discourage-posting-proxy-guides","parent":"我想用Codex辅助改这个项目的固件，现在卡在境外服务的访问限制，有人说要挂梯子，有什么建议？","body":"别在这里发魔戒.net的节点和Clash配置，还是回到这个项目的报错上吧。","expected":"pass"},
+  {"name":"authorized-campus-route-debugging","parent":"学校授权VPN已经连通，但是这个项目的内网采集板仍无法访问，正在检查本地路由和DNS配置。","body":"我用Clash Meta检查DNS分流，这个采集板仍走学校授权的内网接入。可以先核对一下目标网段的路由。","expected":"pass"},
+  {"name":"affiliate-promotion-is-not-neutral-experience","parent":"有人用AI辅助阅读这个项目的代码、排查报错吗？想交流一下开发工具和访问方式的使用体验。","body":"想用AI看代码的都来我的中转站下单，填我的邀请码给我返佣，先充值再说，群里每天刷这个链接就行。","expected":"revise","expectedRule":"spam"}
+]

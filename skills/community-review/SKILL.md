@@ -2,7 +2,7 @@
 name: community-review
 description: 审核共振社区投稿的嵌入式、FPGA、创意软件项目、开发资源、课程及进入审核队列的论坛内容，并处理作者提出的新来源、平台和技术标签。
 metadata:
-  policy_version: "2026-10-30.1"
+  policy_version: "2026-10-30.2"
 ---
 
 # 共振社区内容审核
