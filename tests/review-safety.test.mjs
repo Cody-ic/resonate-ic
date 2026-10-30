@@ -16,6 +16,7 @@ test('missing, invented, mismatched and community-only legal bases are rejected'
 });
 test('serious disputes hold publication while ordinary ownership disputes retain existing policy',()=>{
  for(const rule of ['illegal','severe_safety','circumvention'])assert.equal(api.holdsUnsafePublication({decision:'disputed',findings:[{rule}]}),true);
+  assert.equal(api.holdsUnsafePublication({decision:'disputed',findings:[{rule:'privacy',legalBasis:['personal-rights']}]}),true);
  assert.equal(api.holdsUnsafePublication({decision:'disputed',findings:[{rule:'ownership'}]}),false);
  assert.equal(api.holdsUnsafePublication({decision:'pass',findings:[]}),false);
 });

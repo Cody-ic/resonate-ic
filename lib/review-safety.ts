@@ -1,7 +1,7 @@
 import legalBases from '../skills/community-review/references/legal-bases.json';
 export {legalBases};
 export function holdsUnsafePublication(result:any){
-  return result?.decision==='disputed'&&(result.findings??[]).some((f:any)=>['illegal','severe_safety','circumvention'].includes(f.rule));
+  return result?.decision==='disputed'&&(result.findings??[]).some((f:any)=>['illegal','severe_safety','circumvention'].includes(f.rule)||(f.legalBasis?.length??0)>0);
 }
 export function legalReferenceText(result:any){
   const keys=[...new Set<string>((result.findings??[]).flatMap((f:any)=>f.legalBasis??[]))];
