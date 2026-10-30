@@ -24,11 +24,14 @@ function providerResult(input){
  if(input.task==='report')return {task:'report',decision:'take_down',issueConfirmed:true,removalNecessary:true,summary:'核验发现明确需要下架的骚扰内容。',findings:[{rule:'abuse',quote:input.target.body,explanation:'在本次测试材料中确认需要下架。'}],technicalIssues:[]};
  if(input.task==='quality')return {task:'quality',decision:'qualify',summary:'讨论包含具体技术问题和有参考价值的过程。',findings:[]};
  if(input.submission){
+  if(input.submission.title==='严重风险待核验')return {decision:'disputed',summary:'存在需人工核对的严重风险线索，当前版本暂不公开。',findings:[{rule:'illegal',quote:'严重风险线索',explanation:'隔离测试的风险证据占位，须核对后才能公开。',legalBasis:['national-unity']}],improvements:[],taxonomy:{},authorNotice:notice('内容暂缓公开','存在需要人工核对的严重风险，当前版本暂不公开。')};
   if(input.cover&&input.submission.title.includes('画面违规'))return {decision:'revise',summary:'封面画面含有明确不适合发布的推广内容。',findings:[{rule:'spam',quote:input.cover.marker,explanation:'隔离图像审核用例模拟实际画面命中。'}],improvements:[],taxonomy:{},authorNotice:notice('作品未通过审核','请更换包含推广内容的封面，原公开版本不变。')};
   const disputed=input.submission.title.includes('争议');
   return {featuredInvitation:input.submission.title==='分类验收作品'?{criteria:['teaching'],quote:input.submission.description,reason:'已读说明体现了可供学习的显示工程结构，可以考虑申请精选评估。'}:null,decision:disputed?'disputed':'pass',summary:disputed?'存在署名争议，作品先发布，待人工复核。':'作品审核通过。',findings:disputed?[{rule:'ownership',quote:'署名待核对',explanation:'存在具体归属线索，待人工核对。'}]:[],improvements:[],taxonomy:{tags:(input.submission.tags??[]).includes('烘焙甜点')?[{label:'烘焙甜点',action:'reject',rule:'irrelevant',reason:'此标签与提供的显示工程完全无关'}]:[],platforms:input.submission.platforms?.some(x=>x.name==='CH')?[{label:'CH',action:'replace',target:'ST',reason:'STM32F103工程对应ST，纠正错选平台'}]:[],sources:[]},authorNotice:notice(disputed?'作品已发布，待人工复核':'作品审核通过',disputed?'存在署名待核对事项，作品先发布并交人工复核。':'作品通过本次审核，分类方案将CH更正为ST，剔除无关标签。')};
  }
  const text=input.target?.body??'';
+ const scopeRule=text.includes('完全无关闲聊占位')?'irrelevant':text.includes('键政测试占位')?'off_topic_politics':text.includes('非法定信道翻墙教程占位')?'circumvention':null;
+ if(scopeRule)return {task:'publish',decision:'revise',summary:'当前内容不在社区收录范围，暂不公开。',findings:[{rule:scopeRule,quote:text,explanation:'隔离测试的社区范围标记。',legalBasis:scopeRule==='circumvention'?['international-channel']:[]}],technicalIssues:[],commenterNotice:notice('评论未通过审核','请保留与项目相关的正常交流内容后重新提交。')};
  const disputed=text.includes('争议评论'),blocked=text.includes('纯谩骂');
  return {task:'publish',decision:blocked?'revise':disputed?'disputed':'pass',summary:blocked?'当前评论仅有粗鄙谩骂，不予发布。':disputed?'评论存在待核对事项，暂不公开。':'讨论审核通过。',findings:blocked?[{rule:'vulgarity',quote:'纯谩骂',explanation:'没有实质交流内容。'}]:disputed?[{rule:'ownership',quote:'争议评论',explanation:'需核对原始语境。'}]:[],technicalIssues:text.includes('编译失败')?[{claim:text.includes('链接器')?'反馈链接器编译失败，原因未核实。':'反馈工程编译失败，原因未核实。',quote:'编译失败',providedEvidence:[],missingEvidence:['完整构建报错日志']}]:[],commenterNotice:blocked||disputed?notice('评论审核结果',blocked?'请移除纯谩骂，保留具体交流内容。':'评论暂缓公开，等待人工核对。'):null};
 }
@@ -104,6 +107,13 @@ try{
  const disputed=await admin.ok('POST','projects',{...draft,title:'争议作品验收',description:'该工程存在署名待核对的具体线索，需要人类进一步确认。'});job=await admin.ok('POST',`projects/${disputed.id}/submit`,{});await waitReview(job.reviewId);
  const disputedView=(await anon.ok('GET',`projects/${disputed.id}`)).project;
  check('disputed project is public and marked pending human review',disputedView.status==='published'&&disputedView.pendingHumanReview);
+ const safety=await admin.ok('POST','projects',{...draft,title:'严重风险待核验',description:'本材料含有严重风险线索，需要由人工核对具体事实与适用依据。'});
+ const safetyJob=await admin.ok('POST',`projects/${safety.id}/submit`,{}),safetyReview=await waitReview(safetyJob.reviewId);
+ check('serious legal dispute does not inherit ordinary disputed-project publication',(await anon.call('GET',`projects/${safety.id}`)).status===404&&JSON.parse(safetyReview.result).publicationHeld===true);
+ const safetyNotice=await waitFor(()=>db.prepare("SELECT title,body FROM notifications WHERE review_id=? AND state='ready' AND event_key LIKE 'safety-review-status:%'").bind(safetyJob.reviewId).first());
+ check('held author receives neutral status and verified statute without a published claim',!!safetyNotice&&safetyNotice.title.includes('暂缓')&&safetyNotice.body.includes('第六条第二项')&&!safetyNotice.body.includes('作品已先行发布'));
+ await admin.ok('POST',`admin/reviews/${safetyJob.reviewId}/decision`,{decision:'pass',reason:'此处仅为隔离测试的风险占位标记，人工核对确认可以公开。'});
+ check('human can resolve a false-positive safety hold',(await anon.call('GET',`projects/${safety.id}`)).status===200);
  await db.prepare('DELETE FROM limits WHERE key LIKE ?').bind(memberId+':%').run();
  const t=await member.ok('POST','topics',{title:'正常项目评论',body:'我觉得这个显示工程的结构很清晰，想讨论一下显示刷新。',board:'经验交流',projectId});topicId=t.id;await waitReview(t.reviewId);
  const activity=await waitFor(()=>db.prepare("SELECT * FROM notifications WHERE review_id=? AND kind='comment'").bind(t.reviewId).first());
@@ -115,6 +125,13 @@ try{
  await db.prepare('DELETE FROM limits WHERE key LIKE ?').bind(memberId+':%').run();
  const d=await member.ok('POST','topics',{title:'争议评论',body:'这是一条争议评论，现有语境需要进一步核对。',board:'经验交流',projectId});await waitReview(d.reviewId);
  check('disputed comment remains hidden from visitors',(await anon.call('GET',`topics/${d.id}`)).status===404);
+ for(const [label,body,allowed] of [['纯夸赞验收','赞',true],['无关内容验收','完全无关闲聊占位',false],['键政范围验收','键政测试占位',false],['翻墙范围验收','非法定信道翻墙教程占位',false]]){
+  await db.prepare('DELETE FROM limits WHERE key LIKE ?').bind(memberId+':%').run();
+  const item=await member.ok('POST','topics',{title:label,body,board:'经验交流',projectId});await waitReview(item.reviewId);
+  check(label+' respects publication boundary',(await anon.call('GET',`topics/${item.id}`)).status===(allowed?200:404));
+  if(!allowed){const record=await admin.ok('GET',`reviews/${item.reviewId}`);check(label+' is retained for administrator inspection',JSON.stringify(record.snapshot).includes(body)&&record.result.findings.length>0&&(await admin.call('GET',`topics/${item.id}`)).status===200&&(await member.call('GET',`reviews/${item.reviewId}`)).status===403);}
+  if(body.includes('翻墙')){const notice=await waitFor(()=>db.prepare("SELECT body FROM notifications WHERE review_id=? AND recipient_id=? AND state='ready' ORDER BY created_at LIMIT 1").bind(item.reviewId,memberId).first());check('circumvention refusal contains the specific verified international-network article',notice.body.includes('中华人民共和国计算机信息网络国际联网管理暂行规定')&&notice.body.includes('第六条'));}
+ }
  const ownerBefore=(await member.ok('GET',`topics/${topicId}/edit`));
  await db.prepare('DELETE FROM limits WHERE key LIKE ?').bind(memberId+':%').run();
  const edited=await member.ok('PATCH',`topics/${topicId}`,{title:'修改后标题',board:'经验交流',body:'纯谩骂，审核不通过，旧公开正文必须保留。',editToken:ownerBefore.editToken});

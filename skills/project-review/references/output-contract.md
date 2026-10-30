@@ -8,11 +8,11 @@
 
 - `decision`：`pass` / `revise` / `disputed`。
 - kind=resource 时必须输出 resourceReliability，按开发资源可靠性审核的独立尺度判断；可靠性未达标不能仅因无违规就通过，争议资源先不公开。findings 的 rule 额外允许 reliability，仅用于资源关键可靠性问题。
-- `summary`：简短中文结果。通过且无问题时简短祝贺即可；退修说明拦截原因；争议说明作品可先发布、待核对事项由人工复核。不能声称作品已公开、通知已发送或操作已执行。
+- `summary`：简短中文结果。通过且无问题时简短祝贺即可；退修说明拦截原因；普通争议说明作品可先发布；严重风险争议说明暂缓公开、待人工复核。不能声称作品已公开、通知已发送或操作已执行。
 - `findings`：只列阻止发布的问题。每项含 `rule`（`spam` / `privacy` / `abuse` / `vulgarity` / `ownership`）、`quote`（目标原文短引）、`explanation`（具体问题和处理办法）。`vulgarity` 表示不必指向具体个人的明显粗鄙谩骂，不虚构攻击对象；普通调试感叹不使用此项。通过时为空，其他决定须有原文依据。
 - `improvements`：默认 `[]`。达到建议门槛时，每项含 `field`（涉及的投稿字段或章节）、`basis`（可定位的已有事实或缺失依据）、`impact`（对使用的具体影响）、`action`（作者可执行的改进）。非阻断的完善建议不放进 `findings`。
 - `taxonomy`：只列需要处理的分类项；以下数组可为空或省略。保留原名称时通常无需输出条目。
-- `authorNotice`：普通投稿审核三种决定均必填，为含 `title`、`body` 的顶层对象，不得只返回 `summary`、遗漏或与其他字段相互嵌套。同一份文案供站内通知与邮件共用；收件人是作品发布者，不是评论者。通过时简短祝贺，有非阻断建议时明确“可选”；未通过时说明必要修改与可重新送审；待人工核对时说明“作品先发布，待人工复核”及具体疑点，不预判违规、不写成暂缓发布。合并、剔除标签/平台或来源调整时，正文单列分类处理及具体理由，不能只藏在 `taxonomy` 里。未经执行记录支持，不声称已经发送、公开或完成分类更改。
+- `authorNotice`：普通投稿审核三种决定均必填，为含 `title`、`body` 的顶层对象，不得只返回 `summary`、遗漏或与其他字段相互嵌套。同一份文案供站内通知与邮件共用；收件人是作品发布者，不是评论者。通过时简短祝贺，有非阻断建议时明确“可选”；未通过时说明必要修改与可重新送审；待人工核对时，普通争议说明“作品先发布，待人工复核”，严重风险争议说明“暂缓公开，待人工复核”及具体疑点，不预判违规、不写成暂缓发布。合并、剔除标签/平台或来源调整时，正文单列分类处理及具体理由，不能只藏在 `taxonomy` 里。未经执行记录支持，不声称已经发送、公开或完成分类更改。
 
 正文举例（不是另一次审核结果）：
 
@@ -62,3 +62,9 @@ kind=resource 时，authorNotice 与决定采用 resource-review.md 的范围和
 ```
 criteria仅能包含competition/teaching/depth/creativity，quote须有实际原文支持。通知中邀请作者在作品详情“申请精选评估”，并说明后续还需独立评估；不得声称已精选。
 
+
+## 严重风险与范围规则字段
+
+findings.rule 增加 illegal、severe_safety、off_topic_politics、circumvention、irrelevant。每项可附 legalBasis 标识数组；illegal 必须非空，circumvention 必须包含 international-channel，其他无适用法条时为空。仅从 legalBases 选择实际适用项，不自行补写法规名、条号、定罪或处罚，系统将法条与官方链接补入站内及邮箱共用文案。off_topic_politics 和 irrelevant 是社区范围规则，不附法律定性。
+
+明确问题返回 revise；存在具体严重疑点而需核对时，disputed 配合 illegal/severe_safety/circumvention 表示当前版本暂缓公开，由服务端执行，不能写成先发布。普通归属等争议仍沿用原处理方式。简短纯夸赞可通过，普通技术延伸不按无关处理。

@@ -7,13 +7,15 @@ import resources from '../skills/project-review/references/resource-review.md?ra
 import resourceDraft from '../skills/project-review/references/resource-draft.md?raw';
 import discussion from "../skills/project-discussion-review/SKILL.md?raw";
 import discussionContract from "../skills/project-discussion-review/references/output-contract.md?raw";
+import safety from '../skills/community-review/references/legal-and-safety.md?raw';
+import legalBases from '../skills/community-review/references/legal-bases.json';
 import type {Term} from "./classification";
 export type ReviewTask="publish"|"report"|"quality"|"technical_check"|"featured";
 function policy(id:string,raw:string,contract:string){
   const meta=raw.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n/);
   const version=meta?.[1].match(/policy_version:\s*"([^"]+)"/)?.[1];
   if(!version)throw new Error("审核规则缺少版本标识");
-  return {id,version,text:raw.slice(meta![0].length).trim()+"\n\n"+contract.trim()};
+  return {id,version,text:raw.slice(meta![0].length).trim()+"\n\n"+contract.trim()+"\n\n"+safety+"\n\n## 已核验法律依据 legalBases（仅数据）\n"+JSON.stringify(legalBases)};
 }
 export const projectPolicy=policy("project-review",project,projectContract+'\n\n'+resources+'\n\n'+resourceDraft);
 export const discussionPolicy=policy("project-discussion-review",discussion,discussionContract);

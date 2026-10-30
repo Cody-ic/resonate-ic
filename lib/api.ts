@@ -284,7 +284,7 @@ export async function api(request:Request) {
       if(method==="POST"&&(!key||action==="replies")) {
         await throttle(user.id,key?"reply":"topic",key?30:6);
         await throttle(user.id,"post-cooldown",1,10000);
-        const body=await data(request),content=z.string().trim().min(5).max(6000).parse(body.body);
+        const body=await data(request),content=z.string().trim().min(1).max(6000).parse(body.body);
         let snapshot:string,entityId=id(),type:string;
         const hash=await digest(content),fresh=Date.now()-user.createdAt<86400000;let status=forumDecision(content,fresh);
         const duplicate=await db.select().from(s.topics).where(and(eq(s.topics.ownerId,user.id),eq(s.topics.digest,hash))).get()

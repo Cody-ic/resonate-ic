@@ -71,7 +71,7 @@ export async function manageContent(request:Request,path:string[],user:Actor|nul
   const snapshot=edit?JSON.parse(edit.snapshot):{...row};
   if(method==="GET"&&action==="edit")return json({snapshot,editToken:row.headEditId??row.digest,status:edit?.status??row.status});
   if(method!=="PATCH")return null;
-  const schema=z.object({body:z.string().trim().min(5).max(6000),title:z.string().trim().min(3).max(100).optional(),board:z.enum(boards).optional(),editToken:z.string().min(1).max(100)});
+  const schema=z.object({body:z.string().trim().min(1).max(6000),title:z.string().trim().min(3).max(100).optional(),board:z.enum(boards).optional(),editToken:z.string().min(1).max(100)});
   const body=schema.parse(await request.json());
   if(body.editToken!==(row.headEditId??row.digest))throw new HTTPError(409,"内容已更新，请重新打开编辑器");
   const next=entityType==="topic"?{title:body.title??snapshot.title,board:body.board??snapshot.board,body:body.body}:{body:body.body};

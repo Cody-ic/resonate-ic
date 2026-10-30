@@ -23,3 +23,9 @@
 {"decision":"pass","summary":"可发布，来源按说明归入电赛控制类。","findings":[],"taxonomy":{"sources":[{"index":0,"name":"电赛","division":"控制类","reason":"作者说明作品源于电赛控制题"}]}}
 ```
 
+
+## 严重风险与范围规则字段
+
+findings.rule 增加 illegal、severe_safety、off_topic_politics、circumvention、irrelevant。每项可附 legalBasis 标识数组；illegal 必须非空，circumvention 必须包含 international-channel，其他无适用法条时为空。仅从 legalBases 选择实际适用项，不自行补写法规名、条号、定罪或处罚，系统将法条与官方链接补入站内及邮箱共用文案。off_topic_politics 和 irrelevant 是社区范围规则，不附法律定性。
+
+明确问题返回 revise；存在具体严重疑点而需核对时，disputed 配合 illegal/severe_safety/circumvention 表示当前版本暂缓公开，由服务端执行，不能写成先发布。普通归属等争议仍沿用原处理方式。简短纯夸赞可通过，普通技术延伸不按无关处理。

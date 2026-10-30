@@ -1,0 +1,9 @@
+{
+  "national-unity": {"name":"网络信息内容生态治理规定","article":"第六条第二项","url":"https://www.cac.gov.cn/2019-12/20/c_1578375159509309.htm","scope":"危害国家安全、泄露国家秘密、颠覆国家政权、破坏国家统一的信息"},
+  "terrorism": {"name":"网络信息内容生态治理规定","article":"第六条第五项","url":"https://www.cac.gov.cn/2019-12/20/c_1578375159509309.htm","scope":"宣扬恐怖主义、极端主义或煽动实施相关活动的信息"},
+  "ethnic-hatred": {"name":"网络信息内容生态治理规定","article":"第六条第六项","url":"https://www.cac.gov.cn/2019-12/20/c_1578375159509309.htm","scope":"煽动民族仇恨、民族歧视、破坏民族团结的信息"},
+  "harmful-rumors": {"name":"网络信息内容生态治理规定","article":"第六条第八项","url":"https://www.cac.gov.cn/2019-12/20/c_1578375159509309.htm","scope":"散布谣言并扰乱经济或社会秩序的信息；须有虚假性及危害依据，不凭意见分歧认定"},
+  "obscene-crime": {"name":"网络信息内容生态治理规定","article":"第六条第九项","url":"https://www.cac.gov.cn/2019-12/20/c_1578375159509309.htm","scope":"散布淫秽色情、赌博、暴力恐怖或者教唆犯罪的信息；区分正当教育、防护与必要引用"},
+  "personal-rights": {"name":"网络信息内容生态治理规定","article":"第六条第十项","url":"https://www.cac.gov.cn/2019-12/20/c_1578375159509309.htm","scope":"侮辱、诽谤或侵害他人名誉、隐私等合法权益的信息；不能把真实技术批评认定为诽谤"},
+  "international-channel": {"name":"中华人民共和国计算机信息网络国际联网管理暂行规定","article":"第六条","url":"https://xzfg.moj.gov.cn/front/law/detail?LawID=1713","scope":"直接国际联网的国际出入口信道限制，禁止自行建立或使用其他信道进行国际联网；不据此认定所有VPN或普通网络协议讨论违法"}
+}

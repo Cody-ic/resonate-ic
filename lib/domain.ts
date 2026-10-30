@@ -64,7 +64,7 @@ export const aiResultSchema = z.object({
   decision: z.enum(["pass", "revise", "disputed"]),
   summary: z.string().min(1).max(1200),
   findings: z.array(z.object({
-    rule: z.enum(["spam", "privacy", "abuse", "claims", "missing", "ownership"]),
+    rule: z.enum(["spam", "privacy", "abuse", "claims", "missing", "ownership","illegal","severe_safety","off_topic_politics","circumvention","irrelevant"]),
     quote: z.string().min(1).max(500), explanation: z.string().min(1).max(800),
   })).max(12),
   taxonomy: taxonomyPlanSchema.optional(),

@@ -1,8 +1,9 @@
 import {z} from "zod/v3";
 import {taxonomyPlanSchema} from "./classification";
 import {resourceDraftSchema,resourceReliabilitySchema} from './resource-draft-schema';
+import {legalBases,appendLegalReferences} from './review-safety';
 export const noticeSchema=z.object({title:z.string().trim().min(1).max(160),body:z.string().trim().min(1).max(6000)});
-const findings=z.array(z.object({rule:z.enum(["spam","privacy","abuse","vulgarity","ownership","unfounded_demand","reliability"]),quote:z.string().min(1).max(500),explanation:z.string().min(1).max(1200)})).max(20);
+const findings=z.array(z.object({rule:z.enum(["spam","privacy","abuse","vulgarity","ownership","unfounded_demand","reliability","illegal","severe_safety","off_topic_politics","circumvention","irrelevant"]),quote:z.string().min(1).max(500),explanation:z.string().min(1).max(1200),legalBasis:z.array(z.string().refine(key=>Object.hasOwn(legalBases,key),'未经核验的法律依据')).max(4).default([])})).max(20);
 const technicalIssues=z.array(z.object({claim:z.string().min(3).max(1000),quote:z.string().min(1).max(500),providedEvidence:z.array(z.string().max(1500)).max(12).default([]),missingEvidence:z.array(z.string().max(500)).max(12).default([])})).max(5).default([]);
 const common={summary:z.string().min(1).max(2000),findings};
 const resourceOutput={resourceDraft:resourceDraftSchema.nullable().default(null),resourceReliability:resourceReliabilitySchema.nullable().default(null)};
@@ -24,6 +25,17 @@ export function parseReviewResult(raw:string,task:string,lane:string,source:stri
   const value=JSON.parse(raw.replace(/^```(?:json)?\s*|\s*```$/g,""));
   const schema=task==="featured"?featuredResultSchema:task==="technical_check"?technicalResultSchema:task==="report"?reportResultSchema:task==="quality"?qualityResultSchema:lane==="discussion"?discussionResultSchema:projectResultSchema;
   const result=schema.parse(value) as any;
+  for(const finding of result.findings??[]){
+    if(['illegal','circumvention'].includes(finding.rule)&&!finding.legalBasis.length)throw Error('违法或翻墙指导结论缺少已核验法条');
+    if(finding.rule==='circumvention'&&!finding.legalBasis.includes('international-channel'))throw Error('翻墙指导缺少国际联网条款依据');
+    if(['off_topic_politics','irrelevant'].includes(finding.rule)&&finding.legalBasis.length)throw Error('社区范围规则不能冒充法律定性');
+  }
+  const noticeText=[result.summary,...(result.findings??[]).map((f:any)=>f.explanation),result.authorNotice?.body,result.commenterNotice?.body].filter(Boolean).join('\n');
+  for(const match of noticeText.matchAll(/《([^》]{1,100})》\s*(第[一二三四五六七八九十百零\d]+条(?:第[一二三四五六七八九十百零\d]+[款项])?)/g)){
+    if(!Object.values(legalBases).some(b=>b.name===match[1]&&b.article===match[2]))throw Error('通知含未经核验的法条');
+  }
+  for(const key of ['authorNotice','commenterNotice'])if(result[key])result[key].body=appendLegalReferences(result[key].body,result);
+  result.summary=appendLegalReferences(result.summary,result,task==='report'?1400:2000);
   if(result.resourceDraft&&!hasQuote(source,result.resourceDraft.quote))throw new Error('组件草稿缺少实际来源引文');
   for(const e of result.resourceReliability?.evidence??[])if(!hasQuote(source,e.quote))throw new Error('资源可靠性依据不在已读材料中');
   for(const f of [...(result.findings??[]),...(result.technicalIssues??[])])if(!hasQuote(source,f.quote))throw new Error("引用不在本次实际送审资料中");

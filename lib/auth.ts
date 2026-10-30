@@ -12,6 +12,7 @@ import { HTTPError,json } from "./domain";
 import {mailMode,mailDeliveryEnabled,mailVerificationAvailable,mailVerificationRequired,canSendMailTo,mailSettings,queueEmail,mailHealth} from "./notifications";
 import {loginWindowSeconds,loginAccountMax,loginIpMax,trustedCampusLogin,loginAccountLimitKey} from "./login-policy";
 import {withDeliveryReceipt,deliveryStatus} from './mail-delivery';
+import {minimumPasswordLength} from './password-policy';
 
 type Settings={BETTER_AUTH_SECRET?:string;BETTER_AUTH_URL?:string;PLATFORM_AUTH_ENABLED?:string;SEU_LOGIN_TRUSTED_CIDRS?:string};
 // Reuse the configured service, never a user's identity/session. Every identity
@@ -34,7 +35,7 @@ function createSiteAuth(origin:string,cfg:typeof env & Settings){
   return betterAuth({
     appName:"共振",baseURL:origin,basePath:"/api/auth",secret:cfg.BETTER_AUTH_SECRET,
     database:drizzleAdapter(getDb(),{provider:"sqlite",transaction:false,schema:{user:s.authUser,session:s.authSession,account:s.authAccount,verification:s.authVerification}}),
-    emailAndPassword:{enabled:true,minPasswordLength:12,maxPasswordLength:128,requireEmailVerification:mailVerificationRequired()},
+    emailAndPassword:{enabled:true,minPasswordLength:minimumPasswordLength,maxPasswordLength:128,requireEmailVerification:mailVerificationRequired()},
     plugins:[emailOTP({otpLength:6,expiresIn:600,allowedAttempts:3,storeOTP:"encrypted",resendStrategy:'reuse',sendVerificationOnSignUp:mailVerificationRequired(),overrideDefaultEmailVerification:true,disableSignUp:true,rateLimit:{window:60,max:2},sendVerificationOTP:async({email,otp,type})=>{
       if(!canSendMailTo(email))throw new APIError('SERVICE_UNAVAILABLE',{message:'邮箱发送服务尚未启用，或当前收件人不在联调范围内'});
       if((await mailHealth()).authState==='account_verification_required')throw new APIError('SERVICE_UNAVAILABLE',{message:'邮件服务暂时需要维护者完成微软账号验证，请稍后再试'});
@@ -70,7 +71,7 @@ export async function registerAccount(request:Request){
   const text=await request.text();
   if(new TextEncoder().encode(text).length>4096)throw new HTTPError(413,"注册信息过长");
   let input:unknown;try{input=JSON.parse(text);}catch{throw new HTTPError(400,"请求必须是JSON");}
-  const body=z.object({name:z.string().trim().min(2).max(40),email:z.string().trim().email().max(254),password:z.string().min(12).max(128),linkCurrent:z.boolean().default(false)}).parse(input);
+  const body=z.object({name:z.string().trim().min(2).max(40),email:z.string().trim().email().max(254),password:z.string().min(minimumPasswordLength).max(128),linkCurrent:z.boolean().default(false)}).parse(input);
   const registrationAuth=siteAuth(request),accountKey=await loginAccountLimitKey(body.email,(env as typeof env & Settings).BETTER_AUTH_SECRET!);
   const registrationBucket=Math.floor(Date.now()/3600000);
   const registration=await env.DB!.prepare("INSERT INTO limits(key,count,expires_at) VALUES(?,1,?) ON CONFLICT(key) DO UPDATE SET count=count+1 WHERE count<? RETURNING count").bind(`auth:register-account:${accountKey}:${registrationBucket}`,(registrationBucket+1)*3600000,3).first();

@@ -24,6 +24,7 @@ import {scanFeatured,scanDigest} from './featured-scan';
 import {createResourceOffer,requireOfferSource} from './resource-offers';
 import {checkResourceReview} from './resource-review';
 import {timeouts} from './timeouts';
+import {holdsUnsafePublication} from './review-safety';
 
 export type RuntimeConfig = {ADMIN_USER_IDS?:string;REVIEW_API_KEY?:string;REVIEW_MODEL?:string;[key:string]:string|undefined};
 export const config=()=>env as typeof env & RuntimeConfig;
@@ -44,7 +45,8 @@ export function projectOffPeak(now=new Date()){
 export async function applyDecision(review: typeof reviews.$inferSelect, action: string,options:{taxonomy?:unknown;actorId?:string;reason?:string;result?:Record<string,unknown>;humanReason?:string}={}) {
   const db = getDb(),raw=env.DB!,now=Date.now();
   const resource=review.entityType==='revision'&&!!await raw.prepare("SELECT 1 FROM projects p JOIN revisions r ON r.project_id=p.id WHERE r.id=? AND p.kind='resource'").bind(review.entityId).first();
-  const publish=action==="pass"||(action==="disputed"&&review.entityType==="revision"&&!resource);
+  const safetyHold=holdsUnsafePublication({decision:action,findings:options.result?.findings});
+  const publish=action==="pass"||(action==="disputed"&&review.entityType==="revision"&&!resource&&!safetyHold);
   const held=publish&&review.entityType==="revision"&&config().PROJECT_PUBLICATION_ENABLED==="false";
   let proposedClassification:unknown;
   const status = publish ? "published" : action === "revise" ? "needs_changes" : "disputed";
@@ -86,7 +88,7 @@ export async function applyDecision(review: typeof reviews.$inferSelect, action:
   }
   if(options.actorId){
     const state=action==="pass"?"approved":action==="revise"?"needs_changes":"disputed";
-    statements.push(raw.prepare("UPDATE reviews SET state=?,result=?,updated_at=? WHERE id=?").bind(state,JSON.stringify({...options.result??{summary:options.reason,method:"human",decision:action,taxonomy:options.taxonomy??{}},...(held?{publicationHeld:true,proposedClassification}:{})}),now,review.id));
+    statements.push(raw.prepare("UPDATE reviews SET state=?,result=?,updated_at=? WHERE id=?").bind(state,JSON.stringify({...options.result??{summary:options.reason,method:"human",decision:action,taxonomy:options.taxonomy??{}},...(held?{publicationHeld:true,proposedClassification}:{}),...(safetyHold?{publicationHeld:true,publicationHoldReason:'legal_or_safety'}:{})}),now,review.id));
     statements.push(raw.prepare("INSERT INTO decisions(id,review_id,actor_id,action,reason,taxonomy_plan,created_at) VALUES(?,?,?,?,?,?,?)").bind(crypto.randomUUID(),review.id,options.actorId,action,options.reason??"审核完成",JSON.stringify(options.taxonomy??{}),now));
   }
   if (statements.length) await raw.batch(statements);
@@ -190,11 +192,13 @@ async function completeReview(review:any,result:any,info:any,policy:any,readName
   if(review.task==="publish"){
     await applyDecision(review,result.decision,{taxonomy:result.taxonomy,actorId:`ai:${review.lane}`,reason:result.summary,result:metadata});
     const resourcePending=info.kind==='resource'&&result.decision==='disputed';
+    const safetyPending=holdsUnsafePublication(result);
     const held=review.entityType==="revision"&&config().PROJECT_PUBLICATION_ENABLED==="false"&&["pass","disputed"].includes(result.decision);
     const invitation=info.kind==='project'&&result.decision==='pass'?result.featuredInvitation:null;
     let originalNotice=review.entityType==="revision"?result.authorNotice:result.commenterNotice;
     if(!originalNotice&&result.decision==='revise')originalNotice={title:'内容需要修改后再发布',body:result.summary};
-    if(resourcePending)originalNotice={title:'资源检查尚未完成',body:'当前版本暂未公开。以下事项尚不能确认，不是已发现缺陷或认定资源不合格。\n\n'+originalNotice.body.slice(0,5600)};
+    if(safetyPending)originalNotice={title:'内容暂缓公开，待人工复核',body:'当前版本暂未公开。存在需要人工核对的法律或严重安全疑点，不表示已认定作者违法。\n\n'+originalNotice.body.slice(0,5600)};
+    else if(resourcePending)originalNotice={title:'资源检查尚未完成',body:'当前版本暂未公开。以下事项尚不能确认，不是已发现缺陷或认定资源不合格。\n\n'+originalNotice.body.slice(0,5600)};
     if(info.kind==='resource'&&result.resourceReliability){
       const r=result.resourceReliability,proof=r.confirmedIssues.map((p:any)=>`${p.source}\n原文：${p.quote}\n判断依据：${p.basisQuote}\n说明：${p.reasoning}\n影响：${p.impact}\n涉及范围：${p.affectedScope}`).join('\n\n');
       const appendix=`\n\n本次AI检查范围：${r.checkedScope}\n未验证或有限制的部分：${r.limitations.join('；')||'未执行构建或实物测试'}${proof?'\n\n已确认问题的依据：\n'+proof:''}\n作者声明与本次检查均不代表整板或全部功能已获可靠性认证。`;
@@ -208,7 +212,8 @@ async function completeReview(review:any,result:any,info:any,policy:any,readName
     const notice=held&&originalNotice?{title:result.decision==="pass"?"作品审核通过，尚未上架":"作品待人工复核，尚未上架",body:"审核流程已完成本阶段处理。平台当前暂停作品上架，本次未更改作品的公开版本。\n\n"+originalNotice.body.slice(0,5800)}:originalNotice;
     const draft=result.decision==="disputed"||(result.improvements?.length??0)>0;
     if(notice)await notify(review.ownerId,`review:${review.id}`,notice,{reviewId:review.id,href:info.href,draft,revise:result.decision==='revise'});
-    if(draft&&resourcePending)await notify(review.ownerId,`resource-review-status:${review.id}`,{title:"资源检查尚未完成",body:"资源当前版本暂未公开。本次检查有尚不能确认的事项，不是缺陷或不合格结论。具体说明文案待确认后通知。"},{reviewId:review.id,href:info.href});
+    if(draft&&safetyPending)await notify(review.ownerId,`safety-review-status:${review.id}`,{title:'内容暂缓公开，待人工复核',body:'当前版本暂未公开。存在法律或严重安全疑点，管理员将核对具体事实及适用依据；本次暂缓不表示已认定作者违法。\n\n'+result.summary},{reviewId:review.id,href:info.href});
+    else if(draft&&resourcePending)await notify(review.ownerId,`resource-review-status:${review.id}`,{title:"资源检查尚未完成",body:"资源当前版本暂未公开。本次检查有尚不能确认的事项，不是缺陷或不合格结论。具体说明文案待确认后通知。"},{reviewId:review.id,href:info.href});
     else if(draft)await notify(review.ownerId,`review-status:${review.id}`,{title:review.entityType==="revision"&&result.decision==="disputed"?(held?"作品待人工复核，尚未上架":"作品已发布，待人工复核"):result.decision==="pass"?"作品审核通过":result.decision==="revise"?"作品暂未通过审核":"评论暂缓发布",body:held?"平台当前暂停作品上架，审核结果已保存。需要人工确认的事项仍按正常流程处理。":review.entityType==="revision"&&result.decision==="disputed"?"本次审核存在待核对事项，作品已先行发布，管理员将进一步审阅。详细说明文案待确认后通知。":result.decision==="pass"?"本次审核通过。详细完善建议文案待确认后通知，不影响发布。":result.decision==="revise"?"本次审核存在需要修改的内容，当前版本尚未发布。可在审核记录中查看原因。":"评论暂不公开，等待进一步核对。"},{reviewId:review.id,href:info.href,revise:result.decision==='revise'});
     if(result.decision==="pass"&&["topic","reply"].includes(review.entityType))await notifyDiscussionPublished(review.entityType,review.entityId,review.id);
     await queueTechnical(review,result,info);

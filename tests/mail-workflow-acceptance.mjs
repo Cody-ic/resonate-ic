@@ -22,6 +22,15 @@ const wait=async fn=>{for(let i=0;i<1500;i++){const value=await fn();if(value)re
 try{
  await mf.ready;db=await mf.getD1Database('DB');for(const file of readdirSync('drizzle').filter(x=>x.endsWith('.sql')).sort())for(const sql of readFileSync('drizzle/'+file,'utf8').replace(/--> statement-breakpoint/g,'').split(';').map(x=>x.trim()).filter(Boolean))await db.prepare(sql).run();
  const password='isolated-mail-test-password-1234';
+ {
+  const c=client(),email='short-password@example.test';
+  check('seven-character registration password is rejected',(await c.call('POST','account/register',{name:'密码边界验收',email,password:'abc1234'})).status===422);
+  await c.ok('POST','account/register',{name:'密码边界验收',email,password:'abcdefgh'});
+  check('eight-character password without character-class requirements registers',!!(await c.ok('GET','me')).user);
+  await c.ok('POST','auth/change-password',{currentPassword:'abcdefgh',newPassword:'ijklmnop'});
+  await c.ok('POST','auth/sign-out',{});await c.ok('POST','auth/sign-in/email',{email,password:'ijklmnop'});
+  check('eight-character replacement password can sign in',!!(await c.ok('GET','me')).user);
+ }
  await admin.ok('POST','account/register',{name:'邮件验收管理员',email:'admin@example.test',password});const me=await admin.ok('GET','me');bindings.ADMIN_USER_IDS=me.user.id;await reconfigure();
  await allowed.ok('POST','account/register',{name:'联调账号',email:'allowed@example.test',password});await foreign.ok('POST','account/register',{name:'非联调账号',email:'other@example.test',password});
  const initial=await allowed.ok('GET','config');check('configured but off leaves existing login and OTP policy unchanged',!initial.emailVerificationEnabled&&!initial.emailVerificationRequired&&mailRequests.length===0);
@@ -52,7 +61,7 @@ try{
  await foreign.ok('POST','auth/email-otp/send-verification-otp',{email:'other@example.test',type:'email-verification'});await wait(()=>mailRequests.length===2);const second=mailRequests[1].message.body.content.match(/\b\d{6}\b/)[0];await foreign.ok('POST','auth/email-otp/verify-email',{email:'other@example.test',otp:second});await foreign.ok('POST','auth/sign-in/email',{email:'other@example.test',password});check('existing user can verify and resume login without recreating account',!!(await foreign.ok('GET','me')).user&&(await db.prepare('SELECT email_verified FROM auth_user WHERE email=?').bind('other@example.test').first()).email_verified===1);
  const countBeforeReset=mailRequests.length;
  await allowed.ok('POST','auth/email-otp/request-password-reset',{email:'allowed@example.test'});await wait(()=>mailRequests.length===countBeforeReset+1);
- const resetCode=mailRequests.at(-1).message.body.content.match(/\b\d{6}\b/)[0],newPassword='isolated-replacement-password-5678';
+ const resetCode=mailRequests.at(-1).message.body.content.match(/\b\d{6}\b/)[0],newPassword='qrstuvwx';
  await allowed.ok('POST','auth/email-otp/reset-password',{email:'allowed@example.test',otp:resetCode,password:newPassword});await allowed.ok('POST','auth/sign-out',{});
  check('old password stops working after OTP reset',(await allowed.call('POST','auth/sign-in/email',{email:'allowed@example.test',password})).status>=400);
  await allowed.ok('POST','auth/sign-in/email',{email:'allowed@example.test',password:newPassword});check('password reset resumes verified login',!!(await allowed.ok('GET','me')).user);
